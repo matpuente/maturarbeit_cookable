@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Vorlage für den DeepL-API-Schlüssel der App.
+  Kopie nach Cookable/Cookable/Geheim/DeepL.plist legen und den Schlüssel eintragen.
+  Der Ordner Geheim/ ist in .gitignore ausgeschlossen und wird nie veröffentlicht.
+-->
+<plist version="1.0">
+<dict>
+	<key>Schluessel</key>
+	<string>HIER-DEN-DEEPL-SCHLUESSEL-EINTRAGEN</string>
+</dict>
+</plist>

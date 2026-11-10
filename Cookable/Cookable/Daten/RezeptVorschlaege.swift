@@ -39,6 +39,8 @@ enum RezeptVorschlaege {
         let text: String
         /// Zutaten, deren deutscher Name den Suchtext enthält
         let zutaten: Set<Int>
+        /// Rezepte, deren übersetzter (deutscher) Name den Suchtext enthält
+        var rezepte: Set<Int> = []
     }
 
     static func berechnen(
@@ -58,7 +60,7 @@ enum RezeptVorschlaege {
             .compactMap { rezept -> RezeptVorschlag? in
                 var nameTreffer = false
                 if let suche {
-                    nameTreffer = rezept.suchname.contains(suche.text)
+                    nameTreffer = rezept.suchname.contains(suche.text) || suche.rezepte.contains(rezept.id)
                     guard nameTreffer || rezept.zutaten.contains(where: suche.zutaten.contains) else { return nil }
                 }
 

@@ -4,7 +4,9 @@ import SwiftUI
 /// Rezeptvorschläge passend zum Vorrat, mit Filtern für Zeit und Kategorie.
 struct RezepteAnsicht: View {
     @Environment(RezeptDatenbank.self) private var datenbank
+    @Environment(Uebersetzer.self) private var uebersetzer
     @Query private var vorrat: [VorratsEintrag]
+    @Query private var uebersetzungen: [Uebersetzung]
 
     @AppStorage("filterZeit") private var zeit = Zeitfilter.alle
     @AppStorage("filterKategorie") private var kategorieWert = ""
@@ -22,14 +24,17 @@ struct RezepteAnsicht: View {
     }
 
     /// Suchtext in Vergleichsform und die Zutaten, deren deutscher Name ihn enthält
-    private var suche: RezeptVorschlaege.Suche? {
+    private func suche(namen: [Int: String]) -> RezeptVorschlaege.Suche? {
         let text = suchtext.trimmingCharacters(in: .whitespaces).suchform
         guard !text.isEmpty else { return nil }
         let zutaten = datenbank.zutaten.filter { !$0.istGrundzutat && $0.name.suchform.contains(text) }.map(\.id)
-        return RezeptVorschlaege.Suche(text: text, zutaten: Set(zutaten))
+        let rezepte = namen.filter { $0.value.suchform.contains(text) }.map(\.key)
+        return RezeptVorschlaege.Suche(text: text, zutaten: Set(zutaten), rezepte: Set(rezepte))
     }
 
     var body: some View {
+        // Übersetzte Rezeptnamen (Englisch, solange noch keine Übersetzung gespeichert ist)
+        let namen = Dictionary(uebersetzungen.map { ($0.rezeptID, $0.name) }, uniquingKeysWith: { erster, _ in erster })
         let vorschlaege = RezeptVorschlaege.berechnen(
             rezepte: datenbank.rezepte,
             vorrat: Set(vorrat.map(\.zutatID)),
@@ -37,12 +42,26 @@ struct RezepteAnsicht: View {
             kategorie: kategorie,
             zeit: zeit,
             mussEnthalten: aktiveMussZutaten,
-            suche: suche
+            suche: suche(namen: namen)
         )
         NavigationSplitView {
             List(selection: $auswahl) {
                 Section {
                     filter
+                }
+                if let fehler = uebersetzer.namenFehler {
+                    Section {
+                        HStack {
+                            Label(fehler == .keinInternet
+                                  ? "Keine Internetverbindung – Rezeptnamen werden auf Englisch angezeigt."
+                                  : "Rezeptnamen konnten nicht übersetzt werden.",
+                                  systemImage: "wifi.exclamationmark")
+                                .font(.footnote)
+                            Spacer()
+                            Button("Erneut versuchen") { uebersetzer.erneutVersuchen() }
+                                .font(.footnote)
+                        }
+                    }
                 }
                 if vorschlaege.isEmpty {
                     leererZustand
@@ -50,7 +69,12 @@ struct RezepteAnsicht: View {
                     Section {
                         ForEach(vorschlaege) { vorschlag in
                             NavigationLink(value: vorschlag.id) {
-                                RezeptZeile(vorschlag: vorschlag)
+                                RezeptZeile(vorschlag: vorschlag, name: namen[vorschlag.id] ?? vorschlag.rezept.name)
+                            }
+                            .onAppear {
+                                if namen[vorschlag.id] == nil {
+                                    uebersetzer.nameAnfordern(rezeptID: vorschlag.id, englisch: vorschlag.rezept.name)
+                                }
                             }
                         }
                     } header: {
@@ -142,7 +166,7 @@ struct RezepteAnsicht: View {
                     Label("Keine Rezepte für «\(suchtext)»", systemImage: "magnifyingglass")
                 } description: {
                     Text(filterAktiv ? "Prüfe die Schreibweise oder setze die Filter zurück."
-                                     : "Prüfe die Schreibweise. Rezeptnamen sind vorerst Englisch (z. B. «chicken»).")
+                                     : "Prüfe die Schreibweise. Noch nicht übersetzte Rezepte findest du mit dem englischen Namen (z. B. «chicken»).")
                 }
             }
         } else {
@@ -180,6 +204,8 @@ struct RezepteAnsicht: View {
 /// Eine Zeile der Vorschlagsliste.
 struct RezeptZeile: View {
     let vorschlag: RezeptVorschlag
+    /// Übersetzter Name, sonst der englische
+    let name: String
 
     /// "4 von 6 Zutaten vorhanden · 1 Ersatz"
     private var verfuegbarText: String {
@@ -189,7 +215,7 @@ struct RezeptZeile: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(vorschlag.rezept.name)
+            Text(name)
                 .font(.headline)
                 .lineLimit(2)
             HStack(spacing: 8) {

@@ -6,9 +6,14 @@ struct RezeptDetailAnsicht: View {
     let vorschlag: RezeptVorschlag
 
     @Environment(RezeptDatenbank.self) private var datenbank
+    @Environment(Uebersetzer.self) private var uebersetzer
     @Query private var vorrat: [VorratsEintrag]
     @State private var details: RezeptDetails?
     @State private var portionen: Int
+    @State private var uebersetzung: Uebersetzung?
+    @State private var uebersetzungsFehler: DeepLDienst.Fehler?
+    @State private var uebersetztGerade = false
+    @State private var zeigeOriginal = false
 
     init(vorschlag: RezeptVorschlag) {
         self.vorschlag = vorschlag
@@ -19,11 +24,27 @@ struct RezeptDetailAnsicht: View {
     private var faktor: Double { Double(portionen) / Double(rezept.portionen) }
     private var hoechstePortionen: Int { min(100, max(rezept.portionen * 4, 1)) }
 
+    /// Übersetzte Texte nur, wenn vorhanden und nicht «Original» gewählt ist
+    private var deutsch: Uebersetzung? { zeigeOriginal ? nil : uebersetzung }
+    private var anzeigename: String { deutsch?.name ?? rezept.name }
+
     var body: some View {
         List {
             Section {
                 foto
                     .listRowInsets(EdgeInsets())
+            }
+            if let uebersetzungsFehler {
+                Section {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label(uebersetzungsFehler.localizedDescription, systemImage: "exclamationmark.bubble")
+                            .font(.footnote)
+                        if uebersetzungsFehler != .nichtEingerichtet && uebersetzungsFehler != .schluesselUngueltig {
+                            Button("Erneut versuchen") { Task { await uebersetzen() } }
+                                .font(.footnote)
+                        }
+                    }
+                }
             }
             kopf
             if let details {
@@ -37,10 +58,40 @@ struct RezeptDetailAnsicht: View {
             }
         }
         .listSectionSpacing(.compact)
-        .navigationTitle(rezept.name)
+        .navigationTitle(anzeigename)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if uebersetzung?.zutaten != nil {
+                ToolbarItem(placement: .primaryAction) {
+                    Button(zeigeOriginal ? "Deutsch" : "Original") { zeigeOriginal.toggle() }
+                        .accessibilityHint(zeigeOriginal ? "Zeigt die deutsche Übersetzung" : "Zeigt den englischen Originaltext")
+                }
+            }
+        }
         .task(id: rezept.id) {
             details = try? datenbank.details(zu: rezept.id)
+            await uebersetzen()
+        }
+    }
+
+    // MARK: - Übersetzung
+
+    /// Übersetzt Name, Zutaten und Anleitung (nur beim ersten Öffnen; danach aus dem Speicher).
+    private func uebersetzen() async {
+        guard let details else { return }
+        uebersetzung = uebersetzer.gespeichert(rezept.id)
+        uebersetzungsFehler = nil
+        uebersetztGerade = true
+        defer { uebersetztGerade = false }
+        do {
+            uebersetzung = try await uebersetzer.rezeptUebersetzen(
+                rezeptID: rezept.id,
+                name: rezept.name,
+                zutaten: details.zeilen.map(englischeBeschreibung),
+                anleitung: details.anleitung
+            )
+        } catch {
+            uebersetzungsFehler = error
         }
     }
 
@@ -72,7 +123,7 @@ struct RezeptDetailAnsicht: View {
     private var kopf: some View {
         Section {
             VStack(alignment: .leading, spacing: 8) {
-                Text(rezept.name)
+                Text(anzeigename)
                     .font(.title2.bold())
                 HStack(spacing: 16) {
                     Label(rezept.zeitText, systemImage: "clock")
@@ -82,6 +133,11 @@ struct RezeptDetailAnsicht: View {
                 .foregroundStyle(.secondary)
                 Text(verfuegbarText)
                     .font(.subheadline)
+                if uebersetztGerade {
+                    Label("Wird übersetzt …", systemImage: "character.bubble")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(.vertical, 4)
         }
@@ -117,7 +173,7 @@ struct RezeptDetailAnsicht: View {
     private func zutatenAbschnitt(_ zeilen: [ZutatenZeile]) -> some View {
         let vorratIDs = Set(vorrat.map(\.zutatID))
         return Section("Zutaten") {
-            ForEach(zeilen) { zeile in
+            ForEach(Array(zeilen.enumerated()), id: \.element.id) { index, zeile in
                 let status = status(von: zeile, vorratIDs: vorratIDs)
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     Group {
@@ -136,7 +192,7 @@ struct RezeptDetailAnsicht: View {
                         .monospacedDigit()
                         .frame(minWidth: 70, alignment: .leading)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(beschreibung(von: zeile))
+                        Text(beschreibung(von: zeile, index: index))
                         if case .ersatz(let name) = status {
                             Text("Ersatz: du hast \(name)")
                                 .font(.caption)
@@ -169,22 +225,25 @@ struct RezeptDetailAnsicht: View {
         return .keiner
     }
 
-    /// Name und Zusatz (Englisch bis zur Übersetzung in Etappe 5), Grösse auf Deutsch
-    private func beschreibung(von zeile: ZutatenZeile) -> String {
-        var teile = [zeile.name]
+    /// Name und Zusatz auf Englisch – so wird die Zeile an DeepL geschickt
+    private func englischeBeschreibung(von zeile: ZutatenZeile) -> String {
+        [zeile.name, zeile.zusatz].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: ", ")
+    }
+
+    /// Übersetzter Name und Zusatz (sonst Englisch), dazu die Grösse auf Deutsch
+    private func beschreibung(von zeile: ZutatenZeile, index: Int) -> String {
+        var text = deutsch?.zutaten.flatMap { index < $0.count ? $0[index] : nil } ?? englischeBeschreibung(von: zeile)
         if let groesse = zeile.groesse {
-            teile.append(Mengenangabe.groesseAufDeutsch(groesse))
+            text += ", " + Mengenangabe.groesseAufDeutsch(groesse)
         }
-        if let zusatz = zeile.zusatz, !zusatz.isEmpty {
-            teile.append(zusatz)
-        }
-        return teile.joined(separator: ", ")
+        return text
     }
 
     // MARK: - Anleitung
 
-    private func anleitungAbschnitt(_ schritte: [String]) -> some View {
-        Section("Anleitung") {
+    private func anleitungAbschnitt(_ englisch: [String]) -> some View {
+        let schritte = deutsch?.anleitung.flatMap { $0.count == englisch.count ? $0 : nil } ?? englisch
+        return Section {
             ForEach(Array(schritte.enumerated()), id: \.offset) { nummer, schritt in
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     Text("\(nummer + 1)")
@@ -196,6 +255,12 @@ struct RezeptDetailAnsicht: View {
                     Text(schritt)
                 }
                 .padding(.vertical, 2)
+            }
+        } header: {
+            Text("Anleitung")
+        } footer: {
+            if deutsch?.anleitung != nil {
+                Text("Übersetzt mit DeepL")
             }
         }
     }

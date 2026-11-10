@@ -240,7 +240,14 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - Mengen: Cups, Pints, Quarts → ml; Ounces, Pounds → g; Butter-«sticks» → 113 g; **EL und TL bleiben** (nicht in ml). Rundung: unter 10 auf 1, unter 50 auf 5, sonst auf 10; ab 1000 in l bzw. kg. Stückzahlen und Löffel als Brüche (½, ⅓ …). Einheiten auf Deutsch (Dose, Packung, Zehe …).
       - Portionsrechner von 1 bis zum Vierfachen der Originalportionen (höchstens 100). Nährwerte bleiben pro Portion.
       - Zutaten: ✓ = vorhanden (auch vorhandene Grundzutaten), orange = Ersatz («Ersatz: du hast Penne-Nudeln»). Fehlende Zutaten werden nicht markiert (Funktion 6).
-   5. Übersetzung mit DeepL in der App, gespeicherte Übersetzungen, Meldung ohne Internet.
+   5. Übersetzung mit DeepL in der App (erledigt 10. November 2026), gespeicherte Übersetzungen, Meldung ohne Internet.
+      - Schlüssel in `Cookable/Cookable/Geheim/DeepL.plist` (Schlüssel `Schluessel`; Ordner in `.gitignore`), Vorlage `Cookable/DeepL-Vorlage.plist`. Ohne Schlüssel läuft die App auf Englisch mit Hinweis.
+      - Liste: sichtbare Rezeptnamen werden gesammelt und in Paketen übersetzt. Detailansicht: Name, Zutaten (Name und Zusatz) und Anleitung beim ersten Öffnen. Mengen und Einheiten erzeugt die App selbst auf Deutsch.
+      - Gespeichert im SwiftData-Modell `Uebersetzung`; nichts wird zweimal übersetzt. Übersetzte Namen werden mitdurchsucht.
+      - DeepL: Du-Form (`formality = prefer_less`), Kontext «Kochrezept»; danach Schweizer Begriffe (ß → ss, Sahne → Rahm mit Artikel, Hähnchen → Poulet, Zucchini → Zucchetti, Paprikaschote → Peperoni).
+      - Knopf «Original» in der Detailansicht zeigt den englischen Text.
+      - Fehler: kein Internet (Meldung und «Erneut versuchen»), Kontingent aufgebraucht, Schlüssel fehlt/ungültig. Nach einem Fehler in der Liste 30 Sekunden Pause.
+      - Kontingent laut DeepL-Konto (10. November 2026): 1'000'000 Zeichen pro Monat.
    - Rezeptnamen in der Vorschlagsliste: nur die sichtbaren Namen werden übersetzt (in Paketen beim Scrollen) und gespeichert; keine Vorab-Übersetzung aller Namen (416'000 Zeichen).
 4. **Design:** Nach Version 1 eine eigene Etappe für das Design (Farben, App-Symbol, Gestaltung der Ansichten). Die Darstellung (`Ansichten/`) ist von Logik und Daten getrennt und lässt sich ändern, ohne die Funktionen zu beeinträchtigen.
 5. **Später:** Funktionen 6–9, nur auf ausdrückliche Anfrage.
