@@ -1,0 +1,26 @@
+{
+  "kandidaten": 36603,
+  "kandidaten_pro_gruppe": {
+    "Hauptgericht": 16674,
+    "Beilage": 7464,
+    "Dessert": 5770,
+    "Frühstück": 3494,
+    "Snack": 2044,
+    "unklar": 627,
+    "Sauce/Würze": 530
+  },
+  "gewaehlt": 15000,
+  "min_bewertungen_pro_gruppe": {
+    "Beilage": 9,
+    "Dessert": 9,
+    "Frühstück": 9,
+    "Hauptgericht": 11,
+    "Snack": 6
+  },
+  "zutatenzeilen": 135812,
+  "zeilen_mit_metrischer_menge_anteil": 0.7081,
+  "grundnamen_verschieden": 9046,
+  "abdeckung_top1000_zeilen": 0.888,
+  "fahrenheit_ersetzt": 6557,
+  "datenbank_mb": 37.0
+}

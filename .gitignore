@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Xcode (benutzerspezifisch / Build)
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+
+# Claude Code (lokale Einstellungen)
+.claude/settings.local.json
+
+# Datenaufbereitung: Rohdaten, Python-Umgebung, Zwischenstände
+Datenaufbereitung/*.zip
+Datenaufbereitung/daten/
+Datenaufbereitung/.venv/
+__pycache__/
+
+# Schlüssel – nie veröffentlichen
+Datenaufbereitung/deepl_api_key.txt
+Cookable/Cookable/Geheim/
+*.secret.plist
