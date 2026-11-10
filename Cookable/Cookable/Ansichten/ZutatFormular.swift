@@ -47,6 +47,7 @@ struct ZutatFormular: View {
                     Section {
                         Button("Aus dem Vorrat entfernen", role: .destructive) {
                             kontext.delete(eintrag)
+                            try? kontext.save()
                             schliessen()
                         }
                     }
@@ -187,6 +188,7 @@ struct ZutatFormular: View {
                 letzterLagerort = lagerort
             }
         }
+        try? kontext.save()
         schliessen()
     }
 }

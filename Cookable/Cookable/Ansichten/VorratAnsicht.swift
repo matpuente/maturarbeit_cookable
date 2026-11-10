@@ -68,8 +68,7 @@ struct VorratAnsicht: View {
 
     private var immerZuhauseAbschnitt: some View {
         let liste = eintraege(in: .immerZuhause)
-        // Eigene Auf-/Zuklapp-Zeile statt DisclosureGroup. Nach den löschbaren Zeilen darf im selben
-        // Abschnitt keine weitere Zeile folgen, sonst stellt die Liste nach dem Löschen Zeilen falsch dar.
+        // Eigene Auf-/Zuklapp-Zeile statt DisclosureGroup; «Hinzufügen» als ⊕ in der Kopfzeile.
         return Section {
             HStack(spacing: 16) {
                 Button {
@@ -133,6 +132,8 @@ struct VorratAnsicht: View {
             for index in indizes {
                 kontext.delete(liste[index])
             }
+            // Sofort speichern: Sonst meldet @Query das Löschen verzögert und die Liste zeigt kurz falsche Zeilen
+            try? kontext.save()
         }
     }
 
@@ -143,6 +144,7 @@ struct VorratAnsicht: View {
         for zutat in datenbank.grundzutaten {
             kontext.insert(VorratsEintrag(zutatID: zutat.id, name: zutat.name, lagerort: .immerZuhause))
         }
+        try? kontext.save()
         grundzutatenAngelegt = true
     }
 

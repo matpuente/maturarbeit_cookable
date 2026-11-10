@@ -267,25 +267,24 @@ struct MussEnthaltenAuswahl: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(Self.reihenfolge) { ort in
-                    let liste = eintraege(in: ort)
-                    if !liste.isEmpty {
-                        Section {
-                            ForEach(liste) { eintrag in
-                                zeile(eintrag)
-                            }
-                        } header: {
-                            Label(ort.name, systemImage: ort.symbol)
+                let orte = Self.reihenfolge.filter { !eintraege(in: $0).isEmpty }
+                ForEach(orte) { ort in
+                    Section {
+                        ForEach(eintraege(in: ort)) { eintrag in
+                            zeile(eintrag)
+                        }
+                    } header: {
+                        Label(ort.name, systemImage: ort.symbol)
+                    } footer: {
+                        // Hinweis unter dem letzten Lagerort (ein leerer Abschnitt nur für den Hinweis
+                        // wird auf dem iPad ausserhalb des Fensters gezeichnet)
+                        if ort == orte.last && suchtext.isEmpty {
+                            Text("Es erscheinen nur Rezepte, die alle gewählten Zutaten enthalten. Der übrige Vorrat zählt weiterhin.")
                         }
                     }
                 }
-                if Self.reihenfolge.allSatisfy({ eintraege(in: $0).isEmpty }) {
+                if orte.isEmpty {
                     ContentUnavailableView.search(text: suchtext)
-                } else if suchtext.isEmpty {
-                    Section {
-                    } footer: {
-                        Text("Es erscheinen nur Rezepte, die alle gewählten Zutaten enthalten. Der übrige Vorrat zählt weiterhin.")
-                    }
                 }
             }
             .searchable(text: $suchtext, placement: .navigationBarDrawer(displayMode: .always), prompt: "Zutat suchen")
