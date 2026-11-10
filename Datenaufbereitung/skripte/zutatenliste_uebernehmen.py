@@ -7,9 +7,9 @@ Kann beliebig oft ausgeführt werden; die Zutatentabellen werden jedes Mal neu e
 Neue Tabellen:
   zutat           – ein Eintrag pro deutschem Begriff (Suche und Autovervollständigung)
   zutat_variante  – englische Grundnamen, die zu einem deutschen Begriff gehören
-  rezept_zutat    – welche Zutaten (ohne Grundzutaten) ein Rezept braucht
-  rezept.anzahl_zutaten – Anzahl benötigter Zutaten ohne Grundzutaten; Grundnamen, die nicht in
-                  der Zutatenliste stehen, zählen mit (sie gelten bei der Sortierung als nicht vorhanden)
+  rezept_zutat    – welche Zutaten der Liste ein Rezept braucht (inkl. Grundzutaten, siehe zutat.grundzutat)
+  rezept.anzahl_ohne_liste – Anzahl verschiedener Grundnamen eines Rezepts, die nicht in der
+                  Zutatenliste stehen (gelten bei der Sortierung immer als fehlend)
 """
 import csv
 import sqlite3
@@ -74,8 +74,8 @@ def main():
     db = sqlite3.connect(DATENBANK)
     db.executescript(SCHEMA)
     spalten = [r[1] for r in db.execute("PRAGMA table_info(rezept)")]
-    if "anzahl_zutaten" not in spalten:
-        db.execute("ALTER TABLE rezept ADD COLUMN anzahl_zutaten INTEGER NOT NULL DEFAULT 0")
+    if "anzahl_ohne_liste" not in spalten:
+        db.execute("ALTER TABLE rezept ADD COLUMN anzahl_ohne_liste INTEGER NOT NULL DEFAULT 0")
 
     unbekannt = set(liste.englisch) - {r[0] for r in db.execute("SELECT DISTINCT grundname FROM zeile_grundname")}
     if unbekannt:
@@ -93,17 +93,14 @@ def main():
         SELECT DISTINCT zg.rezept_id, z.id
         FROM zeile_grundname zg
         JOIN zutat_variante v ON v.grundname = zg.grundname
-        JOIN zutat z ON z.id = v.zutat_id
-        WHERE z.grundzutat = 0;
+        JOIN zutat z ON z.id = v.zutat_id;
 
         UPDATE zutat SET haeufigkeit = (
             SELECT COUNT(DISTINCT zg.rezept_id) FROM zeile_grundname zg
             JOIN zutat_variante v ON v.grundname = zg.grundname WHERE v.zutat_id = zutat.id);
 
-        -- benötigte Zutaten = Zutaten aus der Liste (ohne Grundzutaten) + verschiedene Grundnamen ausserhalb der Liste
-        UPDATE rezept SET anzahl_zutaten =
-            (SELECT COUNT(*) FROM rezept_zutat rz WHERE rz.rezept_id = rezept.id)
-          + (SELECT COUNT(DISTINCT zg.grundname) FROM zeile_grundname zg
+        UPDATE rezept SET anzahl_ohne_liste =
+            (SELECT COUNT(DISTINCT zg.grundname) FROM zeile_grundname zg
              LEFT JOIN zutat_variante v ON v.grundname = zg.grundname
              WHERE zg.rezept_id = rezept.id AND v.grundname IS NULL);
     """)
@@ -116,9 +113,8 @@ def main():
         "davon grundzutaten": db.execute("SELECT COUNT(*) FROM zutat WHERE grundzutat = 1").fetchone()[0],
         "englische varianten": db.execute("SELECT COUNT(*) FROM zutat_variante").fetchone()[0],
         "rezept_zutat": db.execute("SELECT COUNT(*) FROM rezept_zutat").fetchone()[0],
-        "rezepte ohne benötigte zutat": db.execute("SELECT COUNT(*) FROM rezept WHERE anzahl_zutaten = 0").fetchone()[0],
-        "median anzahl_zutaten": db.execute(
-            "SELECT anzahl_zutaten FROM rezept ORDER BY anzahl_zutaten LIMIT 1 OFFSET 7500").fetchone()[0],
+        "median anzahl_ohne_liste": db.execute(
+            "SELECT anzahl_ohne_liste FROM rezept ORDER BY anzahl_ohne_liste LIMIT 1 OFFSET 7500").fetchone()[0],
     }
     db.execute("VACUUM")
     db.close()

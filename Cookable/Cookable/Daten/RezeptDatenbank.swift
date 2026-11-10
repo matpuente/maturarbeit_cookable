@@ -52,6 +52,7 @@ final class RezeptDatenbank {
         }
         self.zutaten = zutaten
         zutatenSuche = ZutatenSuche(zutaten: zutaten)
+        rezepte = try ladeRezepte(grundzutaten: Set(zutaten.filter(\.istGrundzutat).map(\.id)))
     }
 
     deinit {
@@ -61,6 +62,37 @@ final class RezeptDatenbank {
     /// Alle Zutaten der Zutatenliste (klein genug, um sie im Speicher zu halten)
     @ObservationIgnored private(set) var zutaten: [Zutat] = []
     @ObservationIgnored private(set) var zutatenSuche = ZutatenSuche(zutaten: [])
+    /// Alle Rezepte mit ihren Zutaten für die Vorschlagsliste (15'000 Einträge, wenige MB)
+    @ObservationIgnored private(set) var rezepte: [RezeptUebersicht] = []
+
+    private func ladeRezepte(grundzutaten: Set<Int>) throws -> [RezeptUebersicht] {
+        var rezepte = try abfragen("""
+            SELECT id, name, gruppe, zeit_min, portionen, beliebtheit, anzahl_ohne_liste FROM rezept
+            """) { zeile in
+            RezeptUebersicht(
+                id: Int(sqlite3_column_int64(zeile, 0)),
+                name: String(cString: sqlite3_column_text(zeile, 1)),
+                kategorie: Kategorie(rawValue: String(cString: sqlite3_column_text(zeile, 2))) ?? .hauptgericht,
+                zeitMinuten: Int(sqlite3_column_int64(zeile, 3)),
+                portionen: Int(sqlite3_column_int64(zeile, 4)),
+                beliebtheit: Int(sqlite3_column_int64(zeile, 5)),
+                anzahlOhneListe: Int(sqlite3_column_int64(zeile, 6))
+            )
+        }
+        let position = Dictionary(uniqueKeysWithValues: rezepte.indices.map { (rezepte[$0].id, $0) })
+        let paare = try abfragen("SELECT rezept_id, zutat_id FROM rezept_zutat") { zeile in
+            (Int(sqlite3_column_int64(zeile, 0)), Int(sqlite3_column_int64(zeile, 1)))
+        }
+        for (rezeptID, zutatID) in paare {
+            guard let index = position[rezeptID] else { continue }
+            if grundzutaten.contains(zutatID) {
+                rezepte[index].grundzutaten.append(zutatID)
+            } else {
+                rezepte[index].zutaten.append(zutatID)
+            }
+        }
+        return rezepte
+    }
 
     var grundzutaten: [Zutat] {
         zutaten.filter(\.istGrundzutat).sorted { $0.haeufigkeit > $1.haeufigkeit }

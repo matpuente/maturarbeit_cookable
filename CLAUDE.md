@@ -67,7 +67,7 @@ Cookable/                    ← Hauptordner, Claude Code hier starten
    - Sortierung: Eine **vorhandene Grundzutat** zählt weder als vorhanden noch als fehlend. Eine **gelöschte Grundzutat** zählt als fehlend. Selbst hinzugefügte Zutaten in «Immer zuhause» zählen wie andere Vorratszutaten als vorhanden.
    - Sortierung nach Anteil der vorhandenen Zutaten (es erscheinen auch Rezepte, für die nicht alle Zutaten vorhanden sind).
 3. **Filter**
-   - Zubereitungszeit: bis 15 / 30 / 60 Minuten oder beliebig.
+   - Zubereitungszeit: bis 15 / 30 / 60 Minuten, über 60 Minuten oder beliebig.
    - Kategorie: Die Kategorien des Datensatzes werden zu wenigen deutschen Gruppen zusammengefasst: Frühstück, Hauptgericht, Beilage, Dessert, Snack.
 4. **Portionsrechner** – rechnet die Zutatenmengen auf die gewünschte Portionenzahl um. Grundlage sind die vollständigen Zutatenzeilen aus dem zweiten Datensatz.
 5. **Nährwerte** – pro Rezept.
@@ -209,19 +209,26 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
    - Skripte in `Datenaufbereitung/skripte/` (Python-Umgebung: `Datenaufbereitung/.venv`), in dieser Reihenfolge:
      1. `aufbereitung.py` erstellt `ergebnisse/rezepte.sqlite` (überschreibt die Datei).
      2. `zutatenliste.py` erstellt `ergebnisse/zutatenliste_zur_kontrolle.csv` mit DeepL. **Nicht erneut ausführen**, sonst wird die von Hand kontrollierte Liste überschrieben.
-     3. `zutatenliste_uebernehmen.py` übernimmt die kontrollierte Liste in die SQLite-Datei (Tabellen `zutat`, `zutat_variante`, `rezept_zutat`, Spalte `rezept.anzahl_zutaten`).
+     3. `zutatenliste_uebernehmen.py` übernimmt die kontrollierte Liste in die SQLite-Datei (Tabellen `zutat`, `zutat_variante`, `rezept_zutat` inkl. Grundzutaten, Spalte `rezept.anzahl_ohne_liste`).
    - Nachbessern der Zutatenliste: `zusammenfassen_vorschlaege.py` schlägt Varianten zum Zusammenfassen vor (`ergebnisse/zusammenfassen_vorschlaege.csv`, Spalte `uebernehmen` von Hand kontrollieren), `zusammenfassen_anwenden.py` übernimmt sie in die Zutatenliste (mit Sicherung). Danach `zutatenliste_uebernehmen.py`.
    - Stand 10. November 2026: 15'000 Rezepte, 700 deutsche Zutaten. Die Grundzutaten sind auf 7 Begriffe zusammengefasst (Salz, Pfeffer, Zucker, Mehl, Wasser, Öl, Olivenöl). Die kontrollierte Liste ist die verbindliche Quelle.
    - Poulet-Teile: chicken thigh = Pouletoberschenkel, chicken drumstick = Pouletunterschenkel, chicken leg = Pouletschenkel (ganzer Schenkel).
    - Ein deutscher Begriff gilt nur ganz oder gar nicht als Grundzutat. Varianten werden zusammengefasst, wenn man mit der Zutat zuhause das Rezept kochen kann (garlic clove → Knoblauch). Verschiedene Produkte bleiben getrennt (Knoblauch ≠ Knoblauchpulver, Rahm ≠ Sauerrahm).
-   - Anteil vorhandener Zutaten: siehe Abschnitt 3, Funktion 2 (Regel für Grundzutaten). Die Datenbank wird dafür zu Beginn von Etappe 3 angepasst (Grundzutaten in `rezept_zutat` speichern und markieren).
+   - Anteil vorhandener Zutaten: siehe Abschnitt 3, Funktion 2 (Regel für Grundzutaten). `rezept_zutat` enthält auch die Grundzutaten (Markierung in `zutat.grundzutat`); Zutaten ausserhalb der Liste stehen als Anzahl in `rezept.anzahl_ohne_liste`.
+   - `rezept.beliebtheit` = Rang nach Anzahl Bewertungen; nur zur Sortierung bei Gleichstand, erscheint nicht in der App.
+   - Die IDs in `zutat` sind nicht dauerhaft (sie können sich bei einer neuen Übernahme ändern). Die App gleicht gespeicherte Vorratseinträge beim Start über den deutschen Namen ab.
 3. **App Version 1:** Funktionen 1–5 in Etappen umsetzen.
    1. Grundgerüst (erledigt 10. November 2026): Projekt «Cookable» (iOS 26.0, Swift 6), Rezeptdatenbank eingebunden, Tabs «Vorrat» und «Rezepte», SwiftData-Modell `VorratsEintrag`.
    2. Vorrat (erledigt 10. November 2026): Zutaten mit Autovervollständigung erfassen, Bereich «Immer zuhause», nach Lagerort gruppieren, Ablaufdatum, bearbeiten, löschen.
       - «Immer zuhause» ist der Lagerort `immerZuhause` im SwiftData-Modell; die Grundzutaten werden beim ersten Start eingetragen (`@AppStorage("grundzutatenAngelegt")`).
       - Suche: ohne Gross-/Kleinschreibung und Akzente; Reihenfolge Namensanfang → Wortanfang → irgendwo, innerhalb häufige Zutaten zuerst. Anzeige mit grossem Anfangsbuchstaben.
       - Die Oberfläche verwendet immer das Gebietsschema `de_CH` (Datum, Zahlen).
-   3. Rezeptvorschläge: Sortierung nach Anteil vorhandener Zutaten, Filter Zeit und Kategorie.
+   3. Rezeptvorschläge (erledigt 10. November 2026): Sortierung nach Anteil vorhandener Zutaten, Filter Zeit und Kategorie.
+      - Es erscheinen nur Rezepte mit mindestens einer vorhandenen Zutat. Anzeige «4 von 6 Zutaten vorhanden» (vorhandene Grundzutaten zählen nicht mit).
+      - Sortierung: Anteil absteigend, dann weniger fehlende Zutaten, dann `beliebtheit`.
+      - Berechnung im Speicher (alle Rezepte mit ihren Zutaten werden beim Start geladen), dauert wenige Millisekunden.
+      - Filter bleiben gespeichert (`@AppStorage`). Auf dem iPad Liste und Detail nebeneinander (`NavigationSplitView`).
+      - Keine Bilder (nur auf ausdrücklichen Wunsch; die Bild-URLs sind in der Datenbank).
    4. Detailansicht: Zutaten (metrisch), Anleitung, Nährwerte, Portionsrechner.
    5. Übersetzung mit DeepL in der App, gespeicherte Übersetzungen, Meldung ohne Internet.
    - Rezeptnamen in der Vorschlagsliste: nur die sichtbaren Namen werden übersetzt (in Paketen beim Scrollen) und gespeichert; keine Vorab-Übersetzung aller Namen (416'000 Zeichen).

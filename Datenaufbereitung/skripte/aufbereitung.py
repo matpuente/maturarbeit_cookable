@@ -42,7 +42,8 @@ CREATE TABLE rezept (
     zucker_g            REAL NOT NULL,
     protein_g           REAL NOT NULL,
     anleitung           TEXT NOT NULL,         -- JSON-Liste der Schritte (Englisch, Temperaturen in °C)
-    bild_url            TEXT
+    bild_url            TEXT,
+    beliebtheit         INTEGER NOT NULL       -- Rang nach Anzahl Bewertungen (1 = meistbewertet), nur für die Sortierung
 );
 CREATE TABLE zutatenzeile (
     rezept_id           INTEGER NOT NULL REFERENCES rezept(id),
@@ -115,6 +116,8 @@ def main():
     grund_rezepte = defaultdict(set)
     fahrenheit_ersetzt = 0
     zeilen_total = zeilen_metrisch = 0
+    rang = {rid: i + 1 for i, rid in enumerate(
+        gewaehlt.sort_values(["ReviewCount", "AggregatedRating", "RecipeId"], ascending=[False, False, True]).RecipeId)}
     for r in gewaehlt.itertuples():
         schritte = []
         for schritt in r.RecipeInstructions:
@@ -123,12 +126,13 @@ def main():
             schritte.append(neu)
         bilder = r.Images if r.Images is not None else []
         db.execute(
-            "INSERT INTO rezept VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO rezept VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (int(r.RecipeId), html.unescape(r.Name).strip(), r.gruppe, minuten(r.TotalTime),
              int(r.RecipeServings), None if pd.isna(r.portionsgewicht_g) else float(r.portionsgewicht_g),
              r.Calories, r.FatContent, r.SaturatedFatContent, r.CholesterolContent, r.SodiumContent,
              r.CarbohydrateContent, r.FiberContent, r.SugarContent, r.ProteinContent,
-             json.dumps(schritte, ensure_ascii=False), bilder[0] if len(bilder) else None),
+             json.dumps(schritte, ensure_ascii=False), bilder[0] if len(bilder) else None,
+             rang[int(r.RecipeId)]),
         )
         for pos, roh in enumerate(r.ingredients_raw):
             z = zerlege(html.unescape(roh))

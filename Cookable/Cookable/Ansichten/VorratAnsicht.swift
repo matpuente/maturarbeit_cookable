@@ -138,11 +138,24 @@ struct VorratAnsicht: View {
 
     /// Beim ersten Start die Grundzutaten in «Immer zuhause» eintragen.
     private func grundzutatenAnlegen() async {
+        idsAbgleichen()
         guard !grundzutatenAngelegt else { return }
         for zutat in datenbank.grundzutaten {
             kontext.insert(VorratsEintrag(zutatID: zutat.id, name: zutat.name, lagerort: .immerZuhause))
         }
         grundzutatenAngelegt = true
+    }
+
+    /// Die IDs in `zutat` können sich ändern, wenn die Zutatenliste neu in die Datenbank übernommen wird.
+    /// Massgebend ist deshalb der deutsche Name: passt die gespeicherte ID nicht mehr dazu, wird sie korrigiert.
+    private func idsAbgleichen() {
+        let nachID = Dictionary(uniqueKeysWithValues: datenbank.zutaten.map { ($0.id, $0.name) })
+        let nachName = Dictionary(datenbank.zutaten.map { ($0.name, $0.id) }, uniquingKeysWith: { erste, _ in erste })
+        for eintrag in eintraege where nachID[eintrag.zutatID] != eintrag.name {
+            if let id = nachName[eintrag.name] {
+                eintrag.zutatID = id
+            }
+        }
     }
 }
 
