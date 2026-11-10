@@ -234,6 +234,7 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - Filter bleiben gespeichert (`@AppStorage`). Auf dem iPad Liste und Detail nebeneinander (`NavigationSplitView`).
       - Keine Bilder in der Liste. In der Detailansicht kommt das Foto von Food.com dazu (beschlossen für Etappe 4).
       - Filter «Muss enthalten» (ergänzt 10. November 2026).
+      - Suche (ergänzt 10. November 2026): Suchfeld «Rezept oder Zutat suchen» über der Liste. Gesucht wird im Rezeptnamen (vorerst Englisch) und in den deutschen Zutatennamen. Bei einer Suche erscheinen auch Rezepte ohne vorhandene Zutat; Treffer im Namen kommen zuerst. Die übrigen Filter gelten weiterhin.
    4. Detailansicht (erledigt 10. November 2026): Foto, Zutaten (metrisch), Anleitung, Nährwerte, Portionsrechner.
       - Foto von Food.com oben (Platzhalter, wenn keines vorhanden); Zwischenspeicher bis 100 MB (`URLCache`).
       - Mengen: Cups, Pints, Quarts → ml; Ounces, Pounds → g; Butter-«sticks» → 113 g; **EL und TL bleiben** (nicht in ml). Rundung: unter 10 auf 1, unter 50 auf 5, sonst auf 10; ab 1000 in l bzw. kg. Stückzahlen und Löffel als Brüche (½, ⅓ …). Einheiten auf Deutsch (Dose, Packung, Zehe …).

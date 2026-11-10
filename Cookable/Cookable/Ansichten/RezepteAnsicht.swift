@@ -12,12 +12,21 @@ struct RezepteAnsicht: View {
     /// Zutaten, die jedes Rezept enthalten muss (Filter «Muss enthalten»)
     @State private var mussEnthalten: Set<Int> = []
     @State private var zeigeZutatenauswahl = false
+    @State private var suchtext = ""
 
     private var kategorie: Kategorie? { Kategorie(rawValue: kategorieWert) }
 
     /// Gewählte Zutaten, die noch im Vorrat sind
     private var aktiveMussZutaten: Set<Int> {
         mussEnthalten.intersection(vorrat.map(\.zutatID))
+    }
+
+    /// Suchtext in Vergleichsform und die Zutaten, deren deutscher Name ihn enthält
+    private var suche: RezeptVorschlaege.Suche? {
+        let text = suchtext.trimmingCharacters(in: .whitespaces).suchform
+        guard !text.isEmpty else { return nil }
+        let zutaten = datenbank.zutaten.filter { !$0.istGrundzutat && $0.name.suchform.contains(text) }.map(\.id)
+        return RezeptVorschlaege.Suche(text: text, zutaten: Set(zutaten))
     }
 
     var body: some View {
@@ -27,7 +36,8 @@ struct RezepteAnsicht: View {
             austauschgruppe: datenbank.austauschgruppe,
             kategorie: kategorie,
             zeit: zeit,
-            mussEnthalten: aktiveMussZutaten
+            mussEnthalten: aktiveMussZutaten,
+            suche: suche
         )
         NavigationSplitView {
             List(selection: $auswahl) {
@@ -49,6 +59,9 @@ struct RezepteAnsicht: View {
                 }
             }
             .navigationTitle("Rezepte")
+            .searchable(text: $suchtext, placement: .navigationBarDrawer(displayMode: .always),
+                        prompt: "Rezept oder Zutat suchen")
+            .autocorrectionDisabled()
             .sheet(isPresented: $zeigeZutatenauswahl) {
                 MussEnthaltenAuswahl(vorrat: vorrat, auswahl: $mussEnthalten)
             }
@@ -123,6 +136,26 @@ struct RezepteAnsicht: View {
 
     @ViewBuilder
     private var leererZustand: some View {
+        if !suchtext.trimmingCharacters(in: .whitespaces).isEmpty {
+            Section {
+                ContentUnavailableView {
+                    Label("Keine Rezepte für «\(suchtext)»", systemImage: "magnifyingglass")
+                } description: {
+                    Text(filterAktiv ? "Prüfe die Schreibweise oder setze die Filter zurück."
+                                     : "Prüfe die Schreibweise. Rezeptnamen sind vorerst Englisch (z. B. «chicken»).")
+                }
+            }
+        } else {
+            leererZustandOhneSuche
+        }
+    }
+
+    private var filterAktiv: Bool {
+        zeit != .alle || kategorie != nil || !aktiveMussZutaten.isEmpty
+    }
+
+    @ViewBuilder
+    private var leererZustandOhneSuche: some View {
         let hatZutaten = vorrat.contains { eintrag in
             datenbank.zutaten.first { $0.id == eintrag.zutatID }?.istGrundzutat == false
         }

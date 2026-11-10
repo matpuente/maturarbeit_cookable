@@ -89,6 +89,9 @@ final class RezeptDatenbank {
                 anzahlOhneListe: Int(sqlite3_column_int64(zeile, 6))
             )
         }
+        for index in rezepte.indices {
+            rezepte[index].suchname = rezepte[index].name.suchform
+        }
         let position = Dictionary(uniqueKeysWithValues: rezepte.indices.map { (rezepte[$0].id, $0) })
         let paare = try abfragen("SELECT rezept_id, zutat_id FROM rezept_zutat") { zeile in
             (Int(sqlite3_column_int64(zeile, 0)), Int(sqlite3_column_int64(zeile, 1)))

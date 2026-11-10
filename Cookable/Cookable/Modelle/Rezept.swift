@@ -43,6 +43,8 @@ nonisolated struct RezeptUebersicht: Identifiable, Hashable {
     let id: Int
     /// Englisch, wird in Etappe 5 übersetzt
     let name: String
+    /// Name in Vergleichsform für die Suche (beim Laden einmal berechnet)
+    var suchname = ""
     let kategorie: Kategorie
     let zeitMinuten: Int
     let portionen: Int
