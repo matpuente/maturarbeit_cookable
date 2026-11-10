@@ -4,8 +4,12 @@ Voraussetzung: aufbereitung.py wurde ausgeführt, ergebnisse/zutatenliste_zur_ko
 Aufruf:  ../.venv/bin/python zutatenliste_uebernehmen.py
 Kann beliebig oft ausgeführt werden; die Zutatentabellen werden jedes Mal neu erstellt.
 
+Zusätzlich gelesen (falls vorhanden, beide von Hand kontrolliert):
+  varianten_vorschlaege.csv – weitere englische Namen (uebernehmen = ja) für bestehende deutsche Begriffe
+  austauschgruppen.csv      – Gruppe austauschbarer Zutaten pro deutschem Begriff (z. B. «Pasta»)
+
 Neue Tabellen:
-  zutat           – ein Eintrag pro deutschem Begriff (Suche und Autovervollständigung)
+  zutat           – ein Eintrag pro deutschem Begriff (Suche und Autovervollständigung), mit Austauschgruppe
   zutat_variante  – englische Grundnamen, die zu einem deutschen Begriff gehören
   rezept_zutat    – welche Zutaten der Liste ein Rezept braucht (inkl. Grundzutaten, siehe zutat.grundzutat)
   rezept.anzahl_ohne_liste – Anzahl verschiedener Grundnamen eines Rezepts, die nicht in der
@@ -22,6 +26,8 @@ from laden import BASIS
 ERGEBNISSE = BASIS / "ergebnisse"
 DATENBANK = ERGEBNISSE / "rezepte.sqlite"
 LISTE = ERGEBNISSE / "zutatenliste_zur_kontrolle.csv"
+VARIANTEN = ERGEBNISSE / "varianten_vorschlaege.csv"
+GRUPPEN = ERGEBNISSE / "austauschgruppen.csv"
 
 SCHEMA = """
 DROP TABLE IF EXISTS rezept_zutat;
@@ -31,7 +37,8 @@ CREATE TABLE zutat (
     id          INTEGER PRIMARY KEY,
     name        TEXT NOT NULL UNIQUE,      -- deutscher Begriff
     grundzutat  INTEGER NOT NULL,          -- 1 = gilt immer als vorhanden
-    haeufigkeit INTEGER NOT NULL           -- Anzahl Rezepte, für die Reihenfolge der Vorschläge
+    haeufigkeit INTEGER NOT NULL,          -- Anzahl Rezepte, für die Reihenfolge der Vorschläge
+    austauschgruppe TEXT                   -- z. B. "Pasta"; Zutaten derselben Gruppe ersetzen sich gegenseitig
 );
 CREATE TABLE zutat_variante (
     grundname   TEXT PRIMARY KEY,          -- englischer Grundname aus zeile_grundname
@@ -46,10 +53,49 @@ CREATE INDEX idx_rezept_zutat_zutat ON rezept_zutat(zutat_id);
 """
 
 
-def lies_liste() -> pd.DataFrame:
-    text = LISTE.read_text(encoding="utf-8-sig")
+def lies_csv(pfad) -> pd.DataFrame:
+    text = pfad.read_text(encoding="utf-8-sig")
     trennzeichen = csv.Sniffer().sniff(text[:5000], delimiters=",;\t").delimiter
-    liste = pd.read_csv(LISTE, encoding="utf-8-sig", sep=trennzeichen, dtype=str, keep_default_na=False)
+    tabelle = pd.read_csv(pfad, encoding="utf-8-sig", sep=trennzeichen, dtype=str, keep_default_na=False)
+    return tabelle.apply(lambda spalte: spalte.str.strip())
+
+
+def lies_varianten(liste: pd.DataFrame) -> pd.DataFrame:
+    """Kontrollierte Varianten als zusätzliche Zeilen (englisch, deutsch, grundzutat)."""
+    if not VARIANTEN.exists():
+        return liste.iloc[0:0]
+    varianten = lies_csv(VARIANTEN)
+    varianten["uebernehmen"] = varianten.uebernehmen.str.lower()
+    gewaehlt = varianten[(varianten.uebernehmen == "ja") & ~varianten.englisch.isin(liste.englisch)]
+    fehler = []
+    if not varianten.uebernehmen.isin(["ja", "nein"]).all():
+        fehler.append("Spalte 'uebernehmen' darf nur ja oder nein enthalten")
+    if (gewaehlt.deutsch == "").any():
+        fehler.append(f"Ohne deutschen Begriff: {gewaehlt.englisch[gewaehlt.deutsch == ''].tolist()}")
+    unbekannt = sorted(set(gewaehlt.deutsch) - set(liste.deutsch) - {""})
+    if unbekannt:
+        fehler.append(f"Nicht in der Zutatenliste: {unbekannt}")
+    if fehler:
+        sys.exit("varianten_vorschlaege.csv fehlerhaft:\n- " + "\n- ".join(fehler))
+    markierung = liste.groupby("deutsch").grundzutat.first()
+    return pd.DataFrame({"englisch": gewaehlt.englisch, "deutsch": gewaehlt.deutsch,
+                         "grundzutat": gewaehlt.deutsch.map(markierung)})
+
+
+def lies_gruppen(liste: pd.DataFrame) -> dict:
+    """Deutscher Begriff -> Austauschgruppe."""
+    if not GRUPPEN.exists():
+        return {}
+    gruppen = lies_csv(GRUPPEN)
+    unbekannt = sorted(set(gruppen.deutsch) - set(liste.deutsch))
+    doppelt = gruppen.deutsch[gruppen.deutsch.duplicated()].tolist()
+    if unbekannt or doppelt:
+        sys.exit(f"austauschgruppen.csv fehlerhaft:\n- Nicht in der Zutatenliste: {unbekannt}\n- Doppelt: {doppelt}")
+    return {d: g for d, g in zip(gruppen.deutsch, gruppen.austauschgruppe) if g}
+
+
+def lies_liste() -> pd.DataFrame:
+    liste = lies_csv(LISTE)
     liste["englisch"] = liste.englisch.str.strip()
     liste["deutsch"] = liste.deutsch.str.strip()
     liste["grundzutat"] = liste.grundzutat.str.strip().str.lower()
@@ -71,6 +117,8 @@ def lies_liste() -> pd.DataFrame:
 
 def main():
     liste = lies_liste()
+    gruppen = lies_gruppen(liste)
+    varianten = lies_varianten(liste)
     db = sqlite3.connect(DATENBANK)
     db.executescript(SCHEMA)
     spalten = [r[1] for r in db.execute("PRAGMA table_info(rezept)")]
@@ -82,11 +130,12 @@ def main():
         sys.exit(f"Englische Namen kommen in keinem Rezept vor: {sorted(unbekannt)[:20]}")
 
     for name, gruppe in liste.groupby("deutsch", sort=False):
-        db.execute("INSERT INTO zutat (name, grundzutat, haeufigkeit) VALUES (?, ?, 0)",
-                   (name, int(gruppe.grundzutat.iloc[0] == "ja")))
+        db.execute("INSERT INTO zutat (name, grundzutat, haeufigkeit, austauschgruppe) VALUES (?, ?, 0, ?)",
+                   (name, int(gruppe.grundzutat.iloc[0] == "ja"), gruppen.get(name)))
     ids = dict(db.execute("SELECT name, id FROM zutat"))
+    alle = pd.concat([liste[["englisch", "deutsch"]], varianten[["englisch", "deutsch"]]])
     db.executemany("INSERT INTO zutat_variante VALUES (?, ?)",
-                   [(e, ids[d]) for e, d in zip(liste.englisch, liste.deutsch)])
+                   [(e, ids[d]) for e, d in zip(alle.englisch, alle.deutsch)])
 
     db.executescript("""
         INSERT INTO rezept_zutat
@@ -112,6 +161,9 @@ def main():
         "zutaten (deutsch)": db.execute("SELECT COUNT(*) FROM zutat").fetchone()[0],
         "davon grundzutaten": db.execute("SELECT COUNT(*) FROM zutat WHERE grundzutat = 1").fetchone()[0],
         "englische varianten": db.execute("SELECT COUNT(*) FROM zutat_variante").fetchone()[0],
+        "davon aus varianten_vorschlaege.csv": len(varianten),
+        "zutaten in austauschgruppen": db.execute(
+            "SELECT COUNT(*) FROM zutat WHERE austauschgruppe IS NOT NULL").fetchone()[0],
         "rezept_zutat": db.execute("SELECT COUNT(*) FROM rezept_zutat").fetchone()[0],
         "median anzahl_ohne_liste": db.execute(
             "SELECT anzahl_ohne_liste FROM rezept ORDER BY anzahl_ohne_liste LIMIT 1 OFFSET 7500").fetchone()[0],

@@ -8,6 +8,8 @@ nonisolated struct Zutat: Identifiable, Hashable {
     let istGrundzutat: Bool
     /// Anzahl Rezepte, in denen die Zutat vorkommt
     let haeufigkeit: Int
+    /// Gruppe austauschbarer Zutaten, z. B. "Pasta" (Penne ersetzt Spaghetti)
+    var austauschgruppe: String? = nil
 
     /// Für die Anzeige mit grossem Anfangsbuchstaben ("Brauner Zucker")
     var anzeigename: String { name.mitGrossemAnfang }

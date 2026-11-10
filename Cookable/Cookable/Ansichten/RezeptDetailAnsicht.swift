@@ -12,7 +12,10 @@ struct RezeptDetailAnsicht: View {
                 LabeledContent("Kategorie", value: rezept.kategorie.rawValue)
                 LabeledContent("Zubereitungszeit", value: rezept.zeitText)
                 LabeledContent("Portionen", value: "\(rezept.portionen)")
-                LabeledContent("Zutaten vorhanden", value: "\(vorschlag.vorhanden) von \(vorschlag.benoetigt)")
+                LabeledContent("Zutaten vorhanden", value: "\(vorschlag.verfuegbar) von \(vorschlag.benoetigt)")
+                if vorschlag.ersatz > 0 {
+                    LabeledContent("Davon mit Ersatz", value: "\(vorschlag.ersatz)")
+                }
             }
             Section {
                 Text("Zutaten, Anleitung, Nährwerte und Portionsrechner folgen.")

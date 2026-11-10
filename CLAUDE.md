@@ -64,12 +64,13 @@ Cookable/                    ← Hauptordner, Claude Code hier starten
    - Die Autovervollständigung nutzt die Zutatenliste (Abschnitt 6).
 2. **Rezeptvorschläge** – aus den mitgelieferten Rezepten, passend zu den eingegebenen Zutaten.
    - Zusätzlicher kleiner Bereich **«Immer zuhause»** im Vorrat (ohne Ablaufdatum): beim ersten Start mit den 7 Grundzutaten gefüllt (Salz, Pfeffer, Zucker, Mehl, Wasser, Öl, Olivenöl). Man kann Grundzutaten daraus löschen (z. B. kein Mehl zuhause) und beliebige Zutaten der Liste hinzufügen, die man immer hat (z. B. Butter).
+   - **Austauschbare Zutaten:** Zutaten derselben Austauschgruppe (z. B. «Pasta»: Penne, Spaghetti, Fusilli …) ersetzen sich gegenseitig. Fehlt eine Zutat, ist aber eine Zutat derselben Gruppe im Vorrat, zählt sie als «vorhanden (Ersatz)». Bei gleichem Anteil kommen Rezepte mit weniger Ersatz zuerst. Anzeige: «4 von 6 Zutaten vorhanden · 1 Ersatz». Die Gruppen stehen in `Datenaufbereitung/ergebnisse/austauschgruppen.csv` (von Hand kontrolliert).
    - Sortierung: Eine **vorhandene Grundzutat** zählt weder als vorhanden noch als fehlend. Eine **gelöschte Grundzutat** zählt als fehlend. Selbst hinzugefügte Zutaten in «Immer zuhause» zählen wie andere Vorratszutaten als vorhanden.
    - Sortierung nach Anteil der vorhandenen Zutaten (es erscheinen auch Rezepte, für die nicht alle Zutaten vorhanden sind).
 3. **Filter**
    - Zubereitungszeit: bis 15 / 30 / 60 Minuten, über 60 Minuten oder beliebig.
    - Kategorie: Die Kategorien des Datensatzes werden zu wenigen deutschen Gruppen zusammengefasst: Frühstück, Hauptgericht, Beilage, Dessert, Snack.
-   - **Muss enthalten:** Man wählt eine oder mehrere Zutaten aus dem eigenen Vorrat; es erscheinen nur Rezepte, die alle gewählten Zutaten enthalten (z. B. um ein Lebensmittel aufzubrauchen). Der übrige Vorrat zählt weiterhin für den Anteil. Die Auswahl wird nicht dauerhaft gespeichert.
+   - **Muss enthalten:** Man wählt eine oder mehrere Zutaten aus dem eigenen Vorrat; es erscheinen nur Rezepte, die alle gewählten Zutaten enthalten (z. B. um ein Lebensmittel aufzubrauchen). Der übrige Vorrat zählt weiterhin für den Anteil. Rezepte mit einer austauschbaren Zutat erscheinen ebenfalls, aber erst nach allen Rezepten, die die gewählten Zutaten genau enthalten. Die Auswahl ist nach Lagerort gruppiert und durchsuchbar und wird nicht dauerhaft gespeichert.
 4. **Portionsrechner** – rechnet die Zutatenmengen auf die gewünschte Portionenzahl um. Grundlage sind die vollständigen Zutatenzeilen aus dem zweiten Datensatz.
 5. **Nährwerte** – pro Rezept.
 
@@ -211,8 +212,10 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
      1. `aufbereitung.py` erstellt `ergebnisse/rezepte.sqlite` (überschreibt die Datei).
      2. `zutatenliste.py` erstellt `ergebnisse/zutatenliste_zur_kontrolle.csv` mit DeepL. **Nicht erneut ausführen**, sonst wird die von Hand kontrollierte Liste überschrieben.
      3. `zutatenliste_uebernehmen.py` übernimmt die kontrollierte Liste in die SQLite-Datei (Tabellen `zutat`, `zutat_variante`, `rezept_zutat` inkl. Grundzutaten, Spalte `rezept.anzahl_ohne_liste`).
+   - Seltene Varianten (ausserhalb der 1'000 häufigsten Namen, mind. 3 Rezepte): `varianten_vorschlaege.py` erstellt `ergebnisse/varianten_vorschlaege.csv` (Spalte `uebernehmen` von Hand kontrollieren). `zutatenliste_uebernehmen.py` liest die Datei direkt und ordnet die Varianten bestehenden deutschen Begriffen zu.
+   - Austauschgruppen: `austauschgruppen_vorschlag.py` erstellt `ergebnisse/austauschgruppen.csv` (eine Zeile pro deutschem Begriff, Spalte `austauschgruppe` von Hand kontrollieren); `zutatenliste_uebernehmen.py` speichert sie in `zutat.austauschgruppe`. Beide Vorschlags-Skripte überschreiben eine bestehende Datei nur mit `--neu`.
    - Nachbessern der Zutatenliste: `zusammenfassen_vorschlaege.py` schlägt Varianten zum Zusammenfassen vor (`ergebnisse/zusammenfassen_vorschlaege.csv`, Spalte `uebernehmen` von Hand kontrollieren), `zusammenfassen_anwenden.py` übernimmt sie in die Zutatenliste (mit Sicherung). Danach `zutatenliste_uebernehmen.py`.
-   - Stand 10. November 2026: 15'000 Rezepte, 700 deutsche Zutaten. Die Grundzutaten sind auf 7 Begriffe zusammengefasst (Salz, Pfeffer, Zucker, Mehl, Wasser, Öl, Olivenöl). Die kontrollierte Liste ist die verbindliche Quelle.
+   - Stand 10. November 2026: 15'000 Rezepte, 698 deutsche Zutaten (Rahm, Vollrahm und Schlagrahm zu «Rahm» zusammengefasst). Die Grundzutaten sind auf 7 Begriffe zusammengefasst (Salz, Pfeffer, Zucker, Mehl, Wasser, Öl, Olivenöl). Die kontrollierte Liste ist die verbindliche Quelle.
    - Poulet-Teile: chicken thigh = Pouletoberschenkel, chicken drumstick = Pouletunterschenkel, chicken leg = Pouletschenkel (ganzer Schenkel).
    - Ein deutscher Begriff gilt nur ganz oder gar nicht als Grundzutat. Varianten werden zusammengefasst, wenn man mit der Zutat zuhause das Rezept kochen kann (garlic clove → Knoblauch). Verschiedene Produkte bleiben getrennt (Knoblauch ≠ Knoblauchpulver, Rahm ≠ Sauerrahm).
    - Anteil vorhandener Zutaten: siehe Abschnitt 3, Funktion 2 (Regel für Grundzutaten). `rezept_zutat` enthält auch die Grundzutaten (Markierung in `zutat.grundzutat`); Zutaten ausserhalb der Liste stehen als Anzahl in `rezept.anzahl_ohne_liste`.

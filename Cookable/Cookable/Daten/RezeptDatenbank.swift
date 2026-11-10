@@ -42,15 +42,23 @@ final class RezeptDatenbank {
         }
         verbindung = zeiger
 
-        let zutaten = try abfragen("SELECT id, name, grundzutat, haeufigkeit FROM zutat ORDER BY name") { zeile in
+        let zutaten = try abfragen("""
+            SELECT id, name, grundzutat, haeufigkeit, austauschgruppe FROM zutat ORDER BY name
+            """) { zeile in
             Zutat(
                 id: Int(sqlite3_column_int64(zeile, 0)),
                 name: String(cString: sqlite3_column_text(zeile, 1)),
                 istGrundzutat: sqlite3_column_int(zeile, 2) == 1,
-                haeufigkeit: Int(sqlite3_column_int64(zeile, 3))
+                haeufigkeit: Int(sqlite3_column_int64(zeile, 3)),
+                austauschgruppe: sqlite3_column_text(zeile, 4).map { String(cString: $0) }
             )
         }
         self.zutaten = zutaten
+        let gruppennamen = Array(Set(zutaten.compactMap(\.austauschgruppe))).sorted()
+        let gruppenNummer = Dictionary(uniqueKeysWithValues: gruppennamen.enumerated().map { ($1, $0) })
+        austauschgruppe = Dictionary(uniqueKeysWithValues: zutaten.compactMap { zutat in
+            zutat.austauschgruppe.flatMap { gruppenNummer[$0] }.map { (zutat.id, $0) }
+        })
         zutatenSuche = ZutatenSuche(zutaten: zutaten)
         rezepte = try ladeRezepte(grundzutaten: Set(zutaten.filter(\.istGrundzutat).map(\.id)))
     }
@@ -62,6 +70,8 @@ final class RezeptDatenbank {
     /// Alle Zutaten der Zutatenliste (klein genug, um sie im Speicher zu halten)
     @ObservationIgnored private(set) var zutaten: [Zutat] = []
     @ObservationIgnored private(set) var zutatenSuche = ZutatenSuche(zutaten: [])
+    /// Zutat-ID -> Nummer der Austauschgruppe (nur Zutaten, die zu einer Gruppe gehören)
+    @ObservationIgnored private(set) var austauschgruppe: [Int: Int] = [:]
     /// Alle Rezepte mit ihren Zutaten für die Vorschlagsliste (15'000 Einträge, wenige MB)
     @ObservationIgnored private(set) var rezepte: [RezeptUebersicht] = []
 

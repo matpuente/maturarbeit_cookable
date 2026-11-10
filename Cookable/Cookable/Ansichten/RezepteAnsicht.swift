@@ -24,6 +24,7 @@ struct RezepteAnsicht: View {
         let vorschlaege = RezeptVorschlaege.berechnen(
             rezepte: datenbank.rezepte,
             vorrat: Set(vorrat.map(\.zutatID)),
+            austauschgruppe: datenbank.austauschgruppe,
             kategorie: kategorie,
             zeit: zeit,
             mussEnthalten: aktiveMussZutaten
@@ -146,6 +147,12 @@ struct RezepteAnsicht: View {
 struct RezeptZeile: View {
     let vorschlag: RezeptVorschlag
 
+    /// "4 von 6 Zutaten vorhanden · 1 Ersatz"
+    private var verfuegbarText: String {
+        let text = "\(vorschlag.verfuegbar) von \(vorschlag.benoetigt) Zutaten vorhanden"
+        return vorschlag.ersatz == 0 ? text : text + " · \(vorschlag.ersatz) Ersatz"
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(vorschlag.rezept.name)
@@ -155,7 +162,7 @@ struct RezeptZeile: View {
                 ProgressView(value: vorschlag.anteil)
                     .frame(width: 60)
                     .tint(vorschlag.fehlend == 0 ? .green : .accentColor)
-                Text("\(vorschlag.vorhanden) von \(vorschlag.benoetigt) Zutaten vorhanden")
+                Text(verfuegbarText)
                     .font(.subheadline)
             }
             Label {

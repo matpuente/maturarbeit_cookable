@@ -78,7 +78,7 @@ cumin;Kreuzkümmel;nein;Kreuzkümmel;282;280;2 tablespoons cumin
 dried thyme;Thymian;nein;getrockneter Thymian;279;278;1/4 teaspoon dried thyme
 dried basil;Basilikum;nein;getrocknetes Basilikum;278;275;1/4 teaspoon dried basil
 tomato sauce;Tomatensauce;nein;Tomatensoße;278;275;1 (8 ounce) can tomato sauce
-heavy cream;Vollrahm;nein;Schlagsahne;276;272;1/2 cup heavy cream
+heavy cream;Rahm;nein;Schlagsahne;276;272;1/2 cup heavy cream
 red bell pepper;rote Peperoni;nein;rote Paprika;274;274;1 red bell pepper, seeded and chopped
 buttermilk;Buttermilch;nein;Buttermilch;274;261;1/2 cup buttermilk
 ketchup;Ketchup;nein;Ketchup;268;264;2 tablespoons ketchup
@@ -124,7 +124,7 @@ dry white wine;trockener Weisswein;nein;trockener Weißwein;172;169;1/2 cup dry 
 shrimp;Garnelen;nein;Garnelen;172;172;1 1/2 lbs shrimp, peeled and deveined
 curry powder;Currypulver;nein;Currypulver;170;169;1 teaspoon curry powder
 sea salt;Salz;ja;Meersalz;170;164;sea salt
-whipping cream;Schlagrahm;nein;Schlagsahne;168;161;3/4 cup whipping cream
+whipping cream;Rahm;nein;Schlagsahne;168;161;3/4 cup whipping cream
 whole wheat flour;Vollkornmehl;nein;Vollkornmehl;167;165;1 cup whole wheat flour
 white wine;Weisswein;nein;Weißwein;165;163;1/3 cup white wine
 semi-sweet chocolate chips;Halbsüsse Schokoladenstückchen;nein;Halbsüße Schokoladenstückchen;164;160;1/2 cup semi-sweet chocolate chips
@@ -282,7 +282,7 @@ hoisin sauce;Hoisin-Sauce;nein;Hoisin-Sauce;62;60;1/3 cup hoisin sauce
 frozen corn;Mais;nein;Tiefkühlmais;62;62;2 cups frozen corn
 splenda sugar substitute;Splenda-Zuckerersatz;nein;Splenda-Zuckerersatz;62;58;2 teaspoons Splenda sugar substitute
 pure vanilla extract;Vanilleextrakt;nein;reiner Vanilleextrakt;62;59;2 teaspoons pure vanilla extract
-heavy whipping cream;Schlagrahm;nein;Schlagsahne;61;59;1/2 cup heavy whipping cream
+heavy whipping cream;Rahm;nein;Schlagsahne;61;59;1/2 cup heavy whipping cream
 spaghetti;Spaghetti;nein;Spaghetti;61;60;spaghetti, for serving
 onion soup mix;Zwiebelsuppenmischung;nein;Zwiebelsuppenmischung;61;61;0.5 (1 1/4 ounce) package onion soup mix
 applesauce;Apfelmus;nein;Apfelmus;61;61;1/2 cup applesauce
@@ -492,7 +492,7 @@ blue cheese;Blauschimmelkäse;nein;Blauschimmelkäse;31;30;4 ounces blue cheese,
 new potato;neue Kartoffeln;nein;neue Kartoffeln;31;31;3/4 lb new potatoes or 2 medium sweet potatoes
 whole wheat bread;Vollkornbrot;nein;Vollkornbrot;31;31;2 slices whole wheat bread (cut in round shapes)
 fresh italian parsley;Petersilie;nein;frische italienische Petersilie;31;30;1/4 cup fresh Italian parsley (chopped)
-whipped cream;Schlagrahm;nein;Schlagsahne;31;30;1/4 cup whipped cream (or use 18% table cream)
+whipped cream;Rahm;nein;Schlagsahne;31;30;1/4 cup whipped cream (or use 18% table cream)
 fresh lemon rind;Zitronenschale;nein;frische Zitronenschale;30;30;1 tablespoon grated fresh lemon rind or 1 tablespoon lime rind
 chicken breast half;Pouletbrust;nein;Hähnchenbrusthälfte;30;30;4 chicken breast halves, bone in
 ritz cracker;Ritz-Cracker;nein;Ritz-Cracker;30;29;25 Ritz crackers
@@ -626,7 +626,7 @@ yogurt;Joghurt;nein;Joghurt;22;22;6 tablespoons yogurt or 6 tablespoons sour cre
 chipotle chile in adobo;Chipotle-Chili in Adobo;nein;Chipotle-Chili in Adobo;22;22;1 chipotle chile in adobo, minced
 unbaked pie shell;ungebackener Tortenboden;nein;ungebackener Tortenboden;22;22;1 (9 inch) unbaked pie shells
 orange marmalade;Orangenmarmelade;nein;Orangenmarmelade;22;22;1/3 cup orange marmalade
-whipped topping;Schlagrahm;nein;Schlagsahne;22;22;1 (1 1/3 ounce) package whipped topping (dream whip)
+whipped topping;Rahm;nein;Schlagsahne;22;22;1 (1 1/3 ounce) package whipped topping (dream whip)
 graham cracker;Graham-Cracker;nein;Graham-Cracker;22;22;10 whole graham crackers
 instant chocolate pudding mix;Fertigmischung für Schokoladenpudding;nein;Fertigmischung für Schokoladenpudding;22;22;1 (4 ounce) package instant chocolate pudding mix
 soya sauce;Sojasauce;nein;Sojasauce;21;21;1 tablespoon soya sauce
