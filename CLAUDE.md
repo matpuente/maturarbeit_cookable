@@ -1,0 +1,231 @@
+# Cookable (Kühlschrank-App) – Projektspezifikation
+
+Diese Datei beschreibt die App, die in diesem Projekt entwickelt wird.
+Bei Unklarheiten: zuerst nachfragen, keine eigenen Annahmen treffen.
+
+---
+
+## 1. Zweck
+
+**Problem:** Viele wissen nicht, was sie mit den Zutaten kochen sollen, die sie zuhause haben. Dadurch werden Lebensmittel vergessen und landen im Müll.
+
+**Lösung:** Eine iOS-App, in der Nutzer ihre vorhandenen Zutaten eingeben und passende Rezepte vorgeschlagen bekommen.
+
+---
+
+## 2. Technische Rahmenbedingungen (verbindlich)
+
+| Bereich | Vorgabe |
+| --- | --- |
+| App-Name | Cookable (Product Name in Xcode und Anzeigename auf dem Home-Bildschirm) |
+| Plattform | iOS / iPadOS |
+| Sprache / UI | Swift, SwiftUI |
+| Projektstruktur | Normales Xcode-App-Projekt (kein App-Playground) |
+| Entwicklungsumgebung | Xcode 27 (aktuelle Version, Swift 6.4) |
+| Mindestversion | iOS / iPadOS 26.0 (Testgeräte: iPad mit iPadOS 27.2, iPhone mit iOS 26.6) |
+| Speicherung der Nutzerdaten | SwiftData |
+| Speicherung der Rezepte | SQLite-Datei, die in der App mitgeliefert wird (nur lesend, kein Server) |
+| Tests | Simulator in Xcode |
+| Test auf echtem Gerät | Direkt aus Xcode auf iPad und iPhone (per Kabel, kostenlose Apple-ID) |
+| Rezeptquelle | Zwei Food.com-Datensätze auf Kaggle: `irkaal/foodcom-recipes-and-reviews` (Hauptquelle) und `realalexanderwei/food-com-recipes-with-ingredients-and-tags` (vollständige Zutatenzeilen mit Mengen und Einheiten) |
+| Übersetzung | DeepL API Free |
+| Internet | Vorausgesetzt für die Übersetzung der Rezepttexte; kein Offline-Modus |
+
+- Die App muss auf iOS / iPadOS 26.0 laufen. Keine APIs oder Funktionen verwenden, die erst ab iOS 27 verfügbar sind.
+- Die Oberfläche muss auf iPhone und iPad gut bedienbar sein.
+- Keine Veröffentlichung im App Store.
+
+### Ordnerstruktur und Git
+
+```
+Cookable/                    ← Hauptordner, Claude Code hier starten
+├── CLAUDE.md
+├── Cookable/                ← Xcode-App-Projekt
+└── Datenaufbereitung/       ← Python-Skripte und Kaggle-Datensätze (nicht Teil der App)
+```
+
+- App-Code in `Cookable/Cookable/`: `Ansichten/`, `Modelle/` (SwiftData), `Daten/` (Zugriff auf die Rezeptdatenbank), `Ressourcen/rezepte.sqlite`.
+- Zugriff auf die Rezeptdatenbank mit der eingebauten SQLite-Bibliothek (`import SQLite3`), nur lesend, keine zusätzlichen Pakete.
+- Nach einer neuen Aufbereitung `Datenaufbereitung/ergebnisse/rezepte.sqlite` nach `Cookable/Cookable/Ressourcen/` kopieren.
+- Ein Git-Repository im Hauptordner (Remote: `github.com/matpuente/maturarbeit_cookable`). **Jede Etappe bzw. jede Version wird committet**, auch Änderungen an Skripten, Zutatenliste und Datenbank. Rohdaten, `.venv` und Schlüsseldateien sind in `.gitignore` ausgeschlossen.
+- Im Simulator ist nur die Laufzeit iOS 27.2 installiert; die Mindestversion iOS 26.0 prüft der Compiler (Verfügbarkeit der APIs).
+
+---
+
+## 3. Funktionen
+
+### Version 1 (essenziell)
+
+1. **Zutaten eingeben** – mit Autovervollständigung und Kategorisierung nach Lagerort (Kühlschrank, Tiefkühler, Vorratsschrank).
+   - Pro Zutat: Name, Lagerort, optional Ablaufdatum.
+   - Keine Mengenangaben.
+   - Die Autovervollständigung nutzt die Zutatenliste (Abschnitt 6).
+2. **Rezeptvorschläge** – aus den mitgelieferten Rezepten, passend zu den eingegebenen Zutaten.
+   - Grundzutaten gelten immer als vorhanden und müssen nicht eingegeben werden: Salz, Pfeffer, Wasser, Öl, Zucker, Mehl.
+   - Sortierung nach Anteil der vorhandenen Zutaten (es erscheinen auch Rezepte, für die nicht alle Zutaten vorhanden sind).
+3. **Filter**
+   - Zubereitungszeit: bis 15 / 30 / 60 Minuten oder beliebig.
+   - Kategorie: Die Kategorien des Datensatzes werden zu wenigen deutschen Gruppen zusammengefasst: Frühstück, Hauptgericht, Beilage, Dessert, Snack.
+4. **Portionsrechner** – rechnet die Zutatenmengen auf die gewünschte Portionenzahl um. Grundlage sind die vollständigen Zutatenzeilen aus dem zweiten Datensatz.
+5. **Nährwerte** – pro Rezept.
+
+### Später
+
+6. **Fehlende Zutaten & Einkaufsliste** – fehlende Zutaten pro Rezept anzeigen und automatisch eine Einkaufsliste erstellen.
+7. **Ablaufdatum-Tracking**
+   - Farbliche Markierung im Vorrat: orange ab 3 Tagen vor Ablauf, rot wenn abgelaufen.
+   - Mitteilungen auf dem Gerät nur, falls am Schluss noch Zeit bleibt.
+8. **Favoriten** – Rezepte speichern.
+9. **Bewertungen** – eigene Bewertung von Rezepten; ganz am Schluss, falls noch Zeit bleibt.
+
+Funktionen aus «Später» erst umsetzen, wenn Version 1 fertig ist und ausdrücklich danach gefragt wird.
+
+---
+
+## 4. Bildschirme
+
+Navigation über Tabs.
+
+### Version 1
+
+- **Vorrat:** Zutaten nach Lagerort gruppiert; Zutaten hinzufügen und löschen.
+- **Rezepte:** Vorschlagsliste mit Filtern.
+  - **Detailansicht:** Zutaten, Anleitung, Nährwerte, Portionsrechner.
+
+### Später
+
+- **Einkaufsliste**
+- **Favoriten**
+
+---
+
+## 5. Rezeptdaten
+
+- Alle Rezepte stammen ausschliesslich aus den beiden Food.com-Datensätzen (Abschnitt 2).
+- **Nicht** RecipeNLG verwenden.
+- **Keine** Rezepte durch KI generieren oder ergänzen.
+
+### Bekannte Datenprobleme im Hauptdatensatz
+
+- `RecipeIngredientQuantities` enthält nur Zahlen ohne Masseinheiten; teilweise fehlen Werte (`NA`).
+- `RecipeIngredientQuantities` und `RecipeIngredientParts` sind oft unterschiedlich lang. Eine Menge lässt sich deshalb nicht zuverlässig einer Zutat zuordnen.
+- Listen sind im R-Format gespeichert (`c("…", "…")`), Zeiten im ISO-8601-Format (z. B. `PT45M`).
+
+### Aufbereitung
+
+Die Aufbereitung erfolgt mit Python-Skripten auf dem Mac. Die Skripte sind nicht Teil der App und liegen getrennt vom App-Code. Ergebnis ist eine SQLite-Datei, die in der App mitgeliefert wird.
+
+**Auswahlregeln** (Ziel: etwa 15'000 Rezepte):
+
+1. Das Rezept ist in beiden Datensätzen enthalten.
+2. Nährwerte, Zubereitungszeit und Portionenzahl sind vorhanden, und die Nährwerte bestehen die Plausibilitätsprüfung (siehe unten).
+   - Die Portionenzahl muss im Hauptdatensatz (`RecipeServings`) stehen; sie wird nicht aus dem zweiten Datensatz ergänzt (ohne sie gelten die Nährwerte oft für das ganze Rezept).
+   - Zubereitungszeit fehlt, wenn `TotalTime` leer oder `PT0S` ist.
+   - Die Portionenzahl muss in beiden Datensätzen gleich sein (`RecipeServings` = `servings`), damit Portionsrechner und Nährwerte zusammenpassen.
+   - Höchstens 100 Portionen.
+3. Mindestens 5 Bewertungen und eine Durchschnittsbewertung von mindestens 4. Die Bewertungen dienen nur der Auswahl und erscheinen nicht in der App.
+4. Pro Kategoriegruppe (Abschnitt 3, Filter) werden die meistbewerteten Rezepte gewählt (nach `ReviewCount`), sodass alle Gruppen vertreten sind. Quoten: Hauptgericht 6'000, Beilage 3'500, Dessert 2'500, Frühstück 1'500, Snack 1'500 (total 15'000).
+   - Zuordnung zur Gruppe: zuerst über die Kurs-Tags des zweiten Datensatzes (`breakfast`, `desserts`, `main-dish`, `side-dishes`, `appetizers` …), sonst über `RecipeCategory`. Skript: `Datenaufbereitung/skripte/kategorien.py`.
+   - Süsse Schnellbrote (`Quick Breads`, z. B. Banana Bread, Muffins) gehören zu Frühstück, Hefebrote zu Beilage.
+   - Saucen/Würzen und Rezepte ohne erkennbaren Gang werden ausgeschlossen.
+5. Keine Getränke: Rezepte aus den Getränke-Kategorien `Beverages`, `Smoothies`, `Punch Beverage`, `Shakes` und `Margarita` werden ausgeschlossen (ermittelt in der Datenanalyse). Massgebend ist `RecipeCategory`; Rezepte mit Getränke-Tag, aber anderer Kategorie (z. B. `Frozen Desserts`) bleiben.
+6. Keine Nicht-Lebensmittel: Die Kategorien `Bath/Beauty`, `Household Cleaner` und `Homeopathy/Remedies` werden ebenfalls ausgeschlossen.
+
+Doppelte IDs im zweiten Datensatz: Bei identischen Zeilen wird eine behalten; IDs mit inhaltlich abweichenden Zeilen (45) und Zeilen mit unlesbarer Zutatenliste werden verworfen.
+
+Wenn nach Regel 1 zu wenige Rezepte übrig bleiben: nachfragen, bevor Regel 3 gelockert wird.
+
+### Weitere Festlegungen
+
+- Rezeptnamen werden von HTML-Zeichen bereinigt (`&amp;` → `&`).
+- Die Bild-URL von Food.com wird in der SQLite-Datei mitgespeichert; in der App wird sie nur angezeigt, wenn ausdrücklich gewünscht.
+- Der DeepL-API-Schlüssel für die Aufbereitungsskripte steht in `Datenaufbereitung/deepl_api_key.txt` (eine Zeile, nicht im Code).
+
+### Zutatenzeilen und Zutatennamen
+
+- Quelle ist `ingredients_raw` aus dem zweiten Datensatz. `ingredients` (Z) und `RecipeIngredientParts` (H) sind unvollständig und werden nicht verwendet.
+- Jede Zeile wird zerlegt in: Menge, Menge bis (bei Bereichen), Packungsgrösse mit Einheit, Einheit, Grösse (large/medium/small), Name und Zusatz. Bei Alternativen («… or …») zählt die erste.
+- Der Name wird zu einem **Grundnamen** vereinheitlicht: Zubereitungswörter entfernen (chopped, minced …), Mehrzahl → Einzahl; bestimmende Wörter bleiben («ground beef» ≠ «ground cinnamon»). Kombinationen wie «salt and pepper» werden in zwei Zutaten aufgeteilt.
+- Die Zutatenliste (Abschnitt 6) besteht aus den 1'000 häufigsten Grundnamen (Abdeckung ca. 88 % aller Zeilen).
+- Zutaten, die nicht in der Zutatenliste stehen, zählen bei der Sortierung der Rezeptvorschläge als «nicht vorhanden»; im Rezept werden sie normal angezeigt.
+
+### Plausibilitätsprüfung der Nährwerte
+
+Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur übernommen, wenn es alle folgenden Prüfungen besteht:
+
+1. **Keine negativen Werte** in den Nährwertspalten (`Calories`, `FatContent`, `SaturatedFatContent`, `CholesterolContent`, `SodiumContent`, `CarbohydrateContent`, `FiberContent`, `SugarContent`, `ProteinContent`).
+2. **Teilmengen:** `SaturatedFatContent` ≤ `FatContent`, `SugarContent` ≤ `CarbohydrateContent`, `FiberContent` ≤ `CarbohydrateContent`.
+3. **Energiebilanz:** Die Kalorien müssen zu den Makronährstoffen passen. Berechnet: 4 × Kohlenhydrate + 4 × Protein + 9 × Fett (in kcal). Die Abweichung von `Calories` darf höchstens 20 % oder 20 kcal betragen (der grössere Wert gilt).
+4. **Obergrenze:** höchstens 2'500 kcal pro Portion.
+5. **Portionsgewicht** (nur wenn im zweiten Datensatz vorhanden): Fett + Kohlenhydrate + Protein (in g) ≤ Portionsgewicht (in g). Ein Portionsgewicht von `0 g` gilt als nicht vorhanden.
+
+- Für jede Prüfung wird gezählt, wie viele Rezepte sie nicht bestehen. Diese Zahlen gehören in den Bericht der Datenanalyse (Abschnitt 7).
+- Fallen mehr als 10 % der Rezepte, die Regel 1 erfüllen, durch: nachfragen, bevor sie ausgeschlossen werden.
+- Die Grenzwerte (20 %, 20 kcal, 2'500 kcal) wurden nach der Datenanalyse bestätigt.
+- Ergebnis der Datenanalyse: 490'475 Rezepte in beiden Datensätzen; 5,4 % bestehen mindestens eine Prüfung nicht und werden ausgeschlossen. Details: `Datenaufbereitung/Bericht_Datenanalyse.md`.
+
+---
+
+## 6. Sprache und Übersetzung
+
+- Die Benutzeroberfläche ist komplett auf **Deutsch**.
+
+### Zutatenliste (Suche und Autovervollständigung)
+
+- Ein Skript ermittelt die 1'000 häufigsten Zutatennamen im Datensatz.
+- DeepL übersetzt sie einmalig ins Deutsche.
+- Die Liste wird als Datei ausgegeben, die von Hand kontrolliert und korrigiert wird, bevor sie in die App kommt.
+- Die Liste enthält auch die heiklen Begriffe wie «Peperoni», «Rahm» oder «Nüsslisalat».
+- Ein deutscher Begriff kann mehreren englischen Namen aus dem Datensatz zugeordnet sein (z. B. «Rahm» zu mehreren Rahm-Varianten).
+- Die App sucht ausschliesslich über diese Liste; für die Zutatensuche wird DeepL in der App nicht aufgerufen.
+
+### Übersetzung der Rezepte
+
+- Rezepte werden beim Öffnen über DeepL ins Deutsche übersetzt.
+- Übersetzte Rezepte werden gespeichert und nie ein zweites Mal übersetzt (DeepL API Free: 500'000 Zeichen pro Monat).
+- Ohne Internetverbindung erscheint eine kurze Meldung.
+- Der DeepL-API-Schlüssel steht in einer separaten Datei, nicht im Code, und wird nicht mitveröffentlicht.
+
+### Masseinheiten
+
+- Cups, Ounces und Fahrenheit werden in Gramm, Milliliter und Grad Celsius umgerechnet.
+- Grundlage sind die Zutatenzeilen aus dem zweiten Datensatz sowie Temperaturangaben in den Anleitungstexten.
+
+---
+
+## 7. Reihenfolge
+
+1. **Datenanalyse** (erledigt, bestätigt am 1. November 2026): Beide Datensätze analysieren und berichten:
+   - Lassen sie sich über die Rezept-ID verknüpfen?
+   - Wie viele Rezepte sind in beiden enthalten?
+   - In welcher Form stehen Mengen und Einheiten in den Zutatenzeilen des zweiten Datensatzes?
+   - Wie viele Rezepte bestehen die einzelnen Prüfungen der Nährwerte nicht (Abschnitt 5)?
+   - Welche Kategorien des Datensatzes sind Getränke und werden ausgeschlossen?
+   Erst nach diesem Bericht und Bestätigung weitermachen.
+2. **Datenaufbereitung** (erledigt): SQLite-Datei nach den Auswahlregeln erstellen; Zutatenliste zur Kontrolle ausgeben.
+   - Skripte in `Datenaufbereitung/skripte/` (Python-Umgebung: `Datenaufbereitung/.venv`), in dieser Reihenfolge:
+     1. `aufbereitung.py` erstellt `ergebnisse/rezepte.sqlite` (überschreibt die Datei).
+     2. `zutatenliste.py` erstellt `ergebnisse/zutatenliste_zur_kontrolle.csv` mit DeepL. **Nicht erneut ausführen**, sonst wird die von Hand kontrollierte Liste überschrieben.
+     3. `zutatenliste_uebernehmen.py` übernimmt die kontrollierte Liste in die SQLite-Datei (Tabellen `zutat`, `zutat_variante`, `rezept_zutat`, Spalte `rezept.anzahl_zutaten`).
+   - Nachbessern der Zutatenliste: `zusammenfassen_vorschlaege.py` schlägt Varianten zum Zusammenfassen vor (`ergebnisse/zusammenfassen_vorschlaege.csv`, Spalte `uebernehmen` von Hand kontrollieren), `zusammenfassen_anwenden.py` übernimmt sie in die Zutatenliste (mit Sicherung). Danach `zutatenliste_uebernehmen.py`.
+   - Stand 10. November 2026: 15'000 Rezepte, 717 deutsche Zutaten (davon 24 Grundzutaten). Die kontrollierte Liste ist die verbindliche Quelle.
+   - Poulet-Teile: chicken thigh = Pouletoberschenkel, chicken drumstick = Pouletunterschenkel, chicken leg = Pouletschenkel (ganzer Schenkel).
+   - Ein deutscher Begriff gilt nur ganz oder gar nicht als Grundzutat. Varianten werden zusammengefasst, wenn man mit der Zutat zuhause das Rezept kochen kann (garlic clove → Knoblauch). Verschiedene Produkte bleiben getrennt (Knoblauch ≠ Knoblauchpulver, Rahm ≠ Sauerrahm).
+   - Anteil vorhandener Zutaten = vorhandene Zutaten aus `rezept_zutat` / `rezept.anzahl_zutaten` (Grundzutaten zählen nicht mit).
+3. **App Version 1:** Funktionen 1–5 in Etappen umsetzen.
+   1. Grundgerüst (erledigt 10. November 2026): Projekt «Cookable» (iOS 26.0, Swift 6), Rezeptdatenbank eingebunden, Tabs «Vorrat» und «Rezepte», SwiftData-Modell `VorratsEintrag`.
+   2. Vorrat: Zutaten mit Autovervollständigung erfassen, nach Lagerort gruppieren, Ablaufdatum, löschen.
+   3. Rezeptvorschläge: Sortierung nach Anteil vorhandener Zutaten, Filter Zeit und Kategorie.
+   4. Detailansicht: Zutaten (metrisch), Anleitung, Nährwerte, Portionsrechner.
+   5. Übersetzung mit DeepL in der App, gespeicherte Übersetzungen, Meldung ohne Internet.
+   - Rezeptnamen in der Vorschlagsliste: nur die sichtbaren Namen werden übersetzt (in Paketen beim Scrollen) und gespeichert; keine Vorab-Übersetzung aller Namen (416'000 Zeichen).
+4. **Später:** Funktionen 6–9, nur auf ausdrückliche Anfrage.
+
+---
+
+## 8. Arbeitsweise
+
+- Vor jeder grösseren Umsetzung zuerst einen kurzen Plan vorschlagen und auf Bestätigung warten.
+- In kleinen Etappen arbeiten; nach jeder Etappe muss die App im Simulator lauffähig sein.
+- Nach jeder Änderung am App-Code die App selbst mit `xcodebuild` bauen und alle Fehler beheben, bevor die Etappe als fertig gemeldet wird.
+- Diese Datei aktuell halten, wenn sich Entscheidungen ändern.
