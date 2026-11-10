@@ -9,15 +9,24 @@ struct RezepteAnsicht: View {
     @AppStorage("filterZeit") private var zeit = Zeitfilter.alle
     @AppStorage("filterKategorie") private var kategorieWert = ""
     @State private var auswahl: RezeptUebersicht.ID?
+    /// Zutaten, die jedes Rezept enthalten muss (Filter «Muss enthalten»)
+    @State private var mussEnthalten: Set<Int> = []
+    @State private var zeigeZutatenauswahl = false
 
     private var kategorie: Kategorie? { Kategorie(rawValue: kategorieWert) }
+
+    /// Gewählte Zutaten, die noch im Vorrat sind
+    private var aktiveMussZutaten: Set<Int> {
+        mussEnthalten.intersection(vorrat.map(\.zutatID))
+    }
 
     var body: some View {
         let vorschlaege = RezeptVorschlaege.berechnen(
             rezepte: datenbank.rezepte,
             vorrat: Set(vorrat.map(\.zutatID)),
             kategorie: kategorie,
-            zeit: zeit
+            zeit: zeit,
+            mussEnthalten: aktiveMussZutaten
         )
         NavigationSplitView {
             List(selection: $auswahl) {
@@ -39,6 +48,9 @@ struct RezepteAnsicht: View {
                 }
             }
             .navigationTitle("Rezepte")
+            .sheet(isPresented: $zeigeZutatenauswahl) {
+                MussEnthaltenAuswahl(vorrat: vorrat, auswahl: $mussEnthalten)
+            }
         } detail: {
             if let auswahl, let vorschlag = vorschlaege.first(where: { $0.id == auswahl }) {
                 RezeptDetailAnsicht(vorschlag: vorschlag)
@@ -67,9 +79,33 @@ struct RezepteAnsicht: View {
                     }
                 }
             }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    Button("Muss enthalten", systemImage: "checklist") { zeigeZutatenauswahl = true }
+                        .buttonStyle(.bordered)
+                        .buttonBorderShape(.capsule)
+                        .tint(aktiveMussZutaten.isEmpty ? .secondary : .accentColor)
+                    ForEach(mussZutatenSortiert, id: \.id) { zutat in
+                        Button {
+                            mussEnthalten.remove(zutat.id)
+                        } label: {
+                            Label(zutat.anzeigename, systemImage: "xmark")
+                                .labelStyle(TitelZuerstStil())
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .buttonBorderShape(.capsule)
+                        .accessibilityHint("Entfernt die Zutat aus dem Filter")
+                    }
+                }
+            }
         }
         .listRowBackground(Color.clear)
         .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+    }
+
+    private var mussZutatenSortiert: [Zutat] {
+        datenbank.zutaten.filter { aktiveMussZutaten.contains($0.id) }
     }
 
     private func kategorieKnopf(_ titel: String, wert: String) -> some View {
@@ -131,5 +167,72 @@ struct RezeptZeile: View {
             .foregroundStyle(.secondary)
         }
         .padding(.vertical, 2)
+    }
+}
+
+/// Zeigt den Text vor dem Symbol ("Poulet ×").
+private struct TitelZuerstStil: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 4) {
+            configuration.title
+            configuration.icon.imageScale(.small)
+        }
+    }
+}
+
+/// Auswahl der Zutaten aus dem Vorrat für den Filter «Muss enthalten».
+struct MussEnthaltenAuswahl: View {
+    let vorrat: [VorratsEintrag]
+    @Binding var auswahl: Set<Int>
+    @Environment(\.dismiss) private var schliessen
+
+    /// Jede Zutat nur einmal, auch wenn sie an mehreren Lagerorten steht
+    private var zutaten: [(id: Int, name: String)] {
+        var gesehen = Set<Int>()
+        return vorrat
+            .sorted { $0.anzeigename.localizedStandardCompare($1.anzeigename) == .orderedAscending }
+            .filter { gesehen.insert($0.zutatID).inserted }
+            .map { ($0.zutatID, $0.anzeigename) }
+    }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    ForEach(zutaten, id: \.id) { zutat in
+                        Button {
+                            if auswahl.contains(zutat.id) {
+                                auswahl.remove(zutat.id)
+                            } else {
+                                auswahl.insert(zutat.id)
+                            }
+                        } label: {
+                            HStack {
+                                Text(zutat.name)
+                                Spacer()
+                                if auswahl.contains(zutat.id) {
+                                    Image(systemName: "checkmark").foregroundStyle(.tint)
+                                }
+                            }
+                            .contentShape(.rect)
+                        }
+                        .foregroundStyle(.primary)
+                    }
+                } footer: {
+                    Text("Es erscheinen nur Rezepte, die alle gewählten Zutaten enthalten. Der übrige Vorrat zählt weiterhin.")
+                }
+            }
+            .navigationTitle("Muss enthalten")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Zurücksetzen") { auswahl.removeAll() }
+                        .disabled(auswahl.isEmpty)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Fertig") { schliessen() }
+                }
+            }
+        }
     }
 }

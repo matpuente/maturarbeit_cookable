@@ -69,6 +69,7 @@ Cookable/                    ← Hauptordner, Claude Code hier starten
 3. **Filter**
    - Zubereitungszeit: bis 15 / 30 / 60 Minuten, über 60 Minuten oder beliebig.
    - Kategorie: Die Kategorien des Datensatzes werden zu wenigen deutschen Gruppen zusammengefasst: Frühstück, Hauptgericht, Beilage, Dessert, Snack.
+   - **Muss enthalten:** Man wählt eine oder mehrere Zutaten aus dem eigenen Vorrat; es erscheinen nur Rezepte, die alle gewählten Zutaten enthalten (z. B. um ein Lebensmittel aufzubrauchen). Der übrige Vorrat zählt weiterhin für den Anteil. Die Auswahl wird nicht dauerhaft gespeichert.
 4. **Portionsrechner** – rechnet die Zutatenmengen auf die gewünschte Portionenzahl um. Grundlage sind die vollständigen Zutatenzeilen aus dem zweiten Datensatz.
 5. **Nährwerte** – pro Rezept.
 
@@ -228,7 +229,8 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - Sortierung: Anteil absteigend, dann weniger fehlende Zutaten, dann `beliebtheit`.
       - Berechnung im Speicher (alle Rezepte mit ihren Zutaten werden beim Start geladen), dauert wenige Millisekunden.
       - Filter bleiben gespeichert (`@AppStorage`). Auf dem iPad Liste und Detail nebeneinander (`NavigationSplitView`).
-      - Keine Bilder (nur auf ausdrücklichen Wunsch; die Bild-URLs sind in der Datenbank).
+      - Keine Bilder in der Liste. In der Detailansicht kommt das Foto von Food.com dazu (beschlossen für Etappe 4).
+      - Filter «Muss enthalten» (ergänzt 10. November 2026).
    4. Detailansicht: Zutaten (metrisch), Anleitung, Nährwerte, Portionsrechner.
    5. Übersetzung mit DeepL in der App, gespeicherte Übersetzungen, Meldung ohne Internet.
    - Rezeptnamen in der Vorschlagsliste: nur die sichtbaren Namen werden übersetzt (in Paketen beim Scrollen) und gespeichert; keine Vorab-Übersetzung aller Namen (416'000 Zeichen).
