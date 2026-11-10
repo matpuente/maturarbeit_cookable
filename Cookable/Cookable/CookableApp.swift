@@ -11,6 +11,8 @@ struct CookableApp: App {
             case .success(let datenbank):
                 HauptAnsicht()
                     .environment(datenbank)
+                    // Die Oberfläche ist komplett Deutsch (Datum, Zahlen) – unabhängig von der Geräteeinstellung
+                    .environment(\.locale, Locale(identifier: "de_CH"))
             case .failure(let fehler):
                 ContentUnavailableView(
                     "Rezepte nicht verfügbar",

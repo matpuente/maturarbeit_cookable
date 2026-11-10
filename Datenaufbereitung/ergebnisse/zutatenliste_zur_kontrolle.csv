@@ -10,13 +10,13 @@ water;Wasser;ja;Wasser;2241;2138;1/2 cup water
 garlic clove;Knoblauch;nein;Knoblauchzehe;2231;2202;1 garlic clove, crushed
 flour;Mehl;ja;Mehl;2102;1986;4 tablespoons flour
 milk;Milch;nein;Milch;1845;1780;1 cup milk
-black pepper;schwarzer Pfeffer;ja;schwarzer Pfeffer;1492;1451;fresh ground black pepper, to taste
+black pepper;Pfeffer;ja;schwarzer Pfeffer;1492;1451;fresh ground black pepper, to taste
 garlic;Knoblauch;nein;Knoblauch;1435;1410;2 tablespoons minced garlic (can use more or less)
 brown sugar;brauner Zucker;nein;brauner Zucker;1370;1308;2 tablespoons brown sugar
-all-purpose flour;Weizenmehl;ja;Weizenmehl;1288;1217;1/4 cup all-purpose flour
+all-purpose flour;Mehl;ja;Weizenmehl;1288;1217;1/4 cup all-purpose flour
 baking powder;Backpulver;nein;Backpulver;1284;1282;2 teaspoons baking powder
 parmesan cheese;Parmesankäse;nein;Parmesankäse;1208;1152;1/4 cup grated parmesan cheese
-vegetable oil;Pflanzenöl;ja;Pflanzenöl;1107;1080;2 tablespoons vegetable oil, divided
+vegetable oil;Öl;ja;Pflanzenöl;1107;1080;2 tablespoons vegetable oil, divided
 vanilla;Vanille;nein;Vanille;1047;979;1 -2 teaspoon vanilla or 1 -2 teaspoon almond extract
 tomato;Tomate;nein;Tomate;1020;1007;1 (15 ounce) can tomatoes, diced
 baking soda;Natron;nein;Backpulver;1018;1016;1/2 teaspoon baking soda
@@ -42,7 +42,7 @@ cornstarch;Maisstärke;nein;Maisstärke;560;527;3 tablespoons cornstarch, divide
 potato;Kartoffel;nein;Kartoffel;553;551;8 cups diced potatoes
 unsalted butter;Butter;nein;ungesalzene Butter;544;495;1 tablespoon unsalted butter
 boneless skinless chicken breast;Pouletbrust;nein;Hähnchenbrust ohne Knochen und ohne Haut;504;504;4 boneless skinless chicken breasts
-ground black pepper;schwarzer Pfeffer;ja;gemahlener schwarzer Pfeffer;496;484;1/8 teaspoon ground black pepper
+ground black pepper;Pfeffer;ja;gemahlener schwarzer Pfeffer;496;484;1/8 teaspoon ground black pepper
 lemon;Zitrone;nein;Zitrone;489;460;1 teaspoon lemon, zest of
 cayenne pepper;Cayennepfeffer;nein;Cayennepfeffer;482;478;1 teaspoon cayenne pepper
 virgin olive oil;Olivenöl;ja;natives Olivenöl;468;448;1/2 cup extra virgin olive oil (the best quality you can get)
@@ -57,10 +57,10 @@ ground beef;Rinderhackfleisch;nein;Rinderhackfleisch;415;412;1 lb ground beef
 margarine;Margarine;nein;Margarine;415;385;1 cup margarine or 1 cup butter flavor shortening
 red pepper flakes;rote Chiliflocken;nein;rote Chiliflocken;413;412;3/4 teaspoon crushed red pepper flakes
 dijon mustard;Dijon-Senf;nein;Dijon-Senf;393;391;2 tablespoons Dijon mustard
-granulated sugar;Kristallzucker;ja;Kristallzucker;378;338;1 tablespoon granulated sugar
+granulated sugar;Zucker;ja;Kristallzucker;378;338;1 tablespoon granulated sugar
 dried oregano;Oregano;nein;getrockneter Oregano;374;373;1 tablespoon dried oregano
 nutmeg;Muskatnuss;nein;Muskatnuss;361;355;1/4 teaspoon nutmeg
-kosher salt;Koscheres Salz;ja;Koscheres Salz;357;330;kosher salt
+kosher salt;Salz;ja;Koscheres Salz;357;330;kosher salt
 red onion;rote Zwiebel;nein;rote Zwiebel;354;352;1/2 cup red onion, chopped
 fresh lemon juice;Zitronensaft;nein;frischer Zitronensaft;349;339;2 tablespoons fresh lemon juice
 powdered sugar;Puderzucker;nein;Puderzucker;338;324;2 1/2 tablespoons powdered sugar
@@ -69,11 +69,11 @@ pecan;Pekannuss;nein;Pekannuss;329;319;1/4 cup chopped pecans
 walnut;Walnuss;nein;Walnuss;328;323;1/4 cup walnuts or 1/4 cup pecans, finely chopped
 oregano;Oregano;nein;Oregano;316;314;1/2 teaspoon oregano
 bay leaf;Lorbeerblatt;nein;Lorbeerblatt;316;312;2 bay leaves
-white sugar;Weisszucker;ja;Weißzucker;294;270;1 teaspoon white sugar
+white sugar;Zucker;ja;Weißzucker;294;270;1 teaspoon white sugar
 zucchini;Zucchetti;nein;Zucchini;289;289;2 1/2 cups zucchini, sliced lengthwise 1/4 inch thick (about 2 medium)
 egg white;Eiweiss;nein;Eiweiß;287;284;1 large egg white
 balsamic vinegar;Balsamico-Essig;nein;Balsamico-Essig;284;282;1/2 cup balsamic vinegar
-canola oil;Rapsöl;ja;Rapsöl;284;279;2 tablespoons canola oil
+canola oil;Öl;ja;Rapsöl;284;279;2 tablespoons canola oil
 cumin;Kreuzkümmel;nein;Kreuzkümmel;282;280;2 tablespoons cumin
 dried thyme;Thymian;nein;getrockneter Thymian;279;278;1/4 teaspoon dried thyme
 dried basil;Basilikum;nein;getrocknetes Basilikum;278;275;1/4 teaspoon dried basil
@@ -123,7 +123,7 @@ dry mustard;getrockneter Senf;nein;getrockneter Senf;172;170;1 teaspoon dry must
 dry white wine;trockener Weisswein;nein;trockener Weißwein;172;169;1/2 cup dry white wine or 1/2 cup water
 shrimp;Garnelen;nein;Garnelen;172;172;1 1/2 lbs shrimp, peeled and deveined
 curry powder;Currypulver;nein;Currypulver;170;169;1 teaspoon curry powder
-sea salt;Meersalz;ja;Meersalz;170;164;sea salt
+sea salt;Salz;ja;Meersalz;170;164;sea salt
 whipping cream;Schlagrahm;nein;Schlagsahne;168;161;3/4 cup whipping cream
 whole wheat flour;Vollkornmehl;nein;Vollkornmehl;167;165;1 cup whole wheat flour
 white wine;Weisswein;nein;Weißwein;165;163;1/3 cup white wine
@@ -143,7 +143,7 @@ beef broth;Rinderbouillon;nein;Rinderbouillon;151;151;3/4 cup beef broth
 cocoa;Kakao;nein;Kakao;151;132;1 teaspoon cocoa
 yellow onion;gelbe Zwiebel;nein;gelbe Zwiebel;149;148;1 medium yellow onion, chopped
 cooking spray;Ölspray;nein;Kochspray;149;149;cooking spray (olive oil spray is best)
-boiling water;kochendes Wasser;ja;kochendes Wasser;148;145;2 cups boiling water
+boiling water;Wasser;ja;kochendes Wasser;148;145;2 cups boiling water
 cooked chicken;Poulet;nein;gekochtes Hähnchen;147;147;2 cups cooked chicken (3 frozen breasts)
 swiss cheese;Schweizer Käse;nein;Schweizer Käse;147;147;6 slices swiss cheese
 cheese;Käse;nein;Käse;146;145;shredded cheese
@@ -156,7 +156,7 @@ sesame seeds;Sesamsamen;nein;Sesamsamen;140;138;1/4 cup sesame seeds (or more)
 half-and-half;Rahm 10% Fett;nein;Half-and-Half;140;139;2 cups half-and-half
 celery rib;Stangensellerie;nein;Stangensellerie;139;139;2 celery ribs, chopped
 jalapeno pepper;Jalapeño-Chili;nein;Jalapeño-Chili;139;137;1 medium jalapeno pepper, chopped
-warm water;warmes Wasser;ja;warmes Wasser;139;131;1 1/2 cups warm water
+warm water;Wasser;ja;warmes Wasser;139;131;1 1/2 cups warm water
 red pepper;rote Peperoni;nein;rote Paprika;137;137;1/8 teaspoon red pepper
 fresh lime juice;Limettensaft;nein;frischer Limettensaft;137;132;2 tablespoons fresh lime juice
 tabasco sauce;Tabasco-Sauce;nein;Tabasco-Sauce;136;134;2 teaspoons Tabasco sauce (I use the chipotle flavor)
@@ -226,7 +226,7 @@ hard-boiled egg;hartgekochtes Ei;nein;hartgekochtes Ei;87;86;6 hard-boiled eggs,
 whole milk;Milch;nein;Vollmilch;86;86;2 cups whole milk
 cooked rice;Reis;nein;gekochter Reis;86;86;1/2 cup cooked rice
 cherry tomato;Kirschtomate;nein;Kirschtomate;86;86;18 cherry tomatoes
-cooking oil;Speiseöl;ja;Speiseöl;86;83;3 tablespoons cooking oil, divided
+cooking oil;Öl;ja;Speiseöl;86;83;3 tablespoons cooking oil, divided
 bread flour;Brotmehl;nein;Brotmehl;86;82;3 cups bread flour
 cauliflower;Blumenkohl;nein;Blumenkohl;85;85;1 large cauliflower, leaves removed and cut evenly into eighths
 barbecue sauce;Barbecue-Sauce;nein;Barbecue-Sauce;84;84;barbecue sauce, for serving
@@ -255,7 +255,7 @@ rice;Reis;nein;Reis;71;71;2 cups rice, prepared and cooled
 taco seasoning;Taco-Gewürzmischung;nein;Taco-Gewürzmischung;70;69;1 (1 1/4-1 1/2 ounce) packet taco seasoning (I use McCormicks)
 elbow macaroni;Winkelmakkaroni;nein;Winkelmakkaroni;69;69;16 ounces elbow macaroni
 white wine vinegar;Weissweinessig;nein;Weißweinessig;69;69;1/2 cup white wine vinegar
-coarse salt;grobes Salz;ja;grobes Salz;69;67;coarse salt
+coarse salt;Salz;ja;grobes Salz;69;67;coarse salt
 fresh strawberry;Erdbeere;nein;frische Erdbeere;69;65;5 cups sliced fresh strawberries
 corn tortilla;Maistortilla;nein;Maistortilla;68;68;8 corn tortillas
 creamy peanut butter;cremige Erdnussbutter;nein;cremige Erdnussbutter;68;67;1/2 cup creamy peanut butter
@@ -342,7 +342,7 @@ sweet red pepper;süsse rote Peperoni;nein;süße rote Paprika;49;49;1 cup chopp
 stewed tomato;geschmorte Tomaten;nein;geschmorte Tomaten;48;47;2 (16 ounce) cans stewed tomatoes
 cracked black pepper;Pfeffer;ja;gemahlener schwarzer Pfeffer;48;47;1/8 cup cracked black pepper
 button mushroom;Champignon;nein;Champignon;48;48;1 lb button mushroom (thinly sliced)
-table salt;Kochsalz;ja;Kochsalz;48;46;1/4 teaspoon table salt or 1/4 teaspoon kosher salt
+table salt;Salz;ja;Kochsalz;48;46;1/4 teaspoon table salt or 1/4 teaspoon kosher salt
 pecan half;Pekannuss;nein;Pekannusshälfte;48;48;1/2 cup pecan halves, toasted
 oats;Hafer;nein;Hafer;48;47;3/4 cup oats, uncooked (quick or old-fashioned)
 unsweetened applesauce;Apfelmus;nein;ungesüßtes Apfelmus;48;48;1 1/2 cups unsweetened applesauce
@@ -475,7 +475,7 @@ semisweet chocolate;Halbbitter-Schokolade;nein;Halbbitter-Schokolade;32;32;1 1/2
 corn syrup;Maissirup;nein;Maissirup;32;32;1 teaspoon corn syrup
 dill pickle;Dillgurke;nein;Dillgurke;32;32;4 large dill pickles, shredded
 liquid smoke;Flüssigrauch;nein;Flüssigrauch;32;32;1 1/2 teaspoons liquid smoke
-white flour;Weissmehl;ja;Weißmehl;32;32;2 cups white flour
+white flour;Mehl;ja;Weißmehl;32;32;2 cups white flour
 maraschino cherry;Maraschino-Kirsche;nein;Maraschino-Kirsche;32;32;maraschino cherry
 yukon gold potato;Yukon-Gold-Kartoffel;nein;Yukon-Gold-Kartoffel;32;32;2 lbs yukon gold potatoes (start mash)
 cream of celery soup;Selleriecremesuppe;nein;Selleriecremesuppe;31;31;1 (10 1/4 ounce) can cream of celery soup
@@ -513,7 +513,7 @@ oreo cooky;Oreo-Keks;nein;Oreo-Keks;30;27;4 1/2 cups crushed Oreo cookies
 teriyaki sauce;Teriyaki-Sauce;nein;Teriyaki-Soße;29;29;1/4 cup teriyaki sauce
 frozen mixed vegetable;tiefgefrorenes Gemüsemischung;nein;tiefgefrorenes Gemüsemischung;29;29;1 (10 ounce) package frozen mixed vegetables
 fresh sage;Salbei;nein;frischer Salbei;29;29;1 teaspoon fresh sage, chopped (or 1t. ground dry sage)
-black peppercorn;schwarze Pfefferkörner;ja;schwarze Pfefferkörner;29;29;1 tablespoon black peppercorns
+black peppercorn;Pfeffer;ja;schwarze Pfefferkörner;29;29;1 tablespoon black peppercorns
 asiago cheese;Asiago-Käse;nein;Asiago-Käse;29;27;1/2 cup asiago cheese
 italian dressing;italienisches Dressing;nein;italienisches Dressing;29;29;1/2 cup Italian dressing
 dried sage;Salbei;nein;getrockneter Salbei;29;29;1 1/2 teaspoons dried sage or 1 1/2 teaspoons rubbed sage
@@ -706,7 +706,7 @@ spicy brown mustard;scharfer brauner Senf;nein;scharfer brauner Senf;18;17;1/4 c
 white mushroom;weisser Champignon;nein;weißer Champignon;18;18;1/2 lb white mushrooms or 1/2 lb brown button mushroom, sliced thinly
 acorn squash;Eichelkürbis;nein;Eichelkürbis;18;18;2 acorn squash, halved and seeded
 oat bran;Haferkleie;nein;Haferkleie;18;18;1 tablespoon oat bran
-fresh black pepper;schwarzer Pfeffer;ja;frischer schwarzer Pfeffer;18;18;1 teaspoon fresh black pepper
+fresh black pepper;Pfeffer;ja;frischer schwarzer Pfeffer;18;18;1 teaspoon fresh black pepper
 crunchy peanut butter;knusprige Erdnussbutter;nein;knusprige Erdnussbutter;18;17;3 tablespoons crunchy peanut butter
 dijon-style mustard;Senf nach Dijon-Art;nein;Senf nach Dijon-Art;18;17;1 tablespoon dijon-style mustard
 bok choy;Pak Choi;nein;Pak Choi;18;18;2 stalks bok choy, sliced
@@ -746,7 +746,7 @@ roasting chicken;Ganzes Poulet;nein;Hähnchen braten;16;16;1 large roasting chic
 cod fish fillet;Kabeljaufilet;nein;Kabeljaufilet;16;16;1 lb cod fish fillet
 ground round;Rinderhackfleisch;nein;Rinderhackfleisch;16;16;1 1/2 lbs ground round
 frozen corn kernel;Maiskorn;nein;gefrorene Maiskörner;16;16;1 cup frozen corn kernels, thawed
-ice water;Eiswasser;ja;Eiswasser;16;16;1 gallon ice water
+ice water;Wasser;ja;Eiswasser;16;16;1 gallon ice water
 light coconut milk;Kokosmilch;nein;leichte Kokosmilch;16;16;1 (14 ounce) can light coconut milk (I used regular)
 fat free sour cream;Sauerrahm;nein;fettfreie saure Sahne;16;16;1/4 cup fat free sour cream
 prepared yellow mustard;gelber Senf;nein;fertiger gelber Senf;16;16;1 tablespoon prepared yellow mustard
@@ -826,7 +826,7 @@ baguette;Baguette;nein;Baguette;14;14;1 piece baguette, about 6-inch in length
 salted peanut;Erdnuss;nein;gesalzene Erdnuss;14;14;2 tablespoons salted peanuts, chopped
 nutritional yeast;Nährhefe;nein;Nährhefe;14;14;1 1/2 cups nutritional yeast
 quick-cooking oatmeal;Schnellkoch-Haferflocken;nein;Schnellkoch-Haferflocken;14;14;1/3 cup quick-cooking oatmeal
-lukewarm water;lauwarmes Wasser;ja;lauwarmes Wasser;14;14;1 1/4 cups lukewarm water
+lukewarm water;Wasser;ja;lauwarmes Wasser;14;14;1 1/4 cups lukewarm water
 cold unsalted butter;Butter;nein;kalte, ungesalzene Butter;14;14;5 tablespoons cold unsalted butter, cubed (divided use)
 wasabi powder;Wasabi-Pulver;nein;Wasabi-Pulver;14;12;1/2 teaspoon wasabi powder or 1/2 teaspoon wasabi
 cracker;Cracker;nein;Cracker;14;14;cracker

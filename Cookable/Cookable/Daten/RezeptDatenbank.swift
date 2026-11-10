@@ -41,10 +41,29 @@ final class RezeptDatenbank {
             throw Fehler.oeffnenFehlgeschlagen(meldung)
         }
         verbindung = zeiger
+
+        let zutaten = try abfragen("SELECT id, name, grundzutat, haeufigkeit FROM zutat ORDER BY name") { zeile in
+            Zutat(
+                id: Int(sqlite3_column_int64(zeile, 0)),
+                name: String(cString: sqlite3_column_text(zeile, 1)),
+                istGrundzutat: sqlite3_column_int(zeile, 2) == 1,
+                haeufigkeit: Int(sqlite3_column_int64(zeile, 3))
+            )
+        }
+        self.zutaten = zutaten
+        zutatenSuche = ZutatenSuche(zutaten: zutaten)
     }
 
     deinit {
         sqlite3_close(verbindung)
+    }
+
+    /// Alle Zutaten der Zutatenliste (klein genug, um sie im Speicher zu halten)
+    @ObservationIgnored private(set) var zutaten: [Zutat] = []
+    @ObservationIgnored private(set) var zutatenSuche = ZutatenSuche(zutaten: [])
+
+    var grundzutaten: [Zutat] {
+        zutaten.filter(\.istGrundzutat).sorted { $0.haeufigkeit > $1.haeufigkeit }
     }
 
     /// Anzahl Zeilen einer Tabelle, z. B. `anzahl(in: "rezept")`.

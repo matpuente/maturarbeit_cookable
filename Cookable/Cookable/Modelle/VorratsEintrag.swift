@@ -2,7 +2,9 @@ import Foundation
 import SwiftData
 
 /// Lagerort einer Zutat im Vorrat.
-enum Lagerort: String, Codable, CaseIterable, Identifiable {
+nonisolated enum Lagerort: String, Codable, CaseIterable, Identifiable {
+    /// Dinge, die man immer hat (anfangs die Grundzutaten); ohne Ablaufdatum
+    case immerZuhause
     case kuehlschrank
     case tiefkuehler
     case vorratsschrank
@@ -11,6 +13,7 @@ enum Lagerort: String, Codable, CaseIterable, Identifiable {
 
     var name: String {
         switch self {
+        case .immerZuhause: "Immer zuhause"
         case .kuehlschrank: "Kühlschrank"
         case .tiefkuehler: "Tiefkühler"
         case .vorratsschrank: "Vorratsschrank"
@@ -19,11 +22,14 @@ enum Lagerort: String, Codable, CaseIterable, Identifiable {
 
     var symbol: String {
         switch self {
+        case .immerZuhause: "house"
         case .kuehlschrank: "refrigerator"
         case .tiefkuehler: "snowflake"
         case .vorratsschrank: "cabinet"
         }
     }
+
+    var hatAblaufdatum: Bool { self != .immerZuhause }
 }
 
 /// Eine Zutat im Vorrat des Nutzers (gespeichert mit SwiftData).
@@ -41,7 +47,9 @@ final class VorratsEintrag {
         self.zutatID = zutatID
         self.name = name
         self.lagerort = lagerort
-        self.ablaufdatum = ablaufdatum
+        self.ablaufdatum = lagerort.hatAblaufdatum ? ablaufdatum : nil
         self.hinzugefuegtAm = .now
     }
+
+    var anzeigename: String { name.mitGrossemAnfang }
 }

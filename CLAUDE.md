@@ -57,11 +57,14 @@ Cookable/                    ← Hauptordner, Claude Code hier starten
 ### Version 1 (essenziell)
 
 1. **Zutaten eingeben** – mit Autovervollständigung und Kategorisierung nach Lagerort (Kühlschrank, Tiefkühler, Vorratsschrank).
-   - Pro Zutat: Name, Lagerort, optional Ablaufdatum.
+   - Pro Zutat: Name, Lagerort, optional Ablaufdatum. Einträge können bearbeitet (Lagerort, Ablaufdatum) und gelöscht werden.
+   - Nur Zutaten aus der Zutatenliste können erfasst werden (keine freie Eingabe).
+   - Dieselbe Zutat darf nicht zweimal am selben Lagerort stehen; an verschiedenen Lagerorten ist sie erlaubt.
    - Keine Mengenangaben.
    - Die Autovervollständigung nutzt die Zutatenliste (Abschnitt 6).
 2. **Rezeptvorschläge** – aus den mitgelieferten Rezepten, passend zu den eingegebenen Zutaten.
-   - Grundzutaten gelten immer als vorhanden und müssen nicht eingegeben werden: Salz, Pfeffer, Wasser, Öl, Zucker, Mehl.
+   - Zusätzlicher kleiner Bereich **«Immer zuhause»** im Vorrat (ohne Ablaufdatum): beim ersten Start mit den 7 Grundzutaten gefüllt (Salz, Pfeffer, Zucker, Mehl, Wasser, Öl, Olivenöl). Man kann Grundzutaten daraus löschen (z. B. kein Mehl zuhause) und beliebige Zutaten der Liste hinzufügen, die man immer hat (z. B. Butter).
+   - Sortierung: Eine **vorhandene Grundzutat** zählt weder als vorhanden noch als fehlend. Eine **gelöschte Grundzutat** zählt als fehlend. Selbst hinzugefügte Zutaten in «Immer zuhause» zählen wie andere Vorratszutaten als vorhanden.
    - Sortierung nach Anteil der vorhandenen Zutaten (es erscheinen auch Rezepte, für die nicht alle Zutaten vorhanden sind).
 3. **Filter**
    - Zubereitungszeit: bis 15 / 30 / 60 Minuten oder beliebig.
@@ -88,7 +91,7 @@ Navigation über Tabs.
 
 ### Version 1
 
-- **Vorrat:** Zutaten nach Lagerort gruppiert; Zutaten hinzufügen und löschen.
+- **Vorrat:** Bereich «Immer zuhause» (kompakt, oben) und Zutaten nach Lagerort gruppiert; Zutaten hinzufügen, bearbeiten und löschen.
 - **Rezepte:** Vorschlagsliste mit Filtern.
   - **Detailansicht:** Zutaten, Anleitung, Nährwerte, Portionsrechner.
 
@@ -208,13 +211,16 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
      2. `zutatenliste.py` erstellt `ergebnisse/zutatenliste_zur_kontrolle.csv` mit DeepL. **Nicht erneut ausführen**, sonst wird die von Hand kontrollierte Liste überschrieben.
      3. `zutatenliste_uebernehmen.py` übernimmt die kontrollierte Liste in die SQLite-Datei (Tabellen `zutat`, `zutat_variante`, `rezept_zutat`, Spalte `rezept.anzahl_zutaten`).
    - Nachbessern der Zutatenliste: `zusammenfassen_vorschlaege.py` schlägt Varianten zum Zusammenfassen vor (`ergebnisse/zusammenfassen_vorschlaege.csv`, Spalte `uebernehmen` von Hand kontrollieren), `zusammenfassen_anwenden.py` übernimmt sie in die Zutatenliste (mit Sicherung). Danach `zutatenliste_uebernehmen.py`.
-   - Stand 10. November 2026: 15'000 Rezepte, 717 deutsche Zutaten (davon 24 Grundzutaten). Die kontrollierte Liste ist die verbindliche Quelle.
+   - Stand 10. November 2026: 15'000 Rezepte, 700 deutsche Zutaten. Die Grundzutaten sind auf 7 Begriffe zusammengefasst (Salz, Pfeffer, Zucker, Mehl, Wasser, Öl, Olivenöl). Die kontrollierte Liste ist die verbindliche Quelle.
    - Poulet-Teile: chicken thigh = Pouletoberschenkel, chicken drumstick = Pouletunterschenkel, chicken leg = Pouletschenkel (ganzer Schenkel).
    - Ein deutscher Begriff gilt nur ganz oder gar nicht als Grundzutat. Varianten werden zusammengefasst, wenn man mit der Zutat zuhause das Rezept kochen kann (garlic clove → Knoblauch). Verschiedene Produkte bleiben getrennt (Knoblauch ≠ Knoblauchpulver, Rahm ≠ Sauerrahm).
-   - Anteil vorhandener Zutaten = vorhandene Zutaten aus `rezept_zutat` / `rezept.anzahl_zutaten` (Grundzutaten zählen nicht mit).
+   - Anteil vorhandener Zutaten: siehe Abschnitt 3, Funktion 2 (Regel für Grundzutaten). Die Datenbank wird dafür zu Beginn von Etappe 3 angepasst (Grundzutaten in `rezept_zutat` speichern und markieren).
 3. **App Version 1:** Funktionen 1–5 in Etappen umsetzen.
    1. Grundgerüst (erledigt 10. November 2026): Projekt «Cookable» (iOS 26.0, Swift 6), Rezeptdatenbank eingebunden, Tabs «Vorrat» und «Rezepte», SwiftData-Modell `VorratsEintrag`.
-   2. Vorrat: Zutaten mit Autovervollständigung erfassen, nach Lagerort gruppieren, Ablaufdatum, löschen.
+   2. Vorrat (erledigt 10. November 2026): Zutaten mit Autovervollständigung erfassen, Bereich «Immer zuhause», nach Lagerort gruppieren, Ablaufdatum, bearbeiten, löschen.
+      - «Immer zuhause» ist der Lagerort `immerZuhause` im SwiftData-Modell; die Grundzutaten werden beim ersten Start eingetragen (`@AppStorage("grundzutatenAngelegt")`).
+      - Suche: ohne Gross-/Kleinschreibung und Akzente; Reihenfolge Namensanfang → Wortanfang → irgendwo, innerhalb häufige Zutaten zuerst. Anzeige mit grossem Anfangsbuchstaben.
+      - Die Oberfläche verwendet immer das Gebietsschema `de_CH` (Datum, Zahlen).
    3. Rezeptvorschläge: Sortierung nach Anteil vorhandener Zutaten, Filter Zeit und Kategorie.
    4. Detailansicht: Zutaten (metrisch), Anleitung, Nährwerte, Portionsrechner.
    5. Übersetzung mit DeepL in der App, gespeicherte Übersetzungen, Meldung ohne Internet.
