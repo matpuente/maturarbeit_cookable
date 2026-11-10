@@ -234,10 +234,15 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - Filter bleiben gespeichert (`@AppStorage`). Auf dem iPad Liste und Detail nebeneinander (`NavigationSplitView`).
       - Keine Bilder in der Liste. In der Detailansicht kommt das Foto von Food.com dazu (beschlossen für Etappe 4).
       - Filter «Muss enthalten» (ergänzt 10. November 2026).
-   4. Detailansicht: Zutaten (metrisch), Anleitung, Nährwerte, Portionsrechner.
+   4. Detailansicht (erledigt 10. November 2026): Foto, Zutaten (metrisch), Anleitung, Nährwerte, Portionsrechner.
+      - Foto von Food.com oben (Platzhalter, wenn keines vorhanden); Zwischenspeicher bis 100 MB (`URLCache`).
+      - Mengen: Cups, Pints, Quarts → ml; Ounces, Pounds → g; Butter-«sticks» → 113 g; **EL und TL bleiben** (nicht in ml). Rundung: unter 10 auf 1, unter 50 auf 5, sonst auf 10; ab 1000 in l bzw. kg. Stückzahlen und Löffel als Brüche (½, ⅓ …). Einheiten auf Deutsch (Dose, Packung, Zehe …).
+      - Portionsrechner von 1 bis zum Vierfachen der Originalportionen (höchstens 100). Nährwerte bleiben pro Portion.
+      - Zutaten: ✓ = vorhanden (auch vorhandene Grundzutaten), orange = Ersatz («Ersatz: du hast Penne-Nudeln»). Fehlende Zutaten werden nicht markiert (Funktion 6).
    5. Übersetzung mit DeepL in der App, gespeicherte Übersetzungen, Meldung ohne Internet.
    - Rezeptnamen in der Vorschlagsliste: nur die sichtbaren Namen werden übersetzt (in Paketen beim Scrollen) und gespeichert; keine Vorab-Übersetzung aller Namen (416'000 Zeichen).
-4. **Später:** Funktionen 6–9, nur auf ausdrückliche Anfrage.
+4. **Design:** Nach Version 1 eine eigene Etappe für das Design (Farben, App-Symbol, Gestaltung der Ansichten). Die Darstellung (`Ansichten/`) ist von Logik und Daten getrennt und lässt sich ändern, ohne die Funktionen zu beeinträchtigen.
+5. **Später:** Funktionen 6–9, nur auf ausdrückliche Anfrage.
 
 ---
 

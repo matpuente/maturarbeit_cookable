@@ -55,6 +55,7 @@ struct RezepteAnsicht: View {
         } detail: {
             if let auswahl, let vorschlag = vorschlaege.first(where: { $0.id == auswahl }) {
                 RezeptDetailAnsicht(vorschlag: vorschlag)
+                    .id(vorschlag.id)
             } else {
                 ContentUnavailableView("Kein Rezept ausgewählt", systemImage: "fork.knife")
             }

@@ -5,6 +5,11 @@ import SwiftUI
 struct CookableApp: App {
     @State private var datenbank = Result { try RezeptDatenbank() }
 
+    init() {
+        // Fotos von Food.com zwischenspeichern: bis 100 MB auf dem Gerät, älteste werden automatisch gelöscht
+        URLCache.shared = URLCache(memoryCapacity: 30_000_000, diskCapacity: 100_000_000)
+    }
+
     var body: some Scene {
         WindowGroup {
             switch datenbank {
