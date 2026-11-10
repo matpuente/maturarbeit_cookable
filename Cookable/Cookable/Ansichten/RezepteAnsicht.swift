@@ -180,49 +180,50 @@ private struct TitelZuerstStil: LabelStyle {
     }
 }
 
-/// Auswahl der Zutaten aus dem Vorrat für den Filter «Muss enthalten».
+/// Auswahl der Zutaten aus dem Vorrat für den Filter «Muss enthalten», nach Lagerort gruppiert und durchsuchbar.
 struct MussEnthaltenAuswahl: View {
     let vorrat: [VorratsEintrag]
     @Binding var auswahl: Set<Int>
     @Environment(\.dismiss) private var schliessen
+    @State private var suchtext = ""
 
-    /// Jede Zutat nur einmal, auch wenn sie an mehreren Lagerorten steht
-    private var zutaten: [(id: Int, name: String)] {
-        var gesehen = Set<Int>()
+    /// Zum Aufbrauchen sind meist Kühlschrank und Tiefkühler gefragt, darum «Immer zuhause» zuletzt
+    private static let reihenfolge: [Lagerort] = [.kuehlschrank, .tiefkuehler, .vorratsschrank, .immerZuhause]
+
+    private func eintraege(in ort: Lagerort) -> [VorratsEintrag] {
+        let gesucht = suchtext.trimmingCharacters(in: .whitespaces).suchform
         return vorrat
+            .filter { $0.lagerort == ort && (gesucht.isEmpty || $0.name.suchform.contains(gesucht)) }
             .sorted { $0.anzeigename.localizedStandardCompare($1.anzeigename) == .orderedAscending }
-            .filter { gesehen.insert($0.zutatID).inserted }
-            .map { ($0.zutatID, $0.anzeigename) }
     }
 
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    ForEach(zutaten, id: \.id) { zutat in
-                        Button {
-                            if auswahl.contains(zutat.id) {
-                                auswahl.remove(zutat.id)
-                            } else {
-                                auswahl.insert(zutat.id)
+                ForEach(Self.reihenfolge) { ort in
+                    let liste = eintraege(in: ort)
+                    if !liste.isEmpty {
+                        Section {
+                            ForEach(liste) { eintrag in
+                                zeile(eintrag)
                             }
-                        } label: {
-                            HStack {
-                                Text(zutat.name)
-                                Spacer()
-                                if auswahl.contains(zutat.id) {
-                                    Image(systemName: "checkmark").foregroundStyle(.tint)
-                                }
-                            }
-                            .contentShape(.rect)
+                        } header: {
+                            Label(ort.name, systemImage: ort.symbol)
                         }
-                        .foregroundStyle(.primary)
                     }
-                } footer: {
-                    Text("Es erscheinen nur Rezepte, die alle gewählten Zutaten enthalten. Der übrige Vorrat zählt weiterhin.")
+                }
+                if Self.reihenfolge.allSatisfy({ eintraege(in: $0).isEmpty }) {
+                    ContentUnavailableView.search(text: suchtext)
+                } else if suchtext.isEmpty {
+                    Section {
+                    } footer: {
+                        Text("Es erscheinen nur Rezepte, die alle gewählten Zutaten enthalten. Der übrige Vorrat zählt weiterhin.")
+                    }
                 }
             }
-            .navigationTitle("Muss enthalten")
+            .searchable(text: $suchtext, placement: .navigationBarDrawer(displayMode: .always), prompt: "Zutat suchen")
+            .autocorrectionDisabled()
+            .navigationTitle(auswahl.isEmpty ? "Muss enthalten" : "Muss enthalten (\(auswahl.count))")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -234,5 +235,34 @@ struct MussEnthaltenAuswahl: View {
                 }
             }
         }
+    }
+
+    /// Steht eine Zutat an mehreren Lagerorten, ist sie überall gleichzeitig angehakt.
+    private func zeile(_ eintrag: VorratsEintrag) -> some View {
+        let gewaehlt = auswahl.contains(eintrag.zutatID)
+        return Button {
+            if gewaehlt {
+                auswahl.remove(eintrag.zutatID)
+            } else {
+                auswahl.insert(eintrag.zutatID)
+            }
+        } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(eintrag.anzeigename)
+                    if let datum = eintrag.ablaufdatum {
+                        Text("Läuft ab am \(datum.formatted(date: .numeric, time: .omitted))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                Spacer()
+                if gewaehlt {
+                    Image(systemName: "checkmark").foregroundStyle(.tint)
+                }
+            }
+            .contentShape(.rect)
+        }
+        .foregroundStyle(.primary)
     }
 }
