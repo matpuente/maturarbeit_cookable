@@ -10,6 +10,7 @@ struct RezeptDetailAnsicht: View {
     @Environment(\.modelContext) private var kontext
     @Query private var vorrat: [VorratsEintrag]
     @Query private var favoriten: [Favorit]
+    @Query private var einkauf: [EinkaufsEintrag]
     @State private var details: RezeptDetails?
     @State private var portionen: Int
     @State private var uebersetzung: Uebersetzung?
@@ -182,8 +183,8 @@ struct RezeptDetailAnsicht: View {
                             Image(systemName: "checkmark.circle.fill").foregroundStyle(.tint)
                         case .ersatz:
                             Image(systemName: "arrow.triangle.2.circlepath.circle.fill").foregroundStyle(.orange)
-                        case .keiner:
-                            Image(systemName: "circle").foregroundStyle(.clear)
+                        case .fehlt:
+                            Image(systemName: "circle.dashed").foregroundStyle(.secondary)
                         }
                     }
                     .accessibilityHidden(true)
@@ -197,21 +198,75 @@ struct RezeptDetailAnsicht: View {
                             Text("Ersatz: du hast \(name)")
                                 .font(.caption)
                                 .foregroundStyle(.orange)
+                        } else if case .fehlt = status {
+                            Text("fehlt")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
+                .contextMenu {
+                    Button("Auf die Einkaufsliste", systemImage: "cart.badge.plus") {
+                        aufEinkaufsliste([(index, zeile)], nurFehlende: false, vorratIDs: vorratIDs)
+                    }
+                }
+            }
+            einkaufsKnopf(zeilen, vorratIDs: vorratIDs)
+        }
+    }
+
+    // MARK: - Einkaufsliste
+
+    /// Knopf unter den Zutaten: alle fehlenden Zutaten auf die Einkaufsliste
+    @ViewBuilder
+    private func einkaufsKnopf(_ zeilen: [ZutatenZeile], vorratIDs: Set<Int>) -> some View {
+        let fehlende = zeilen.enumerated().filter {
+            if case .fehlt = status(von: $0.element, vorratIDs: vorratIDs) { true } else { false }
+        }
+        if einkauf.contains(where: { $0.rezeptID == rezept.id && !$0.erledigt }) {
+            Label("Auf der Einkaufsliste", systemImage: "checkmark.circle")
+                .foregroundStyle(.tint)
+        } else if !fehlende.isEmpty {
+            Button {
+                aufEinkaufsliste(fehlende.map { ($0.offset, $0.element) }, nurFehlende: true, vorratIDs: vorratIDs)
+            } label: {
+                Label("Fehlende Zutaten auf die Einkaufsliste (\(fehlende.count))", systemImage: "cart.badge.plus")
             }
         }
+    }
+
+    /// Legt Einkaufseinträge an – mit Menge passend zur gewählten Portionenzahl. Zutaten der Zutatenliste
+    /// erhalten den deutschen Begriff (für «Gekauft → in den Vorrat»), andere die Bezeichnung aus dem Rezept.
+    private func aufEinkaufsliste(_ zeilen: [(index: Int, zeile: ZutatenZeile)], nurFehlende: Bool, vorratIDs: Set<Int>) {
+        let zutaten = Dictionary(uniqueKeysWithValues: datenbank.zutaten.map { ($0.id, $0) })
+        for (index, zeile) in zeilen {
+            let menge = Mengenangabe.text(fuer: zeile, faktor: faktor)
+            // "salt and pepper": eine Zeile, zwei Zutaten – nur die fehlenden
+            let bekannte = zeile.zutatIDs
+                .filter { !nurFehlende || !vorratIDs.contains($0) }
+                .compactMap { zutaten[$0] }
+            if bekannte.isEmpty {
+                let name = beschreibung(von: zeile, index: index)
+                kontext.insert(EinkaufsEintrag(name: name, menge: menge.isEmpty ? nil : menge,
+                                               rezeptID: rezept.id, rezeptName: anzeigename))
+            } else {
+                for (nummer, zutat) in bekannte.enumerated() {
+                    kontext.insert(EinkaufsEintrag(name: zutat.name, menge: nummer == 0 && !menge.isEmpty ? menge : nil,
+                                                   zutatName: zutat.name, rezeptID: rezept.id, rezeptName: anzeigename))
+                }
+            }
+        }
+        try? kontext.save()
     }
 
     private enum Status {
         case vorhanden
         case ersatz(String)
-        case keiner
+        case fehlt
     }
 
-    /// Vorhanden (auch vorhandene Grundzutaten), Ersatz aus derselben Austauschgruppe oder keiner.
-    /// Fehlende Zutaten werden bewusst nicht markiert (spätere Funktion 6).
+    /// Vorhanden (auch vorhandene Grundzutaten), Ersatz aus derselben Austauschgruppe oder fehlt
+    /// (auch Zutaten, die nicht in der Zutatenliste stehen).
     private func status(von zeile: ZutatenZeile, vorratIDs: Set<Int>) -> Status {
         if zeile.zutatIDs.contains(where: vorratIDs.contains) {
             return .vorhanden
@@ -222,7 +277,7 @@ struct RezeptDetailAnsicht: View {
                 return .ersatz(ersatz.anzeigename)
             }
         }
-        return .keiner
+        return .fehlt
     }
 
     /// Name und Zusatz auf Englisch – so wird die Zeile an DeepL geschickt

@@ -11,9 +11,9 @@ struct CookableApp: App {
         // Fotos von Food.com zwischenspeichern: bis 100 MB auf dem Gerät, älteste werden automatisch gelöscht
         URLCache.shared = URLCache(memoryCapacity: 30_000_000, diskCapacity: 100_000_000)
 
-        // Nutzerdaten (SwiftData): Vorrat, gespeicherte Übersetzungen und Favoriten
+        // Nutzerdaten (SwiftData): Vorrat, gespeicherte Übersetzungen, Favoriten und Einkaufsliste
         do {
-            speicher = try ModelContainer(for: VorratsEintrag.self, Uebersetzung.self, Favorit.self)
+            speicher = try ModelContainer(for: VorratsEintrag.self, Uebersetzung.self, Favorit.self, EinkaufsEintrag.self)
         } catch {
             fatalError("Der Speicher für die Nutzerdaten konnte nicht geöffnet werden: \(error)")
         }

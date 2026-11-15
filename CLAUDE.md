@@ -86,7 +86,7 @@ Cookable/                    ← Hauptordner, Claude Code hier starten
 9. **Bewertungen** – eigene Bewertung von Rezepten; ganz am Schluss, falls noch Zeit bleibt.
 
 Funktionen aus «Später» erst umsetzen, wenn Version 1 fertig ist und ausdrücklich danach gefragt wird.
-Stand 15. November 2026: Version 1 ist fertig. Ausdrücklich gewünscht und geplant sind Funktion 6 (Einkaufsliste), 7 (Ablaufdatum-Markierung, ohne Mitteilungen) und 8 (Favoriten) sowie eine neue Startseite (siehe Abschnitt 4). Offen bleiben die Mitteilungen bei Ablauf (Funktion 7) und Funktion 9 (Bewertungen).
+Stand 15. November 2026: Version 1 ist fertig, ebenso Funktion 6 (Einkaufsliste), 7 (Ablaufdatum-Markierung, ohne Mitteilungen) und 8 (Favoriten) sowie die neue Startseite (siehe Abschnitt 4). Offen bleiben die Mitteilungen bei Ablauf (Funktion 7) und Funktion 9 (Bewertungen).
 
 ---
 
@@ -253,7 +253,7 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - Foto von Food.com oben (Platzhalter, wenn keines vorhanden); Zwischenspeicher bis 100 MB (`URLCache`).
       - Mengen: Cups, Pints, Quarts → ml; Ounces, Pounds → g; Butter-«sticks» → 113 g; **EL und TL bleiben** (nicht in ml). Rundung: unter 10 auf 1, unter 50 auf 5, sonst auf 10; ab 1000 in l bzw. kg. Stückzahlen und Löffel als Brüche (½, ⅓ …). Einheiten auf Deutsch (Dose, Packung, Zehe …).
       - Portionsrechner von 1 bis zum Vierfachen der Originalportionen (höchstens 100). Nährwerte bleiben pro Portion.
-      - Zutaten: ✓ = vorhanden (auch vorhandene Grundzutaten), orange = Ersatz («Ersatz: du hast Penne-Nudeln»). Fehlende Zutaten werden nicht markiert (Funktion 6).
+      - Zutaten: ✓ = vorhanden (auch vorhandene Grundzutaten), orange = Ersatz («Ersatz: du hast Penne-Nudeln»). Seit Funktion 6: fehlende Zutaten mit grauem Symbol und «fehlt».
    5. Übersetzung mit DeepL in der App (erledigt 10. November 2026), gespeicherte Übersetzungen, Meldung ohne Internet.
       - Schlüssel in `Cookable/Cookable/Geheim/DeepL.plist` (Schlüssel `Schluessel`; Ordner in `.gitignore`), Vorlage `Cookable/DeepL-Vorlage.plist`. Ohne Schlüssel läuft die App auf Englisch mit Hinweis.
       - Liste: sichtbare Rezeptnamen werden gesammelt und in Paketen übersetzt. Detailansicht: Name, Zutaten (Name und Zusatz) und Anleitung beim ersten Öffnen. Mengen und Einheiten erzeugt die App selbst auf Deutsch.
@@ -274,7 +274,11 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - Tab «Favoriten»: Sortierung «Passt am besten» (Standard) oder «Zuletzt hinzugefügt»; Wischen entfernt. Favoriten erscheinen auch ohne vorhandene Zutat.
       - Startseite: Reihe «Deine Favoriten» (am besten passende zuerst).
       - Eigene Bewertungen (Funktion 9) folgen erst ganz am Schluss.
-   3. Fehlende Zutaten und Einkaufsliste (Funktion 6), mit «Gekauft → in den Vorrat».
+   3. Fehlende Zutaten und Einkaufsliste (Funktion 6, erledigt 15. November 2026).
+      - SwiftData-Modell `EinkaufsEintrag` (Name, Menge als Text, deutscher Zutatenname falls aus der Liste, Rezept-ID und -Name, erledigt).
+      - Detailansicht: fehlende Zutaten grau mit «fehlt» (auch Zutaten ausserhalb der Liste); Knopf «Fehlende Zutaten auf die Einkaufsliste (n)» mit Mengen für die gewählte Portionenzahl; einzelne Zeilen per langem Drücken. Ersatz zählt als vorhanden und kommt nicht automatisch auf die Liste. Fehlende Grundzutaten kommen mit.
+      - Tab «Einkaufsliste» (Zahl der offenen Einträge am Symbol): «Alle Zutaten» (gleiche Zutat zusammengefasst, Mengen mit «+») oder «Nach Rezept»; Antippen legt in den Bereich «Im Wagen»; Wischen löscht; + für Zutaten der Liste oder freien Text; Teilen; Erledigte entfernen.
+      - «Gekaufte in den Vorrat»: Zutaten der Liste an den vorgeschlagenen Lagerort (Grundzutaten → «Immer zuhause»), ohne Ablaufdatum, keine Doppelten; freie Einträge werden nur entfernt.
 6. **Später:** Mitteilungen bei Ablauf (Funktion 7) und Bewertungen (Funktion 9), nur auf ausdrückliche Anfrage.
 
 ---
