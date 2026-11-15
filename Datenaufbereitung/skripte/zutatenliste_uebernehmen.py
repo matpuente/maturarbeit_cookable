@@ -40,6 +40,7 @@ ALTE_NAMEN = {
     "Hackfleisch": "Rinderhackfleisch",
     "Hamburger": "Rinderhackfleisch",
     "Rinderfilet, zerkleinert": "Rinderhackfleisch",
+    "gewürzte Füllmischung": "Füllmischung",
 }
 GRUPPEN = ERGEBNISSE / "austauschgruppen.csv"
 LAGERORTE = ERGEBNISSE / "lagerorte.csv"

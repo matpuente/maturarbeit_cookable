@@ -558,7 +558,7 @@ corn chips;Mais;nein;Name enthalten (prüfen);corn;6;1 -2 cup corn chips, coarse
 yellow sweet onion;süsse Zwiebel;nein;Name enthalten (prüfen);sweet onion;6;2 cups yellow sweet onions, thinly sliced
 deli turkey;Pute;nein;Name enthalten (prüfen);turkey;6;1/2 lb deli turkey
 genoa salami;Salami;nein;Name enthalten (prüfen);salami;6;1/2 lb genoa salami
-chicken flavor stuffing mix;Poulet;nein;Name enthalten (prüfen);chicken;6;1 (6 ounce) package chicken flavor stuffing mix
+chicken flavor stuffing mix;Füllmischung;ja;Name enthalten (prüfen);chicken;6;1 (6 ounce) package chicken flavor stuffing mix
 tomato ketchup;Ketchup;nein;Name enthalten (prüfen);ketchup;6;1/4 cup tomato ketchup
 smoked gouda cheese;Käse;nein;Name enthalten (prüfen);cheese;6;3 -4 ounces smoked gouda cheese
 butter flavor crisco;Crisco;nein;Name enthalten (prüfen);crisco;6;4 tablespoons Butter Flavor Crisco
@@ -629,7 +629,7 @@ cream of potato soup;Kartoffel;nein;Name enthalten (prüfen);potato;5;1 (10 1/2 
 fresh cilantro stem;Koriander;nein;Name enthalten (prüfen);fresh cilantro;5;1/4 cup fresh cilantro stem
 porterhouse steak;Steak;nein;Name enthalten (prüfen);steak;5;2 porterhouse steaks (different steak can be used)
 chicken liver;Poulet;nein;Name enthalten (prüfen);chicken;5;1/2 lb chicken liver
-herb seasoned stuffing mix;gewürzte Füllmischung;nein;Name enthalten (prüfen);seasoned stuffing mix;5;1 cup herb seasoned stuffing mix, crushed
+herb seasoned stuffing mix;Füllmischung;ja;Name enthalten (prüfen);seasoned stuffing mix;5;1 cup herb seasoned stuffing mix, crushed
 fresh cracked pepper;Pfeffer;nein;Name enthalten (prüfen);pepper;5;fresh cracked pepper
 beef sirloin steak;Lendensteak;nein;Name enthalten (prüfen);sirloin steak;5;1 lb beef sirloin steaks or 1 lb comparable 1/4 inch thick beef steak, sliced into strips
 brown lentils;Linsen;nein;Name enthalten (prüfen);lentils;5;1 cup brown lentils or 1 cup green lentil
@@ -777,7 +777,7 @@ bone-in chicken breast half;Pouletbrust;nein;Name enthalten (prüfen);chicken br
 chicken soup base;Poulet;nein;Name enthalten (prüfen);chicken;4;4 tablespoons chicken soup base
 green cardamom pod;Kardamom;nein;Name enthalten (prüfen);cardamom;4;4 green cardamom pods
 flat-leaf italian parsley;Petersilie;nein;Name enthalten (prüfen);italian parsley;4;flat-leaf Italian parsley
-chicken stuffing mix;Poulet;nein;Name enthalten (prüfen);chicken;4;1 (6 ounce) package chicken stuffing mix
+chicken stuffing mix;Füllmischung;ja;Name enthalten (prüfen);chicken;4;1 (6 ounce) package chicken stuffing mix
 whole grain dijon mustard;Dijon-Senf;nein;Name enthalten (prüfen);dijon mustard;4;3 tablespoons whole grain Dijon mustard
 boneless pork shoulder;Schweinefleisch;nein;Name enthalten (prüfen);pork;4;3 lbs boneless pork shoulder, cut into chunks (carnitas meat)
 leftover potato;Kartoffel;ja;Name enthalten (prüfen);potato;4;leftover mashed potatoes
@@ -1088,7 +1088,7 @@ pizza dough;;nein;;;10;1 pizza dough (12 inch)
 mrs dash seasoning mix;;nein;;;10;1 teaspoon Mrs. Dash seasoning mix
 chipotle chiles in adobo;;nein;;;10;3 -4 chipotle chiles in adobo
 catfish fillet;;nein;;;10;5 -6 catfish fillets (2 lb.)
-stove top stuffing mix;;nein;;;10;1 (6 ounce) package Stove Top stuffing mix
+stove top stuffing mix;Füllmischung;ja;;;10;1 (6 ounce) package Stove Top stuffing mix
 cornbread mix;;nein;;;10;1 cup cornbread mix or 1 cup pork stuffing mix
 grape jelly;;nein;;;10;2 teaspoons grape jelly or 2 teaspoons strawberry jam
 scallop;;nein;;;10;6 ounces scallops (small)
@@ -1451,7 +1451,7 @@ sultana raisin;;nein;;;3;1/2 cup sultana raisin
 masa harina;;nein;;;3;2 tablespoons masa harina (Mexican corn tortilla flour)
 chile;;nein;;;3;1 -2 small chile, chopped
 coleslaw;;nein;;;3;Coleslaw
-herb stuffing mix;;nein;;;3;1 (6 ounce) package herb stuffing mix
+herb stuffing mix;Füllmischung;ja;;;3;1 (6 ounce) package herb stuffing mix
 hass avocadoe;;nein;;;3;2 Hass avocadoes, peeled, pitted and diced
 hummus;;nein;;;3;1 cup hummus
 marinated artichoke;;nein;;;3;3 marinated artichokes, hearts chopped
@@ -1506,3 +1506,14 @@ spice;;nein;;;3;spices
 bagel;;nein;;;3;1 bagel, split in half (You can also use toast if you want)
 spring roll wrapper;;nein;;;3;15 spring roll wrappers, 8 inch diameter (approximately)
 smoked oyster;;nein;;;3;1 (3 3/4 ounce) can smoked oysters
+stove top chicken flavor stuffing mix;Füllmischung;ja;von Hand ergänzt;;;
+chicken stove top stuffing mix;Füllmischung;ja;von Hand ergänzt;;;
+dry chicken stove top stuffing mix;Füllmischung;ja;von Hand ergänzt;;;
+stove top low-sodium chicken stuffing mix;Füllmischung;ja;von Hand ergänzt;;;
+stove top beef stuffing mix;Füllmischung;ja;von Hand ergänzt;;;
+stove top-style seasoned stuffing mix;Füllmischung;ja;von Hand ergänzt;;;
+packaged seasoned stuffing mix;Füllmischung;ja;von Hand ergänzt;;;
+sage and onion seasoned stuffing mix;Füllmischung;ja;von Hand ergänzt;;;
+herb seasoned stuffing mix like i said;Füllmischung;ja;von Hand ergänzt;;;
+minute herb stuffing mix;Füllmischung;ja;von Hand ergänzt;;;
+pork stuffing mix;Füllmischung;ja;von Hand ergänzt;;;
