@@ -24,6 +24,8 @@ struct ZutatFormular: View {
     @State private var lagerort = Lagerort.kuehlschrank
     @State private var mitAblaufdatum = false
     @State private var ablaufdatum = Calendar.current.date(byAdding: .day, value: 7, to: .now) ?? .now
+    /// Nach dem Sichern zählt der eben gespeicherte Eintrag nicht als Doppel (sonst blitzt die Meldung beim Schliessen auf)
+    @State private var gesichert = false
     @FocusState private var sucheAktiv: Bool
 
     private var bearbeiteterEintrag: VorratsEintrag? {
@@ -32,7 +34,7 @@ struct ZutatFormular: View {
 
     /// Gibt es diese Zutat am gewählten Lagerort schon (ausser dem bearbeiteten Eintrag)?
     private var doppelt: Bool {
-        guard let zutat else { return false }
+        guard let zutat, !gesichert else { return false }
         return vorrat.contains { $0.zutatID == zutat.id && $0.lagerort == lagerort && $0 !== bearbeiteterEintrag }
     }
 
@@ -184,6 +186,7 @@ struct ZutatFormular: View {
 
     private func sichern() {
         guard let zutat, !doppelt else { return }
+        gesichert = true
         let datum = lagerort.hatAblaufdatum && mitAblaufdatum ? ablaufdatum : nil
         if let eintrag = bearbeiteterEintrag {
             eintrag.lagerort = lagerort

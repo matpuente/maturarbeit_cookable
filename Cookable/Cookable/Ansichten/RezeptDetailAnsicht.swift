@@ -98,23 +98,8 @@ struct RezeptDetailAnsicht: View {
     // MARK: - Foto und Kopf
 
     private var foto: some View {
-        AsyncImage(url: details?.bildURL) { phase in
-            if let bild = phase.image {
-                bild.resizable().scaledToFill()
-            } else {
-                ZStack {
-                    Rectangle().fill(.quaternary)
-                    if details != nil && (details?.bildURL == nil || phase.error != nil) {
-                        Image(systemName: "fork.knife")
-                            .font(.largeTitle)
-                            .foregroundStyle(.secondary)
-                    } else {
-                        ProgressView()
-                    }
-                }
-            }
-        }
-        .frame(height: 240)
+        RezeptFoto(url: details?.bildURL, geladen: details != nil)
+            .frame(height: 240)
         .frame(maxWidth: .infinity)
         .clipped()
         .accessibilityHidden(true)

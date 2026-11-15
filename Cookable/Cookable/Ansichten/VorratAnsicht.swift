@@ -11,6 +11,8 @@ struct VorratAnsicht: View {
     @State private var neuerEintrag: ZutatFormular.Modus?
     @State private var bearbeiteterEintrag: VorratsEintrag?
     @State private var immerZuhauseOffen = false
+    /// «Bearbeiten»: rote Minus-Knöpfe, die eine Zutat mit einem Tipp löschen (ohne zweite Bestätigung)
+    @State private var loeschModus = false
 
     private static let lagerorte: [Lagerort] = [.kuehlschrank, .tiefkuehler, .vorratsschrank]
 
@@ -48,7 +50,10 @@ struct VorratAnsicht: View {
             .navigationTitle("Vorrat")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    EditButton()
+                    Button(loeschModus ? "Fertig" : "Bearbeiten") {
+                        withAnimation { loeschModus.toggle() }
+                    }
+                    .fontWeight(loeschModus ? .semibold : .regular)
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Zutat hinzufügen", systemImage: "plus") { neuerEintrag = .neu() }
@@ -114,27 +119,47 @@ struct VorratAnsicht: View {
 
     private func zeilen(_ liste: [VorratsEintrag]) -> some View {
         ForEach(liste) { eintrag in
-            Button {
-                bearbeiteterEintrag = eintrag
-            } label: {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(eintrag.anzeigename)
-                    if let datum = eintrag.ablaufdatum {
-                        Text("Läuft ab am \(datum.formatted(date: .numeric, time: .omitted))")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+            HStack(spacing: 12) {
+                if loeschModus {
+                    Button("\(eintrag.anzeigename) löschen", systemImage: "minus.circle.fill") {
+                        withAnimation { loeschen([eintrag]) }
                     }
+                    .labelStyle(.iconOnly)
+                    .font(.title3)
+                    .foregroundStyle(.red)
+                    .buttonStyle(.borderless)
+                    .transition(.move(edge: .leading).combined(with: .opacity))
                 }
+                Button {
+                    bearbeiteterEintrag = eintrag
+                } label: {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(eintrag.anzeigename)
+                        if let datum = eintrag.ablaufdatum {
+                            Text("Läuft ab am \(datum.formatted(date: .numeric, time: .omitted))")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(.rect)
+                }
+                .foregroundStyle(.primary)
+                .buttonStyle(.borderless)
+                .disabled(loeschModus)
             }
-            .foregroundStyle(.primary)
         }
         .onDelete { indizes in
-            for index in indizes {
-                kontext.delete(liste[index])
-            }
-            // Sofort speichern: Sonst meldet @Query das Löschen verzögert und die Liste zeigt kurz falsche Zeilen
-            try? kontext.save()
+            loeschen(indizes.map { liste[$0] })
         }
+    }
+
+    private func loeschen(_ zuLoeschen: [VorratsEintrag]) {
+        for eintrag in zuLoeschen {
+            kontext.delete(eintrag)
+        }
+        // Sofort speichern: Sonst meldet @Query das Löschen verzögert und die Liste zeigt kurz falsche Zeilen
+        try? kontext.save()
     }
 
     /// Beim ersten Start die Grundzutaten in «Immer zuhause» eintragen.
