@@ -11,7 +11,5 @@ struct HauptAnsicht: View {
                 RezepteAnsicht()
             }
         }
-        // Abgerundete Variante der Systemschrift: freundlicher, passend zu einer Koch-App
-        .fontDesign(.rounded)
     }
 }
