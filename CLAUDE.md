@@ -268,7 +268,12 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
    1. Startseite mit Ablaufdatum-Markierung (erledigt 15. November 2026; Funktion 7: orange ab 3 Tagen vor Ablauf, rot wenn abgelaufen – auch im Vorrat).
       - Reihen: «Bald ablaufend» (Kärtchen), «Rezepte zum Aufbrauchen» (Rezepte mit möglichst vielen bald ablaufenden Zutaten), «Passt zu deinem Vorrat», «Schnell gemacht» (≤ 30 Min.); je bis 10 Foto-Karten, jedes Rezept nur in einer Reihe. Knopf zu allen Vorschlägen.
       - Start-Vorbereitung (Grundzutaten anlegen, Namensabgleich) läuft jetzt beim App-Start (`VorratVorbereitung`), nicht mehr erst im Tab Vorrat.
-   2. Favoriten (Funktion 8).
+   2. Favoriten (Funktion 8, erledigt 15. November 2026).
+      - SwiftData-Modell `Favorit` (Rezept-ID von Food.com, bleibt bei neuer Datenbank gültig).
+      - Herz in der Detailansicht (rot = Favorit), Menü beim langen Drücken auf Zeilen und Karten.
+      - Tab «Favoriten»: Sortierung «Passt am besten» (Standard) oder «Zuletzt hinzugefügt»; Wischen entfernt. Favoriten erscheinen auch ohne vorhandene Zutat.
+      - Startseite: Reihe «Deine Favoriten» (am besten passende zuerst).
+      - Eigene Bewertungen (Funktion 9) folgen erst ganz am Schluss.
    3. Fehlende Zutaten und Einkaufsliste (Funktion 6), mit «Gekauft → in den Vorrat».
 6. **Später:** Mitteilungen bei Ablauf (Funktion 7) und Bewertungen (Funktion 9), nur auf ausdrückliche Anfrage.
 

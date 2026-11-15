@@ -68,6 +68,7 @@ final class RezeptDatenbank {
             uniquingKeysWith: { erste, _ in erste }
         )
         rezepte = try ladeRezepte(grundzutaten: Set(zutaten.filter(\.istGrundzutat).map(\.id)))
+        rezeptNachID = Dictionary(uniqueKeysWithValues: rezepte.map { ($0.id, $0) })
     }
 
     deinit {
@@ -83,6 +84,7 @@ final class RezeptDatenbank {
     @ObservationIgnored private(set) var austauschgruppe: [Int: Int] = [:]
     /// Alle Rezepte mit ihren Zutaten für die Vorschlagsliste (15'000 Einträge, wenige MB)
     @ObservationIgnored private(set) var rezepte: [RezeptUebersicht] = []
+    @ObservationIgnored private(set) var rezeptNachID: [Int: RezeptUebersicht] = [:]
 
     private func ladeRezepte(grundzutaten: Set<Int>) throws -> [RezeptUebersicht] {
         var rezepte = try abfragen("""

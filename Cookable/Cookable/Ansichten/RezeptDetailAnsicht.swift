@@ -7,7 +7,9 @@ struct RezeptDetailAnsicht: View {
 
     @Environment(RezeptDatenbank.self) private var datenbank
     @Environment(Uebersetzer.self) private var uebersetzer
+    @Environment(\.modelContext) private var kontext
     @Query private var vorrat: [VorratsEintrag]
+    @Query private var favoriten: [Favorit]
     @State private var details: RezeptDetails?
     @State private var portionen: Int
     @State private var uebersetzung: Uebersetzung?
@@ -27,6 +29,7 @@ struct RezeptDetailAnsicht: View {
     /// Übersetzte Texte nur, wenn vorhanden und nicht «Original» gewählt ist
     private var deutsch: Uebersetzung? { zeigeOriginal ? nil : uebersetzung }
     private var anzeigename: String { deutsch?.name ?? rezept.name }
+    private var istFavorit: Bool { favoriten.contains { $0.rezeptID == rezept.id } }
 
     var body: some View {
         List {
@@ -61,6 +64,18 @@ struct RezeptDetailAnsicht: View {
         .navigationTitle(anzeigename)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    withAnimation { kontext.favoritUmschalten(rezept.id) }
+                } label: {
+                    // Farbe am Symbol selbst, sonst färbt die Werkzeugleiste es einheitlich ein
+                    Image(systemName: istFavorit ? "heart.fill" : "heart")
+                        .foregroundStyle(istFavorit ? Color.red : Color.primary)
+                        .symbolEffect(.bounce, value: istFavorit)
+                }
+                .accessibilityLabel(istFavorit ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen")
+                .sensoryFeedback(.selection, trigger: istFavorit)
+            }
             if uebersetzung?.zutaten != nil {
                 ToolbarItem(placement: .primaryAction) {
                     Button(zeigeOriginal ? "Deutsch" : "Original") { zeigeOriginal.toggle() }

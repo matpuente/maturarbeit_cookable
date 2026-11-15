@@ -73,20 +73,10 @@ enum RezeptVorschlaege {
                     mussErsatz += 1
                 }
 
-                var vorhanden = 0
-                var ersatz = 0
-                for zutat in rezept.zutaten {
-                    if vorrat.contains(zutat) {
-                        vorhanden += 1
-                    } else if let gruppe = austauschgruppe[zutat], vorratGruppen.contains(gruppe) {
-                        ersatz += 1
-                    }
-                }
+                let (vorhanden, ersatz, fehlend) = abgleich(rezept, vorrat: vorrat, vorratGruppen: vorratGruppen,
+                                                             austauschgruppe: austauschgruppe)
                 // Nur Rezepte mit mindestens einer verfügbaren Zutat (ausser bei einer Suche oder gewählter Grundzutat)
                 guard vorhanden + ersatz > 0 || !mussEnthalten.isEmpty || suche != nil else { return nil }
-                let fehlend = (rezept.zutaten.count - vorhanden - ersatz)
-                    + rezept.grundzutaten.count { !vorrat.contains($0) }
-                    + rezept.anzahlOhneListe
                 return RezeptVorschlag(
                     rezept: rezept, vorhanden: vorhanden, ersatz: ersatz, fehlend: fehlend, mussErsatz: mussErsatz,
                     nameTreffer: nameTreffer
@@ -100,5 +90,32 @@ enum RezeptVorschlaege {
                 if a.fehlend != b.fehlend { return a.fehlend < b.fehlend }
                 return a.rezept.beliebtheit < b.rezept.beliebtheit
             }
+    }
+
+    /// Abgleich eines einzelnen Rezepts – auch ohne vorhandene Zutat (z. B. für Favoriten).
+    static func einzeln(_ rezept: RezeptUebersicht, vorrat: Set<Int>, austauschgruppe: [Int: Int]) -> RezeptVorschlag {
+        let vorratGruppen = Set(vorrat.compactMap { austauschgruppe[$0] })
+        let (vorhanden, ersatz, fehlend) = abgleich(rezept, vorrat: vorrat, vorratGruppen: vorratGruppen,
+                                                     austauschgruppe: austauschgruppe)
+        return RezeptVorschlag(rezept: rezept, vorhanden: vorhanden, ersatz: ersatz, fehlend: fehlend, mussErsatz: 0)
+    }
+
+    /// Zählt vorhandene, ersetzte und fehlende Zutaten nach den Regeln oben.
+    private static func abgleich(
+        _ rezept: RezeptUebersicht, vorrat: Set<Int>, vorratGruppen: Set<Int>, austauschgruppe: [Int: Int]
+    ) -> (vorhanden: Int, ersatz: Int, fehlend: Int) {
+        var vorhanden = 0
+        var ersatz = 0
+        for zutat in rezept.zutaten {
+            if vorrat.contains(zutat) {
+                vorhanden += 1
+            } else if let gruppe = austauschgruppe[zutat], vorratGruppen.contains(gruppe) {
+                ersatz += 1
+            }
+        }
+        let fehlend = (rezept.zutaten.count - vorhanden - ersatz)
+            + rezept.grundzutaten.count { !vorrat.contains($0) }
+            + rezept.anzahlOhneListe
+        return (vorhanden, ersatz, fehlend)
     }
 }

@@ -4,7 +4,7 @@ import SwiftUI
 /// Tab-Navigation der App.
 struct HauptAnsicht: View {
     enum Bereich: Hashable {
-        case start, vorrat, rezepte
+        case start, vorrat, rezepte, favoriten
     }
 
     @Environment(\.modelContext) private var kontext
@@ -21,6 +21,9 @@ struct HauptAnsicht: View {
             }
             Tab("Rezepte", systemImage: "fork.knife", value: .rezepte) {
                 RezepteAnsicht()
+            }
+            Tab("Favoriten", systemImage: "heart", value: .favoriten) {
+                FavoritenAnsicht()
             }
         }
         .task {

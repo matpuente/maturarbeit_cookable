@@ -7,6 +7,8 @@ struct RezepteAnsicht: View {
     @Environment(Uebersetzer.self) private var uebersetzer
     @Query private var vorrat: [VorratsEintrag]
     @Query private var uebersetzungen: [Uebersetzung]
+    @Query private var favoriten: [Favorit]
+    private var favoritIDs: Set<Int> { Set(favoriten.map(\.rezeptID)) }
 
     @AppStorage("filterZeit") private var zeit = Zeitfilter.alle
     @AppStorage("filterKategorie") private var kategorieWert = ""
@@ -70,6 +72,9 @@ struct RezepteAnsicht: View {
                         ForEach(vorschlaege) { vorschlag in
                             NavigationLink(value: vorschlag.id) {
                                 RezeptZeile(vorschlag: vorschlag, name: namen[vorschlag.id] ?? vorschlag.rezept.name)
+                            }
+                            .contextMenu {
+                                FavoritMenue(rezeptID: vorschlag.id, istFavorit: favoritIDs.contains(vorschlag.id))
                             }
                             .onAppear {
                                 if namen[vorschlag.id] == nil {

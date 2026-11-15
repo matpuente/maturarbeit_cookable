@@ -12,6 +12,8 @@ struct StartAnsicht: View {
     @Environment(\.horizontalSizeClass) private var breite
     @Query private var vorrat: [VorratsEintrag]
     @Query private var uebersetzungen: [Uebersetzung]
+    @Query private var favoriten: [Favorit]
+    private var favoritIDs: Set<Int> { Set(favoriten.map(\.rezeptID)) }
 
     private static let anzahlKarten = 10
 
@@ -36,8 +38,9 @@ struct StartAnsicht: View {
         )
         let ablaufend = baldAblaufend
         let (aufbrauchen, passt, schnell) = reihen(vorschlaege, ablaufend: Set(ablaufend.map(\.eintrag.zutatID)))
+        let lieblinge = favoritenVorschlaege
         let alleAngezeigt = Dictionary(
-            (aufbrauchen + passt + schnell).map { ($0.id, $0) },
+            (aufbrauchen + passt + schnell + lieblinge).map { ($0.id, $0) },
             uniquingKeysWith: { erster, _ in erster }
         )
 
@@ -57,6 +60,9 @@ struct StartAnsicht: View {
                         }
                         if !passt.isEmpty {
                             kartenReihe("Passt zu deinem Vorrat", symbol: "refrigerator", passt, namen: namen)
+                        }
+                        if !lieblinge.isEmpty {
+                            kartenReihe("Deine Favoriten", symbol: "heart", lieblinge, namen: namen)
                         }
                         if !schnell.isEmpty {
                             kartenReihe("Schnell gemacht", symbol: "timer", schnell, namen: namen)
@@ -138,6 +144,17 @@ struct StartAnsicht: View {
         }
     }
 
+    /// Favoriten, die am besten zum Vorrat passen, zuerst
+    private var favoritenVorschlaege: [RezeptVorschlag] {
+        let vorratIDs = Set(vorrat.map(\.zutatID))
+        return favoriten
+            .compactMap { datenbank.rezeptNachID[$0.rezeptID] }
+            .map { RezeptVorschlaege.einzeln($0, vorrat: vorratIDs, austauschgruppe: datenbank.austauschgruppe) }
+            .sorted { $0.anteil > $1.anteil }
+            .prefix(Self.anzahlKarten)
+            .map { $0 }
+    }
+
     /// Jedes Rezept nur in einer Reihe: «Aufbrauchen» zuerst, dann «Passt zu deinem Vorrat», dann «Schnell gemacht»
     private func reihen(_ vorschlaege: [RezeptVorschlag], ablaufend: Set<Int>)
         -> (aufbrauchen: [RezeptVorschlag], passt: [RezeptVorschlag], schnell: [RezeptVorschlag]) {
@@ -175,6 +192,9 @@ struct StartAnsicht: View {
                                         breite: breite == .regular ? 280 : 220)
                         }
                         .buttonStyle(.plain)
+                        .contextMenu {
+                            FavoritMenue(rezeptID: vorschlag.id, istFavorit: favoritIDs.contains(vorschlag.id))
+                        }
                         .onAppear {
                             if namen[vorschlag.id] == nil {
                                 uebersetzer.nameAnfordern(rezeptID: vorschlag.id, englisch: vorschlag.rezept.name)
