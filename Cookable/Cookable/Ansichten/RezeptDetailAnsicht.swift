@@ -246,7 +246,7 @@ struct RezeptDetailAnsicht: View {
                 .filter { !nurFehlende || !vorratIDs.contains($0) }
                 .compactMap { zutaten[$0] }
             if bekannte.isEmpty {
-                let name = beschreibung(von: zeile, index: index)
+                let name = einkaufsname(von: zeile, index: index)
                 kontext.insert(EinkaufsEintrag(name: name, menge: menge.isEmpty ? nil : menge,
                                                rezeptID: rezept.id, rezeptName: anzeigename))
             } else {
@@ -292,6 +292,12 @@ struct RezeptDetailAnsicht: View {
             text += ", " + Mengenangabe.groesseAufDeutsch(groesse)
         }
         return text
+    }
+
+    /// Kurzer Name für die Einkaufsliste: ohne Zusatz in Klammern oder nach dem Komma
+    /// ("Cajun-Gewürzmischung (aus deinem Rezept …)" → "Cajun-Gewürzmischung")
+    private func einkaufsname(von zeile: ZutatenZeile, index: Int) -> String {
+        (deutsch?.zutaten.flatMap { index < $0.count ? $0[index] : nil } ?? zeile.name).einkaufsKurzform
     }
 
     // MARK: - Anleitung

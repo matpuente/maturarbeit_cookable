@@ -279,7 +279,9 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - SwiftData-Modell `EinkaufsEintrag` (Name, Menge als Text, deutscher Zutatenname falls aus der Liste, Rezept-ID und -Name, erledigt).
       - Detailansicht: fehlende Zutaten grau mit «fehlt» (auch Zutaten ausserhalb der Liste); Knopf «Fehlende Zutaten auf die Einkaufsliste (n)» mit Mengen für die gewählte Portionenzahl; einzelne Zeilen per langem Drücken. Ersatz zählt als vorhanden und kommt nicht automatisch auf die Liste. Fehlende Grundzutaten kommen mit.
       - Tab «Einkaufsliste» (Zahl der offenen Einträge am Symbol): «Alle Zutaten» (gleiche Zutat zusammengefasst, Mengen mit «+») oder «Nach Rezept»; Antippen legt in den Bereich «Im Wagen»; Wischen löscht; + für Zutaten der Liste oder freien Text; Teilen; Erledigte entfernen.
-      - «Gekaufte in den Vorrat»: Zutaten der Liste an den vorgeschlagenen Lagerort (Grundzutaten → «Immer zuhause»), ohne Ablaufdatum, keine Doppelten; freie Einträge werden nur entfernt.
+      - «Gekaufte in den Vorrat»: Zutaten der Liste an den vorgeschlagenen Lagerort (Grundzutaten → «Immer zuhause»), ohne Ablaufdatum, keine Doppelten; eigene freie Einträge (z. B. Zahnpasta) werden nur entfernt.
+      - Nicht erkannte Rezeptzutaten (ausserhalb der Zutatenliste): in der Liste orange «Nicht erkannt – beim Einkauf selbst zuordnen»; nach «Gekaufte in den Vorrat» Fenster «Zutat zuordnen» – passende Zutat der Liste suchen (vorbelegt mit dem Namen), Lagerort wählen, oder «nur von der Liste entfernen»; «Später» lässt sie im Wagen. Im Vorrat stehen weiterhin nur Zutaten der Zutatenliste.
+      - Auf der Einkaufsliste steht der übersetzte Name ohne Zusatz (Text vor «(» oder «,»).
 6. **Später:** Mitteilungen bei Ablauf (Funktion 7) und Bewertungen (Funktion 9), nur auf ausdrückliche Anfrage.
 
 ---

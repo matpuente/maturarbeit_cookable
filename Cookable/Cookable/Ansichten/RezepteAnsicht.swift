@@ -83,7 +83,7 @@ struct RezepteAnsicht: View {
                             }
                         }
                     } header: {
-                        Text("\(vorschlaege.count) Rezepte")
+                        Text(vorschlaege.count == 1 ? "1 Rezept" : "\(vorschlaege.count) Rezepte")
                     }
                 }
             }

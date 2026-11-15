@@ -26,5 +26,14 @@ final class EinkaufsEintrag {
         self.hinzugefuegtAm = .now
     }
 
-    var anzeigename: String { name.mitGrossemAnfang }
+    /// Ohne Zusatz in Klammern oder nach dem Komma, mit grossem Anfangsbuchstaben
+    var anzeigename: String { name.einkaufsKurzform.mitGrossemAnfang }
+}
+
+nonisolated extension String {
+    /// "Cajun-Gewürzmischung (aus deinem Rezept …)" → "Cajun-Gewürzmischung"
+    var einkaufsKurzform: String {
+        let kurz = prefix { $0 != "(" && $0 != "," }.trimmingCharacters(in: .whitespaces)
+        return kurz.isEmpty ? self : kurz
+    }
 }
