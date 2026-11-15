@@ -65,7 +65,7 @@ Jeden Punkt abhaken, wenn das erwartete Ergebnis eintritt. Wenn nicht: kurz noti
 - [x] Jede Zeile zeigt «X von Y Zutaten vorhanden», einen Balken, die Zeit und die Kategorie.
 - [x] Bei austauschbaren Zutaten steht «· 1 Ersatz» (z. B. Spaghetti-Rezept, wenn du Penne hast).
 - [x] Ganz oben stehen Rezepte mit dem höchsten Anteil vorhandener Zutaten.
-- [ ] Eine neue Zutat zum Vorrat hinzufügen → die Rezeptliste passt sich an.
+- [x] Eine neue Zutat zum Vorrat hinzufügen → die Rezeptliste passt sich an.
 
 ### Filter
 
