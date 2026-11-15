@@ -86,6 +86,7 @@ Cookable/                    ← Hauptordner, Claude Code hier starten
 9. **Bewertungen** – eigene Bewertung von Rezepten; ganz am Schluss, falls noch Zeit bleibt.
 
 Funktionen aus «Später» erst umsetzen, wenn Version 1 fertig ist und ausdrücklich danach gefragt wird.
+Stand 15. November 2026: Version 1 ist fertig. Ausdrücklich gewünscht und geplant sind Funktion 6 (Einkaufsliste), 7 (Ablaufdatum-Markierung, ohne Mitteilungen) und 8 (Favoriten) sowie eine neue Startseite (siehe Abschnitt 4). Offen bleiben die Mitteilungen bei Ablauf (Funktion 7) und Funktion 9 (Bewertungen).
 
 ---
 
@@ -101,8 +102,16 @@ Navigation über Tabs.
 
 ### Später
 
-- **Einkaufsliste**
+- **Start** (neu, erster Tab): Begrüssung, bald ablaufende Zutaten mit Rezepten zum Aufbrauchen, Vorschläge «Passt zu deinem Vorrat» und «Schnell gemacht» als Foto-Karten, Favoriten.
 - **Favoriten**
+- **Einkaufsliste**
+- Reihenfolge der Tabs: Start · Vorrat · Rezepte · Favoriten · Einkaufsliste.
+
+### Design (beschlossen 15. November 2026)
+
+- Hauptfarbe Grün (AccentColor, im Dunkelmodus heller); Standardschrift von iOS (abgerundete Schrift wurde ausprobiert und verworfen).
+- Rezeptliste mit kleinem Foto links (verkleinerte Fassung von Food.com).
+- App-Symbol: dampfender Kochtopf mit Blatt auf grünem Verlauf, gezeichnet mit `Cookable/Design/AppSymbol.swift` (Varianten hell, dunkel, getönt).
 
 ---
 
@@ -254,8 +263,12 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - Fehler: kein Internet (Meldung und «Erneut versuchen»), Kontingent aufgebraucht, Schlüssel fehlt/ungültig. Nach einem Fehler in der Liste 30 Sekunden Pause.
       - Kontingent laut DeepL-Konto (10. November 2026): 1'000'000 Zeichen pro Monat.
    - Rezeptnamen in der Vorschlagsliste: nur die sichtbaren Namen werden übersetzt (in Paketen beim Scrollen) und gespeichert; keine Vorab-Übersetzung aller Namen (416'000 Zeichen).
-4. **Design:** Nach Version 1 eine eigene Etappe für das Design (Farben, App-Symbol, Gestaltung der Ansichten). Die Darstellung (`Ansichten/`) ist von Logik und Daten getrennt und lässt sich ändern, ohne die Funktionen zu beeinträchtigen.
-5. **Später:** Funktionen 6–9, nur auf ausdrückliche Anfrage.
+4. **Design** (erledigt 15. November 2026, siehe Abschnitt 4): Die Darstellung (`Ansichten/`) ist von Logik und Daten getrennt und lässt sich ändern, ohne die Funktionen zu beeinträchtigen. Design-Änderungen auf einem eigenen Zweig ausprobieren und erst nach Zustimmung in `main` übernehmen.
+5. **Erweiterungen** (in dieser Reihenfolge, je mit Plan, Test, Commit):
+   1. Startseite mit Ablaufdatum-Markierung (Funktion 7: orange ab 3 Tagen vor Ablauf, rot wenn abgelaufen – auch im Vorrat).
+   2. Favoriten (Funktion 8).
+   3. Fehlende Zutaten und Einkaufsliste (Funktion 6), mit «Gekauft → in den Vorrat».
+6. **Später:** Mitteilungen bei Ablauf (Funktion 7) und Bewertungen (Funktion 9), nur auf ausdrückliche Anfrage.
 
 ---
 
