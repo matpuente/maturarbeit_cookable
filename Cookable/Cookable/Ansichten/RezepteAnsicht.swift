@@ -215,7 +215,7 @@ struct RezeptZeile: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            RezeptFoto(url: vorschlag.rezept.bildURL, klein: true)
+            RezeptFoto(url: vorschlag.rezept.bildURL, groesse: .klein)
                 .frame(width: 64, height: 64)
                 .clipShape(.rect(cornerRadius: 10))
                 .accessibilityHidden(true)

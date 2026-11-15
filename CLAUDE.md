@@ -265,7 +265,9 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
    - Rezeptnamen in der Vorschlagsliste: nur die sichtbaren Namen werden übersetzt (in Paketen beim Scrollen) und gespeichert; keine Vorab-Übersetzung aller Namen (416'000 Zeichen).
 4. **Design** (erledigt 15. November 2026, siehe Abschnitt 4): Die Darstellung (`Ansichten/`) ist von Logik und Daten getrennt und lässt sich ändern, ohne die Funktionen zu beeinträchtigen. Design-Änderungen auf einem eigenen Zweig ausprobieren und erst nach Zustimmung in `main` übernehmen.
 5. **Erweiterungen** (in dieser Reihenfolge, je mit Plan, Test, Commit):
-   1. Startseite mit Ablaufdatum-Markierung (Funktion 7: orange ab 3 Tagen vor Ablauf, rot wenn abgelaufen – auch im Vorrat).
+   1. Startseite mit Ablaufdatum-Markierung (erledigt 15. November 2026; Funktion 7: orange ab 3 Tagen vor Ablauf, rot wenn abgelaufen – auch im Vorrat).
+      - Reihen: «Bald ablaufend» (Kärtchen), «Rezepte zum Aufbrauchen» (Rezepte mit möglichst vielen bald ablaufenden Zutaten), «Passt zu deinem Vorrat», «Schnell gemacht» (≤ 30 Min.); je bis 10 Foto-Karten, jedes Rezept nur in einer Reihe. Knopf zu allen Vorschlägen.
+      - Start-Vorbereitung (Grundzutaten anlegen, Namensabgleich) läuft jetzt beim App-Start (`VorratVorbereitung`), nicht mehr erst im Tab Vorrat.
    2. Favoriten (Funktion 8).
    3. Fehlende Zutaten und Einkaufsliste (Funktion 6), mit «Gekauft → in den Vorrat».
 6. **Später:** Mitteilungen bei Ablauf (Funktion 7) und Bewertungen (Funktion 9), nur auf ausdrückliche Anfrage.

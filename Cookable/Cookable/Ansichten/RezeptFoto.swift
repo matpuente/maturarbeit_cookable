@@ -1,7 +1,8 @@
 import SwiftUI
 import UIKit
 
-/// Foto eines Rezepts von Food.com – gross in der Detailansicht oder als kleines Vorschaubild in der Liste.
+/// Foto eines Rezepts von Food.com – gross in der Detailansicht, mittel auf den Karten der Startseite
+/// oder als kleines Vorschaubild in der Liste.
 ///
 /// Anders als `AsyncImage` wird ein schon geladenes Foto aus dem Zwischenspeicher (`URLCache`) genommen,
 /// auch wenn es dort als veraltet gilt – so bleibt es ohne Internet sichtbar.
@@ -9,8 +10,23 @@ struct RezeptFoto: View {
     let url: URL?
     /// false, solange noch nicht feststeht, ob das Rezept überhaupt ein Foto hat
     var geladen = true
-    /// Kleines Vorschaubild: Food.com liefert dafür eine verkleinerte Fassung (rund 10 statt 100 KB)
-    var klein = false
+    /// Kleinere Fassungen liefert Food.com auf Wunsch direkt (klein rund 10 KB statt 100 KB)
+    var groesse = Groesse.gross
+
+    enum Groesse {
+        case gross, mittel, klein
+
+        /// Bildbearbeitung von Food.com (Cloudinary), nil = Original
+        var parameter: String? {
+            switch self {
+            case .gross: nil
+            case .mittel: "w_560,h_400,c_fill,q_80"
+            case .klein: "w_160,h_160,c_fill,q_80"
+            }
+        }
+    }
+
+    private var klein: Bool { groesse == .klein }
 
     @State private var bild: UIImage?
     @State private var fehlgeschlagen = false
@@ -19,10 +35,10 @@ struct RezeptFoto: View {
     private static let vorschauSpeicher = NSCache<NSURL, UIImage>()
 
     private var ladeURL: URL? {
-        guard let url, klein else { return url }
+        guard let url, let parameter = groesse.parameter else { return url }
         // .../image/upload/w_555,h_416,c_fit,.../v1/... -> .../image/upload/w_160,h_160,c_fill,q_80/v1/...
         let text = url.absoluteString.replacingOccurrences(
-            of: #"/upload/[^/]+/v1/"#, with: "/upload/w_160,h_160,c_fill,q_80/v1/", options: .regularExpression
+            of: #"/upload/[^/]+/v1/"#, with: "/upload/\(parameter)/v1/", options: .regularExpression
         )
         return URL(string: text) ?? url
     }
@@ -47,7 +63,7 @@ struct RezeptFoto: View {
 
     private func laden() async {
         guard let ladeURL else { return }
-        if klein, let gespeichert = Self.vorschauSpeicher.object(forKey: ladeURL as NSURL) {
+        if groesse != .gross, let gespeichert = Self.vorschauSpeicher.object(forKey: ladeURL as NSURL) {
             bild = gespeichert
             return
         }
@@ -60,7 +76,7 @@ struct RezeptFoto: View {
                 fehlgeschlagen = true
                 return
             }
-            if klein {
+            if groesse != .gross {
                 Self.vorschauSpeicher.setObject(geladenesBild, forKey: ladeURL as NSURL)
             }
             bild = geladenesBild

@@ -6,7 +6,6 @@ struct VorratAnsicht: View {
     @Environment(\.modelContext) private var kontext
     @Environment(RezeptDatenbank.self) private var datenbank
     @Query(sort: \VorratsEintrag.name) private var eintraege: [VorratsEintrag]
-    @AppStorage("grundzutatenAngelegt") private var grundzutatenAngelegt = false
 
     @State private var neuerEintrag: ZutatFormular.Modus?
     @State private var bearbeiteterEintrag: VorratsEintrag?
@@ -65,7 +64,6 @@ struct VorratAnsicht: View {
             .sheet(item: $bearbeiteterEintrag) { eintrag in
                 ZutatFormular(modus: .bearbeiten(eintrag))
             }
-            .task(grundzutatenAnlegen)
         }
     }
 
@@ -136,9 +134,16 @@ struct VorratAnsicht: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(eintrag.anzeigename)
                         if let datum = eintrag.ablaufdatum {
-                            Text("Läuft ab am \(datum.formatted(date: .numeric, time: .omitted))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            let datumText = datum.formatted(date: .numeric, time: .omitted)
+                            if let status = eintrag.ablaufStatus() {
+                                Label("\(status.text.mitGrossemAnfang) (\(datumText))", systemImage: status.symbol)
+                                    .font(.caption.weight(.medium))
+                                    .foregroundStyle(status.farbe)
+                            } else {
+                                Text("Läuft ab am \(datumText)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -161,44 +166,6 @@ struct VorratAnsicht: View {
         // Sofort speichern: Sonst meldet @Query das Löschen verzögert und die Liste zeigt kurz falsche Zeilen
         try? kontext.save()
     }
-
-    /// Beim ersten Start die Grundzutaten in «Immer zuhause» eintragen.
-    private func grundzutatenAnlegen() async {
-        idsAbgleichen()
-        guard !grundzutatenAngelegt else { return }
-        for zutat in datenbank.grundzutaten {
-            kontext.insert(VorratsEintrag(zutatID: zutat.id, name: zutat.name, lagerort: .immerZuhause))
-        }
-        try? kontext.save()
-        grundzutatenAngelegt = true
-    }
-
-    /// Die IDs in `zutat` können sich ändern, wenn die Zutatenliste neu in die Datenbank übernommen wird.
-    /// Massgebend ist deshalb der deutsche Name: passt die gespeicherte ID nicht mehr dazu, wird sie korrigiert.
-    /// Wurde ein Begriff umbenannt oder zusammengefasst (z. B. «Vollrahm» -> «Rahm»), wird der Eintrag nachgeführt;
-    /// steht die Zutat danach doppelt am selben Lagerort, bleibt nur ein Eintrag.
-    private func idsAbgleichen() {
-        let nachID = Dictionary(uniqueKeysWithValues: datenbank.zutaten.map { ($0.id, $0.name) })
-        let nachName = Dictionary(datenbank.zutaten.map { ($0.name, $0.id) }, uniquingKeysWith: { erste, _ in erste })
-        var geaendert = false
-        for eintrag in eintraege where nachID[eintrag.zutatID] != eintrag.name {
-            if let id = nachName[eintrag.name] {
-                eintrag.zutatID = id
-            } else if let id = datenbank.alteNamen[eintrag.name], let neuerName = nachID[id] {
-                eintrag.zutatID = id
-                eintrag.name = neuerName
-            } else {
-                continue
-            }
-            geaendert = true
-        }
-        guard geaendert else { return }
-        var gesehen = Set<String>()
-        for eintrag in eintraege where !gesehen.insert("\(eintrag.zutatID)-\(eintrag.lagerort.rawValue)").inserted {
-            kontext.delete(eintrag)
-        }
-        try? kontext.save()
-    }
 }
 
 extension ZutatFormular.Modus: Identifiable {
@@ -206,6 +173,23 @@ extension ZutatFormular.Modus: Identifiable {
         switch self {
         case .neu(let lagerort): "neu-\(lagerort?.rawValue ?? "")"
         case .bearbeiten(let eintrag): "bearbeiten-\(eintrag.persistentModelID.hashValue)"
+        }
+    }
+}
+
+extension AblaufStatus {
+    /// Orange ab 3 Tagen vor Ablauf, rot wenn abgelaufen (CLAUDE.md, Funktion 7)
+    var farbe: Color {
+        switch self {
+        case .bald: .orange
+        case .abgelaufen: .red
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .bald: "clock.badge.exclamationmark"
+        case .abgelaufen: "exclamationmark.triangle.fill"
         }
     }
 }
