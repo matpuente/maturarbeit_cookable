@@ -418,7 +418,7 @@ oyster sauce;Austernsauce;nein;Austernsauce;38;38;2 tablespoons oyster sauce
 cake flour;Kuchenmehl;nein;Kuchenmehl;38;37;2 tablespoons cake flour
 toasted sesame seeds;Sesamsamen;nein;geröstete Sesamkörner;37;37;toasted sesame seeds, for serving
 refrigerated crescent dinner roll;Gekühlte Croissant-Brötli;nein;Gekühlte Croissant-Brötchen;37;37;2 (8 ounce) packages refrigerated crescent dinner rolls
-ground pork;Hackfleisch;nein;Hackfleisch;37;37;1/4 lb ground pork
+ground pork;Schweinehackfleisch;nein;Hackfleisch;37;37;1/4 lb ground pork
 celery salt;Selleriesalz;nein;Selleriesalz;37;37;1/8 teaspoon celery salt
 green cabbage;Grünkohl;nein;Grünkohl;37;37;1 1/2 cups diced green cabbage
 crabmeat;Krabbenfleisch;nein;Krabbenfleisch;37;37;1 lb crabmeat
@@ -439,7 +439,7 @@ vegetable shortening;Pflanzliches Backfett;nein;Pflanzliches Backfett;36;33;1 cu
 ranch dressing mix;Ranch-Dressing-Mischung;nein;Ranch-Dressing-Mischung;35;35;1 (1 1/4 ounce) package ranch dressing mix, dry
 macaroni;Makkaroni;nein;Makkaroni;35;35;1 (8 ounce) package macaroni
 mustard powder;Senfpulver;nein;Senfpulver;35;35;1/2 teaspoon mustard powder
-hamburger;Hamburger;nein;Hamburger;35;32;1 lb hamburger
+hamburger;Rinderhackfleisch;nein;Hamburger;35;32;1 lb hamburger
 garbanzo beans;Kichererbsen;nein;Kichererbsen;35;35;1 (15 ounce) can garbanzo beans, drained and rinsed (sometimes I use lentils)
 nonfat sour cream;Sauerrahm;nein;fettfreie saure Sahne;35;35;3/4 cup nonfat sour cream
 reduced-sodium chicken broth;Hühnerbouillon;nein;natriumreduzierte Hühnerbouillon;35;35;1/2 cup reduced-sodium chicken broth
@@ -620,7 +620,7 @@ mild cheddar cheese;Cheddar-Käse;nein;milder Cheddar-Käse;22;22;1 cup grated m
 hidden valley ranch dressing mix;„Hidden Valley Ranch Dressing Mix“;nein;„Hidden Valley Ranch Dressing Mix“;22;22;1 (1 ounce) package hidden valley ranch dressing mix
 angel hair pasta;Engelshaar-Nudeln;nein;Engelshaar-Nudeln;22;22;8 ounces angel hair pasta, cooked and drained
 italian bread;italienisches Brot;nein;italienisches Brot;22;22;1 loaf Italian bread, cut into 1 inch slices
-ground chicken;Hackfleisch;nein;Hackfleisch;22;22;1 lb ground chicken
+ground chicken;Poulethackfleisch;nein;Hackfleisch;22;22;1 lb ground chicken
 goat cheese;Ziegenkäse;nein;Ziegenkäse;22;22;4 ounces goat cheese
 yogurt;Joghurt;nein;Joghurt;22;22;6 tablespoons yogurt or 6 tablespoons sour cream
 chipotle chile in adobo;Chipotle-Chili in Adobo;nein;Chipotle-Chili in Adobo;22;22;1 chipotle chile in adobo, minced
@@ -754,14 +754,14 @@ toothpick;Zahnstocher;nein;Zahnstocher;16;16;toothpick (or Butcher String)
 beef bouillon;Rinderbouillon;nein;Rinderbouillon;16;16;1 cup beef bouillon
 salmon steak;Lachssteak;nein;Lachssteak;16;16;1 1/2 lbs salmon steaks or 1 1/2 lbs salmon fillets
 skinless chicken thigh;Pouletoberschenkel;nein;Hähnchenschenkel ohne Haut;16;16;8 skinless chicken thighs (I use boneless)
-ground sirloin;Rinderfilet, zerkleinert;nein;Rinderfilet, zerkleinert;16;16;1 1/4 lbs ground sirloin
+ground sirloin;Rinderhackfleisch;nein;Rinderfilet, zerkleinert;16;16;1 1/4 lbs ground sirloin
 cooked turkey;Pute;nein;gebratener Truthahn;16;16;3 slices cooked turkey
 bamboo shoot;Bambussprossen;nein;Bambussprossen;16;16;1/2 cup bamboo shoot, julienned
 honey mustard;Honig-Senf;nein;Honig-Senf;16;15;honey mustard
 oregano leaf;Oregano;nein;Oreganoblatt;16;16;1/2 teaspoon oregano leaves, crushed
 sunflower oil;Sonnenblumenöl;nein;Sonnenblumenöl;16;15;2 tablespoons sunflower oil
 pearl barley;Perlgraupen;nein;Perlgraupen;16;16;1 1/4 cups pearl barley
-ground lean pork;Hackfleisch;nein;mageres Schweinehackfleisch;16;16;1/2 lb ground lean pork
+ground lean pork;Schweinehackfleisch;nein;mageres Schweinehackfleisch;16;16;1/2 lb ground lean pork
 butter or margarine;Butter oder Margarine;nein;Butter oder Margarine;16;16;butter or margarine
 sugar substitute;Zuckerersatz;nein;Zuckerersatz;16;15;1/2 teaspoon sugar substitute
 hardboiled egg;hartgekochtes Ei;nein;hartgekochtes Ei;16;16;2 hardboiled egg, coarsely chopped

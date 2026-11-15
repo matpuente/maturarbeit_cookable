@@ -150,14 +150,29 @@ struct VorratAnsicht: View {
 
     /// Die IDs in `zutat` können sich ändern, wenn die Zutatenliste neu in die Datenbank übernommen wird.
     /// Massgebend ist deshalb der deutsche Name: passt die gespeicherte ID nicht mehr dazu, wird sie korrigiert.
+    /// Wurde ein Begriff umbenannt oder zusammengefasst (z. B. «Vollrahm» -> «Rahm»), wird der Eintrag nachgeführt;
+    /// steht die Zutat danach doppelt am selben Lagerort, bleibt nur ein Eintrag.
     private func idsAbgleichen() {
         let nachID = Dictionary(uniqueKeysWithValues: datenbank.zutaten.map { ($0.id, $0.name) })
         let nachName = Dictionary(datenbank.zutaten.map { ($0.name, $0.id) }, uniquingKeysWith: { erste, _ in erste })
+        var geaendert = false
         for eintrag in eintraege where nachID[eintrag.zutatID] != eintrag.name {
             if let id = nachName[eintrag.name] {
                 eintrag.zutatID = id
+            } else if let id = datenbank.alteNamen[eintrag.name], let neuerName = nachID[id] {
+                eintrag.zutatID = id
+                eintrag.name = neuerName
+            } else {
+                continue
             }
+            geaendert = true
         }
+        guard geaendert else { return }
+        var gesehen = Set<String>()
+        for eintrag in eintraege where !gesehen.insert("\(eintrag.zutatID)-\(eintrag.lagerort.rawValue)").inserted {
+            kontext.delete(eintrag)
+        }
+        try? kontext.save()
     }
 }
 

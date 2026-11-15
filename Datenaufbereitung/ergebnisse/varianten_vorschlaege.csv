@@ -140,7 +140,7 @@ fennel seeds;Fenchelsamen;ja;Einzahl/Mehrzahl;fennel seed;5;2 teaspoons fennel s
 frozen green peas;tiefgefrorene grüne Erbsen;ja;Einzahl/Mehrzahl;frozen green pea;5;2 cups frozen green peas
 skinless chicken;Poulet;ja;Zusatzwort weggelassen;chicken;5;8 large skinless chicken pieces, about 200 g each
 cold cooked rice;Reis;ja;Zusatzwort weggelassen;cooked rice;5;3 cups cold cooked rice
-lean hamburger;Hamburger;ja;Zusatzwort weggelassen;hamburger;5;1 lb lean hamburger
+lean hamburger;Rinderhackfleisch;ja;Zusatzwort weggelassen;hamburger;5;1 lb lean hamburger
 uncooked pasta;Nudeln;ja;Zusatzwort weggelassen;pasta;5;1 cup uncooked pasta (small shells or elbow macaroni is best)
 dried black-eyed peas;Schwarzäugige Erbsen;ja;Zusatzwort weggelassen;black-eyed peas;5;2 1/2 cups dried black-eyed peas, soaked in water for 3-4 hours
 fresh cracked black pepper;Pfeffer;ja;Zusatzwort weggelassen;cracked black pepper;5;fresh cracked black pepper, to taste
@@ -185,7 +185,7 @@ dried coconut;Kokosnuss;ja;Zusatzwort weggelassen;coconut;4;1/2 cup dried coconu
 cooked jasmine rice;Jasminreis;ja;Zusatzwort weggelassen;jasmine rice;4;4 cups cooked jasmine rice
 fresh baby carrot;Karotte;ja;Zusatzwort weggelassen;baby carrot;4;1 1/2 cups fresh baby carrots
 lean beef;Rindfleisch;ja;Zusatzwort weggelassen;beef;4;1 lb lean beef, Ground
-lean ground sirloin;Rinderfilet, zerkleinert;ja;Zusatzwort weggelassen;ground sirloin;4;1 lb extra lean ground sirloin
+lean ground sirloin;Rinderhackfleisch;ja;Zusatzwort weggelassen;ground sirloin;4;1 lb extra lean ground sirloin
 fresh bean sprouts;Sojasprossen;ja;Zusatzwort weggelassen;bean sprouts;4;1 1/2 cups fresh bean sprouts or 1 1/2 cups shredded napa cabbage
 dried hot pepper;Pfeffer;ja;Zusatzwort weggelassen;pepper;4;1/2 teaspoon crushed dried hot pepper
 canned kidney beans;Kidneybohnen;ja;Zusatzwort weggelassen;kidney beans;4;6 cups canned kidney beans, drained
@@ -352,7 +352,7 @@ slightly egg;Ei;nein;Name enthalten (prüfen);egg;10;3 slightly beaten eggs
 gouda cheese;Käse;nein;Name enthalten (prüfen);cheese;10;1 1/2 cups gouda cheese or 1 1/2 cups swiss cheese, shredded
 squeezed lemon juice;Zitronensaft;nein;Name enthalten (prüfen);lemon juice;10;1 1/2 tablespoons freshly squeezed lemon juice (juice of 1/2 lemon)
 smoked salmon;Lachs;nein;Name enthalten (prüfen);salmon;10;smoked salmon, broken into little pieces
-idaho potato;Kartoffel;nein;Name enthalten (prüfen);potato;10;3 lbs idaho potatoes (about 6)
+idaho potato;Kartoffel;ja;Name enthalten (prüfen);potato;10;3 lbs idaho potatoes (about 6)
 jiffy corn muffin mix;Mais;nein;Name enthalten (prüfen);corn;10;1 (6 ounce) box Jiffy corn muffin mix
 egg roll wrap;Ei;nein;Name enthalten (prüfen);egg;10;1 package egg roll wrap
 marshmallow cream;Marshmallow;nein;Name enthalten (prüfen);marshmallow;10;1 (7 ounce) jar marshmallow cream
@@ -590,7 +590,7 @@ kraft parmesan cheese;Parmesankäse;nein;Name enthalten (prüfen);parmesan chees
 white fish fillet;Fischfilet;nein;Name enthalten (prüfen);fish fillet;6;8 medium white fish fillets
 skirt steak;Steak;nein;Name enthalten (prüfen);steak;6;2 lbs skirt steaks
 white cornmeal;Maismehl;nein;Name enthalten (prüfen);cornmeal;6;1/4 cup white cornmeal (or yellow)
-boiling potato;Kartoffel;nein;Name enthalten (prüfen);potato;6;4 boiling potatoes, cut into bite-size squares
+boiling potato;Kartoffel;ja;Name enthalten (prüfen);potato;6;4 boiling potatoes, cut into bite-size squares
 deep dish pie shell;Tortenboden;nein;Name enthalten (prüfen);pie shell;6;1 deep dish pie shell
 crescent roll dough;Hörnchen;nein;Name enthalten (prüfen);crescent roll;6;2 (8 ounce) packages crescent roll dough
 pineapple slice;Ananas;nein;Name enthalten (prüfen);pineapple;6;1 (20 ounce) can pineapple slices, drained, reserve juice
@@ -721,7 +721,7 @@ kernel corn;Mais;nein;Name enthalten (prüfen);corn;4;1 (15 ounce) can kernel co
 reduced-fat mexican cheese blend;Käse;nein;Name enthalten (prüfen);cheese;4;1/3 cup reduced-fat Mexican cheese blend, shredded
 shaved parmesan cheese;Parmesankäse;nein;Name enthalten (prüfen);parmesan cheese;4;shaved parmesan cheese
 beef round steak;Rindersteak;nein;Name enthalten (prüfen);round steak;4;1 1/2 lbs beef round steak, cut 3/4 inch thick
-hamburger meat;Hamburger;nein;Name enthalten (prüfen);hamburger;4;2 lbs hamburger meat
+hamburger meat;Rinderhackfleisch;ja;Name enthalten (prüfen);hamburger;4;2 lbs hamburger meat
 unseasoned breadcrumbs;Semmelbrösel;nein;Name enthalten (prüfen);breadcrumbs;4;1 cup unseasoned breadcrumbs
 stick margarine;Margarine;nein;Name enthalten (prüfen);margarine;4;1 tablespoon stick margarine, melted
 cheese slice;Käse;nein;Name enthalten (prüfen);cheese;4;1/4 lb cheese slice, any kind (provolone and fresh mozzarella are my faves)
@@ -760,10 +760,10 @@ macaroni and cheese mix;Makkaroni;nein;Name enthalten (prüfen);macaroni;4;1 (7 
 jalapeno jack cheese;Jalapeño;nein;Name enthalten (prüfen);jalapeno;4;1 (8 ounce) package jalapeno jack cheese, shredded
 squeezed orange juice;Orangensaft;nein;Name enthalten (prüfen);orange juice;4;1/2 cup freshly squeezed orange juice (2 oranges)
 beef flank steak;Flank Steak;nein;Name enthalten (prüfen);flank steak;4;2 lbs beef flank steak
-boiled potato;Kartoffel;nein;Name enthalten (prüfen);potato;4;2 lbs boiled potatoes
+boiled potato;Kartoffel;ja;Name enthalten (prüfen);potato;4;2 lbs boiled potatoes
 seasoned dry bread crumbs;Brot;nein;Name enthalten (prüfen);bread;4;1 1/2 cups seasoned dry bread crumbs
 snipped fresh basil;Basilikum;nein;Name enthalten (prüfen);fresh basil;4;1 tablespoon snipped fresh basil or 1/2 teaspoon dried basil, crushed
-unpeeled baking potato;Backkartoffel;nein;Name enthalten (prüfen);baking potato;4;6 medium unpeeled baking potatoes
+unpeeled baking potato;Backkartoffel;ja;Name enthalten (prüfen);baking potato;4;6 medium unpeeled baking potatoes
 acini di pepe pasta;Nudeln;nein;Name enthalten (prüfen);pasta;4;1/4 cup acini di pepe pasta (small pasta)
 red radish;Rettich;nein;Name enthalten (prüfen);radish;4;1 cup finely chopped red radish
 jalapeno jelly;Jalapeño;nein;Name enthalten (prüfen);jalapeno;4;3 teaspoons jalapeno jelly
@@ -780,14 +780,14 @@ flat-leaf italian parsley;Petersilie;nein;Name enthalten (prüfen);italian parsl
 chicken stuffing mix;Poulet;nein;Name enthalten (prüfen);chicken;4;1 (6 ounce) package chicken stuffing mix
 whole grain dijon mustard;Dijon-Senf;nein;Name enthalten (prüfen);dijon mustard;4;3 tablespoons whole grain Dijon mustard
 boneless pork shoulder;Schweinefleisch;nein;Name enthalten (prüfen);pork;4;3 lbs boneless pork shoulder, cut into chunks (carnitas meat)
-leftover potato;Kartoffel;nein;Name enthalten (prüfen);potato;4;leftover mashed potatoes
+leftover potato;Kartoffel;ja;Name enthalten (prüfen);potato;4;leftover mashed potatoes
 albacore tuna in water;Thunfisch in Wasser;nein;Name enthalten (prüfen);tuna in water;4;1 (13 ounce) can albacore tuna in water, drained and flaked
 bibb lettuce;Salat;nein;Name enthalten (prüfen);lettuce;4;6 leaves bibb lettuce
 green chili salsa;grüne Chilischote;nein;Name enthalten (prüfen);green chili;4;1 (8 ounce) can green chili salsa
 soft cream cheese;Frischkäse;nein;Name enthalten (prüfen);cream cheese;4;4 tablespoons soft cream cheese
 cm fresh ginger;Ingwer;nein;Name enthalten (prüfen);fresh ginger;4;5 cm fresh ginger, grated
 bone-in skinless chicken thigh;Pouletoberschenkel;nein;Name enthalten (prüfen);skinless chicken thigh;4;6 bone-in skinless chicken thighs, fat removed
-hamburger patty;Hamburger;nein;Name enthalten (prüfen);hamburger;4;12 hamburger patties (purchased patties or your favorite recipe made up into 12 patties.)
+hamburger patty;Rinderhackfleisch;ja;Name enthalten (prüfen);hamburger;4;12 hamburger patties (purchased patties or your favorite recipe made up into 12 patties.)
 short rib of beef;Rindfleisch;nein;Name enthalten (prüfen);beef;4;1 1/2 lbs short rib of beef
 thin asparagus;Spargel;nein;Name enthalten (prüfen);asparagus;4;1 lb thin asparagus, tough ends snapped off and cut on the diagonal into 1 1/2 inch pieces
 cheese cheddar;Käse;nein;Name enthalten (prüfen);cheese;4;8 ounces shredded cheese (Cheddar, Mexican blend, whatever)
@@ -804,7 +804,7 @@ mung bean sprouts;Sojasprossen;nein;Name enthalten (prüfen);bean sprouts;4;1/2 
 center bacon;Speck;nein;Name enthalten (prüfen);bacon;4;2 center-cut bacon, slices chopped
 long grain and wild rice blend;Reis;nein;Name enthalten (prüfen);rice;4;1/2 cup long grain and wild rice blend, uncooked
 garlic pepper seasoning;Pfeffer;nein;Name enthalten (prüfen);pepper;4;garlic pepper seasoning (to taste)
-tiny new potato;neue Kartoffeln;nein;Name enthalten (prüfen);new potato;4;1 1/4 lbs tiny new potatoes, cut in 3/4 inch cubes
+tiny new potato;neue Kartoffeln;ja;Name enthalten (prüfen);new potato;4;1 1/4 lbs tiny new potatoes, cut in 3/4 inch cubes
 chicken drummette;Poulet;nein;Name enthalten (prüfen);chicken;4;2 1/2 lbs chicken drummettes or 2 1/2 lbs chicken pieces
 smoked bacon;Speck;nein;Name enthalten (prüfen);bacon;4;5 slices smoked bacon, cut up or 1 smoked ham hock
 zesty italian salad dressing;italienisches Salatdressing;nein;Name enthalten (prüfen);italian salad dressing;4;8 ounces zesty Italian salad dressing
@@ -1033,13 +1033,13 @@ boston lettuce leaf;Salat;nein;Name enthalten (prüfen);lettuce leaf;3;4 large b
 israeli couscous;Couscous;nein;Name enthalten (prüfen);couscous;3;1 (8 7/8 ounce) package israeli couscous
 sweet green pepper;grüne Peperoni;nein;Name enthalten (prüfen);green pepper;3;1 sweet green pepper, sliced
 good seasons italian dressing;italienisches Dressing;nein;Name enthalten (prüfen);italian dressing;3;1 ounce Good Seasons Italian dressing, not mixed
-fingerling potato;Kartoffel;nein;Name enthalten (prüfen);potato;3;1 1/2 lbs fingerling potatoes, scrubbed
+fingerling potato;Kartoffel;ja;Name enthalten (prüfen);potato;3;1 1/2 lbs fingerling potatoes, scrubbed
 seasoned salt;Salz;nein;Name enthalten (prüfen);salt;3;seasoned salt & freshly ground black pepper
 ears sweet corn;Mais;nein;Name enthalten (prüfen);corn;3;4 ears sweet corn
 raspberry jell-o gelatin;Himbeere;nein;Name enthalten (prüfen);raspberry;3;1 (6 ounce) box raspberry Jell-O gelatin
 mozzarella string cheese;Käse;nein;Name enthalten (prüfen);cheese;3;3 ounces mozzarella string cheese, each cut into 6 pieces
 white whole wheat flour;Vollkornmehl;nein;Name enthalten (prüfen);whole wheat flour;3;1/4 cup white whole wheat flour
-russet baking potato;Backkartoffel;nein;Name enthalten (prüfen);baking potato;3;6 russet baking potatoes, peeled and sliced thin lengthwise
+russet baking potato;Russet-Kartoffel;ja;Name enthalten (prüfen);baking potato;3;6 russet baking potatoes, peeled and sliced thin lengthwise
 powdered saffron;Safran;nein;Name enthalten (prüfen);saffron;3;1/8 teaspoon powdered saffron
 pita bread round;Pita-Brot;nein;Name enthalten (prüfen);pita bread;3;5 (6 inch) pita bread rounds
 strawberry jelly;Erdbeere;nein;Name enthalten (prüfen);strawberry;3;1 (13 1/2 ounce) jar strawberry jelly (or other fruit jelly)

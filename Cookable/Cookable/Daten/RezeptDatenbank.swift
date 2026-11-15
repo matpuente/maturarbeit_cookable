@@ -60,6 +60,12 @@ final class RezeptDatenbank {
             zutat.austauschgruppe.flatMap { gruppenNummer[$0] }.map { (zutat.id, $0) }
         })
         zutatenSuche = ZutatenSuche(zutaten: zutaten)
+        alteNamen = Dictionary(
+            try abfragen("SELECT name, zutat_id FROM zutat_alter_name") { zeile in
+                (String(cString: sqlite3_column_text(zeile, 0)), Int(sqlite3_column_int64(zeile, 1)))
+            },
+            uniquingKeysWith: { erste, _ in erste }
+        )
         rezepte = try ladeRezepte(grundzutaten: Set(zutaten.filter(\.istGrundzutat).map(\.id)))
     }
 
@@ -70,6 +76,8 @@ final class RezeptDatenbank {
     /// Alle Zutaten der Zutatenliste (klein genug, um sie im Speicher zu halten)
     @ObservationIgnored private(set) var zutaten: [Zutat] = []
     @ObservationIgnored private(set) var zutatenSuche = ZutatenSuche(zutaten: [])
+    /// Frühere deutsche Begriffe -> heutige Zutat-ID (umbenannte oder zusammengefasste Begriffe)
+    @ObservationIgnored private(set) var alteNamen: [String: Int] = [:]
     /// Zutat-ID -> Nummer der Austauschgruppe (nur Zutaten, die zu einer Gruppe gehören)
     @ObservationIgnored private(set) var austauschgruppe: [Int: Int] = [:]
     /// Alle Rezepte mit ihren Zutaten für die Vorschlagsliste (15'000 Einträge, wenige MB)

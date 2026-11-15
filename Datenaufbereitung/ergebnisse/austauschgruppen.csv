@@ -80,7 +80,7 @@ Kreuzkümmel;;761;ground cumin, cumin, cumin seed
 Mayonnaise;;736;mayonnaise, light mayonnaise, low-fat mayonnaise, fat-free mayonnaise
 Vanilleextrakt;;698;vanilla extract, pure vanilla extract
 Paprika;;691;paprika
-Rinderhackfleisch;;683;ground beef, lean ground beef, ground chuck, ground round
+Rinderhackfleisch;Hackfleisch;683;ground beef, lean ground beef, ground chuck, ground round
 Rahm;;680;heavy cream, whipping cream, cream, heavy whipping cream, light cream, whipped cream, whipped topping
 Thymian;;660;dried thyme, thyme, fresh thyme, dried thyme leaf, thyme leaf
 Cayennepfeffer;;642;cayenne pepper, cayenne, ground cayenne pepper
@@ -90,7 +90,7 @@ Sellerie;;609;celery
 Honig;;579;honey
 Puderzucker;;572;powdered sugar, confectioners' sugar, icing sugar
 Worcestershire-Sauce;;558;worcestershire sauce
-Kartoffel;;551;potato
+Kartoffel;Kartoffeln;551;potato
 Maisstärke;;527;cornstarch
 Muskatnuss;;510;nutmeg, ground nutmeg
 Speck;;462;bacon, cooked bacon
@@ -184,7 +184,7 @@ Korianderpulver;;131;ground coriander, coriander powder
 Brot;;130;bread
 Roma-Tomate;;129;plum tomato, roma tomato
 Heidelbeere;;127;blueberry, fresh blueberry
-rote Kartoffel;;126;red potato
+rote Kartoffel;Kartoffeln;126;red potato
 Maismehl;;126;cornmeal, cornflour
 Taco-Gewürzmischung;;126;taco seasoning, taco seasoning mix
 Kakaopulver;;126;cocoa powder, unsweetened cocoa powder
@@ -208,7 +208,7 @@ trockene Semmelbrösel;;99;dry breadcrumbs
 Reisessig;;98;rice vinegar
 Mandelextrakt;;94;almond extract
 Maissirup;;94;light corn syrup, corn syrup
-Russet-Kartoffel;;92;russet potato
+Russet-Kartoffel;Kartoffeln;92;russet potato
 Kokosnuss;;90;coconut
 Kürbis;;89;pumpkin, canned pumpkin
 Petersilienflocken;;89;parsley flakes, dried parsley flakes
@@ -221,7 +221,7 @@ dunkler brauner Zucker;;85;dark brown sugar
 Blumenkohl;;85;cauliflower
 Barbecue-Sauce;;84;barbecue sauce
 Brotmehl;;82;bread flour
-Backkartoffel;;82;baking potato
+Backkartoffel;Kartoffeln;82;baking potato
 Melasse;;82;molasses
 Kokosmilch;;82;coconut milk, light coconut milk
 Brokkoli-Röschen;;81;broccoli floret
@@ -234,7 +234,6 @@ Spaghettisauce;;76;spaghetti sauce
 Hüttenkäse;;76;cottage cheese, low fat cottage cheese
 Hühnerbouillonwürfel;;75;chicken bouillon cube
 Pinienkerne;;75;pine nuts, toasted pine nuts
-Hackfleisch;;75;ground pork, ground chicken, ground lean pork
 Weissbrot;;71;white bread
 Maiskörner;;70;whole kernel corn, frozen whole kernel corn
 frische Minze;;70;fresh mint, fresh mint leaf
@@ -249,7 +248,7 @@ Bier;;65;beer
 Kokosraspeln;;64;flaked coconut, sweetened flaked coconut
 Orange;;63;orange
 Velveeta-Käse;;63;velveeta cheese
-Putenhackfleisch;;63;ground turkey, lean ground turkey
+Putenhackfleisch;Hackfleisch;63;ground turkey, lean ground turkey
 Zwiebelsuppenmischung;;61;onion soup mix
 Schnellkoch-Haferflocken;;61;quick-cooking oats, quick-cooking oatmeal
 Grünkohl;;61;green cabbage, kale
@@ -360,7 +359,6 @@ Sojamilch;;33;soymilk
 Kirschkuchenfüllung;;33;cherry pie filling
 Vanillepudding aus der Tüte;;33;instant vanilla pudding
 Pute;;33;turkey, cooked turkey
-Hamburger;;32;hamburger
 Kürbispüree;;32;pumpkin puree
 ungebleichtes Mehl;;32;unbleached flour
 frische Petersilie;;32;fresh parsley leaf
@@ -368,14 +366,14 @@ Halbbitter-Schokolade;;32;semisweet chocolate
 Dillgurke;;32;dill pickle
 Flüssigrauch;;32;liquid smoke
 Maraschino-Kirsche;;32;maraschino cherry
-Yukon-Gold-Kartoffel;;32;yukon gold potato
+Yukon-Gold-Kartoffel;Kartoffeln;32;yukon gold potato
 Himbeere;;32;raspberry, fresh raspberry
 Sojasprossen;;31;bean sprouts
 Speckstückchen;;31;bacon bit
 Selleriecremesuppe;;31;cream of celery soup
 Miracle Whip;;31;miracle whip
 Parmigiano-Reggiano-Käse;;31;parmigiano-reggiano cheese
-neue Kartoffeln;;31;new potato
+neue Kartoffeln;Kartoffeln;31;new potato
 Vollkornbrot;;31;whole wheat bread
 gemahlener Senf;;30;ground mustard
 süsser Paprika;;30;sweet paprika
@@ -494,7 +492,7 @@ Reiswein;;19;rice wine
 Great Northern-Bohnen;;19;great northern beans
 Kreolische Gewürzmischung;;19;creole seasoning
 Fischfilet;;19;fish fillet
-weisse Kartoffel;;19;white potato
+weisse Kartoffel;Kartoffeln;19;white potato
 Blumenkohlröschen;;19;cauliflower floret
 Nudelsauce;;19;pasta sauce
 italienisches Salatdressing;;19;italian salad dressing
@@ -543,7 +541,6 @@ Ganzes Poulet;;16;roasting chicken
 Kabeljaufilet;;16;cod fish fillet
 Zahnstocher;;16;toothpick
 Lachssteak;;16;salmon steak
-Rinderfilet, zerkleinert;;16;ground sirloin
 Bambussprossen;;16;bamboo shoot
 Perlgraupen;;16;pearl barley
 Butter oder Margarine;;16;butter or margarine
@@ -697,3 +694,5 @@ Salsa mit Stückchen;;10;chunky salsa
 Mirin;;10;mirin
 Craisin;;10;craisin
 Crisco;;10;crisco
+Schweinehackfleisch;Hackfleisch;;ground pork, ground lean pork
+Poulethackfleisch;Hackfleisch;;ground chicken

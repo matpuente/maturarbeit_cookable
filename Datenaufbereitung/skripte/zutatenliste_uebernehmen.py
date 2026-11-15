@@ -12,6 +12,7 @@ Neue Tabellen:
   zutat           – ein Eintrag pro deutschem Begriff (Suche und Autovervollständigung), mit Austauschgruppe
   zutat_variante  – englische Grundnamen, die zu einem deutschen Begriff gehören
   rezept_zutat    – welche Zutaten der Liste ein Rezept braucht (inkl. Grundzutaten, siehe zutat.grundzutat)
+  zutat_alter_name – frühere deutsche Begriffe (ALTE_NAMEN), damit die App gespeicherte Einträge nachführt
   rezept.anzahl_ohne_liste – Anzahl verschiedener Grundnamen eines Rezepts, die nicht in der
                   Zutatenliste stehen (gelten bei der Sortierung immer als fehlend)
 """
@@ -27,10 +28,23 @@ ERGEBNISSE = BASIS / "ergebnisse"
 DATENBANK = ERGEBNISSE / "rezepte.sqlite"
 LISTE = ERGEBNISSE / "zutatenliste_zur_kontrolle.csv"
 VARIANTEN = ERGEBNISSE / "varianten_vorschlaege.csv"
+
+# Frühere deutsche Begriffe -> heutiger Begriff. Die App führt gespeicherte Vorratseinträge damit nach,
+# wenn ein Begriff umbenannt oder zusammengefasst wurde.
+ALTE_NAMEN = {
+    "Vollrahm": "Rahm",
+    "Schlagrahm": "Rahm",
+    "Pouletschenkel": "Pouletoberschenkel",
+    "Pouletkeule": "Pouletunterschenkel",
+    "Hackfleisch": "Rinderhackfleisch",
+    "Hamburger": "Rinderhackfleisch",
+    "Rinderfilet, zerkleinert": "Rinderhackfleisch",
+}
 GRUPPEN = ERGEBNISSE / "austauschgruppen.csv"
 
 SCHEMA = """
 DROP TABLE IF EXISTS rezept_zutat;
+DROP TABLE IF EXISTS zutat_alter_name;
 DROP TABLE IF EXISTS zutat_variante;
 DROP TABLE IF EXISTS zutat;
 CREATE TABLE zutat (
@@ -50,6 +64,10 @@ CREATE TABLE rezept_zutat (
     PRIMARY KEY (rezept_id, zutat_id)
 );
 CREATE INDEX idx_rezept_zutat_zutat ON rezept_zutat(zutat_id);
+CREATE TABLE zutat_alter_name (
+    name        TEXT PRIMARY KEY,          -- früherer deutscher Begriff
+    zutat_id    INTEGER NOT NULL REFERENCES zutat(id)
+);
 """
 
 
@@ -133,6 +151,10 @@ def main():
         db.execute("INSERT INTO zutat (name, grundzutat, haeufigkeit, austauschgruppe) VALUES (?, ?, 0, ?)",
                    (name, int(gruppe.grundzutat.iloc[0] == "ja"), gruppen.get(name)))
     ids = dict(db.execute("SELECT name, id FROM zutat"))
+    falsch = {alt: neu for alt, neu in ALTE_NAMEN.items() if neu not in ids or alt in ids}
+    if falsch:
+        sys.exit(f"ALTE_NAMEN passt nicht zur Zutatenliste: {falsch}")
+    db.executemany("INSERT INTO zutat_alter_name VALUES (?, ?)", [(alt, ids[neu]) for alt, neu in ALTE_NAMEN.items()])
     alle = pd.concat([liste[["englisch", "deutsch"]], varianten[["englisch", "deutsch"]]])
     db.executemany("INSERT INTO zutat_variante VALUES (?, ?)",
                    [(e, ids[d]) for e, d in zip(alle.englisch, alle.deutsch)])
