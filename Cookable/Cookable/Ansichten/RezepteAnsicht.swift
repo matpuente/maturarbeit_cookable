@@ -221,7 +221,7 @@ struct RezeptZeile: View {
             HStack(spacing: 8) {
                 ProgressView(value: vorschlag.anteil)
                     .frame(width: 60)
-                    .tint(vorschlag.fehlend == 0 ? .green : .accentColor)
+                    .tint(.accentColor)
                 Text(verfuegbarText)
                     .font(.subheadline)
             }
