@@ -96,12 +96,21 @@ struct RezepteAnsicht: View {
                 MussEnthaltenAuswahl(vorrat: vorrat, auswahl: $mussEnthalten)
             }
         } detail: {
-            if let auswahl, let vorschlag = vorschlaege.first(where: { $0.id == auswahl }) {
+            // Steht das gewählte Rezept nicht mehr in der Liste (z. B. weil sie sich beim Antippen gerade
+            // geändert hat), wird es direkt aus der Datenbank geholt
+            if let auswahl, let vorschlag = vorschlaege.first(where: { $0.id == auswahl }) ?? einzeln(auswahl) {
                 RezeptDetailAnsicht(vorschlag: vorschlag)
                     .id(vorschlag.id)
             } else {
                 ContentUnavailableView("Kein Rezept ausgewählt", systemImage: "fork.knife")
             }
+        }
+    }
+
+    private func einzeln(_ rezeptID: Int) -> RezeptVorschlag? {
+        datenbank.rezeptNachID[rezeptID].map {
+            RezeptVorschlaege.einzeln($0, vorrat: Set(vorrat.map(\.zutatID)), austauschgruppe: datenbank.austauschgruppe,
+                                      eigene: Set(vorrat.compactMap(\.grundname)))
         }
     }
 

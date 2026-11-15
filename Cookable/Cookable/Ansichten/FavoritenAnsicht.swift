@@ -92,7 +92,11 @@ struct FavoritenAnsicht: View {
             }
             .navigationTitle("Favoriten")
         } detail: {
-            if let auswahl, let vorschlag = vorschlaege.first(where: { $0.id == auswahl }) {
+            if let auswahl, let vorschlag = vorschlaege.first(where: { $0.id == auswahl })
+                ?? datenbank.rezeptNachID[auswahl].map({
+                    RezeptVorschlaege.einzeln($0, vorrat: Set(vorrat.map(\.zutatID)), austauschgruppe: datenbank.austauschgruppe,
+                                              eigene: Set(vorrat.compactMap(\.grundname)))
+                }) {
                 RezeptDetailAnsicht(vorschlag: vorschlag)
                     .id(vorschlag.id)
             } else {
