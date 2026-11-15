@@ -33,6 +33,7 @@ struct StartAnsicht: View {
             rezepte: datenbank.rezepte,
             vorrat: Set(vorrat.map(\.zutatID)),
             austauschgruppe: datenbank.austauschgruppe,
+            eigene: Set(vorrat.compactMap(\.grundname)),
             kategorie: nil,
             zeit: .alle
         )
@@ -147,9 +148,10 @@ struct StartAnsicht: View {
     /// Favoriten, die am besten zum Vorrat passen, zuerst
     private var favoritenVorschlaege: [RezeptVorschlag] {
         let vorratIDs = Set(vorrat.map(\.zutatID))
+        let eigene = Set(vorrat.compactMap(\.grundname))
         return favoriten
             .compactMap { datenbank.rezeptNachID[$0.rezeptID] }
-            .map { RezeptVorschlaege.einzeln($0, vorrat: vorratIDs, austauschgruppe: datenbank.austauschgruppe) }
+            .map { RezeptVorschlaege.einzeln($0, vorrat: vorratIDs, austauschgruppe: datenbank.austauschgruppe, eigene: eigene) }
             .sorted { $0.anteil > $1.anteil }
             .prefix(Self.anzahlKarten)
             .map { $0 }

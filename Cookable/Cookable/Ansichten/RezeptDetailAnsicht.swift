@@ -248,6 +248,7 @@ struct RezeptDetailAnsicht: View {
             if bekannte.isEmpty {
                 let name = einkaufsname(von: zeile, index: index)
                 kontext.insert(EinkaufsEintrag(name: name, menge: menge.isEmpty ? nil : menge,
+                                               grundname: zeile.ohneListe.first,
                                                rezeptID: rezept.id, rezeptName: anzeigename))
             } else {
                 for (nummer, zutat) in bekannte.enumerated() {
@@ -268,7 +269,8 @@ struct RezeptDetailAnsicht: View {
     /// Vorhanden (auch vorhandene Grundzutaten), Ersatz aus derselben Austauschgruppe oder fehlt
     /// (auch Zutaten, die nicht in der Zutatenliste stehen).
     private func status(von zeile: ZutatenZeile, vorratIDs: Set<Int>) -> Status {
-        if zeile.zutatIDs.contains(where: vorratIDs.contains) {
+        if zeile.zutatIDs.contains(where: vorratIDs.contains)
+            || zeile.ohneListe.contains(where: { grundname in vorrat.contains { $0.grundname == grundname } }) {
             return .vorhanden
         }
         for zutatID in zeile.zutatIDs {

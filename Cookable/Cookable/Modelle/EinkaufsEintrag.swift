@@ -11,13 +11,18 @@ final class EinkaufsEintrag {
     /// Deutscher Begriff der Zutatenliste, falls bekannt – nötig für «Gekauft → in den Vorrat».
     /// Gespeichert wird der Name, nicht die ID (die IDs der Zutatenliste sind nicht dauerhaft).
     var zutatName: String?
+    /// Englischer Grundname aus dem Datensatz, falls die Zutat nicht in der Zutatenliste steht
+    /// (nötig, um sie als eigene Zutat in den Vorrat zu legen)
+    var grundname: String?
     var rezeptID: Int?
     var rezeptName: String?
     var erledigt: Bool
     var hinzugefuegtAm: Date
 
-    init(name: String, menge: String? = nil, zutatName: String? = nil, rezeptID: Int? = nil, rezeptName: String? = nil) {
+    init(name: String, menge: String? = nil, zutatName: String? = nil, grundname: String? = nil,
+         rezeptID: Int? = nil, rezeptName: String? = nil) {
         self.name = name
+        self.grundname = grundname
         self.menge = menge
         self.zutatName = zutatName
         self.rezeptID = rezeptID

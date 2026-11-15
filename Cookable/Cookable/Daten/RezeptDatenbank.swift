@@ -116,8 +116,21 @@ final class RezeptDatenbank {
                 rezepte[index].zutaten.append(zutatID)
             }
         }
+        for (rezeptID, grundname) in try abfragen(Self.ohneListeSQL) { zeile in
+            (Int(sqlite3_column_int64(zeile, 0)), String(cString: sqlite3_column_text(zeile, 1)))
+        } {
+            guard let index = position[rezeptID], !rezepte[index].ohneListe.contains(grundname) else { continue }
+            rezepte[index].ohneListe.append(grundname)
+        }
         return rezepte
     }
+
+    /// Grundnamen, die keiner Zutat der Zutatenliste zugeordnet sind (pro Rezept und Zeile)
+    private static let ohneListeSQL = """
+        SELECT DISTINCT zg.rezept_id, zg.grundname, zg.position FROM zeile_grundname zg
+        LEFT JOIN zutat_variante v ON v.grundname = zg.grundname
+        WHERE v.grundname IS NULL
+        """
 
     /// Alles, was die Detailansicht eines Rezepts braucht.
     func details(zu rezeptID: Int) throws -> RezeptDetails? {
@@ -153,6 +166,12 @@ final class RezeptDatenbank {
             """, parameter: [rezeptID], zeile: { (Int(sqlite3_column_int64($0, 0)), Int(sqlite3_column_int64($0, 1))) }) {
             zutatenProZeile[position, default: []].append(zutatID)
         }
+        var ohneListeProZeile: [Int: [String]] = [:]
+        for (position, grundname) in try abfragen(Self.ohneListeSQL + " AND zg.rezept_id = ?", parameter: [rezeptID], zeile: {
+            (Int(sqlite3_column_int64($0, 2)), String(cString: sqlite3_column_text($0, 1)))
+        }) {
+            ohneListeProZeile[position, default: []].append(grundname)
+        }
 
         details.zeilen = try abfragen("""
             SELECT position, original, menge, menge_bis, einheit, menge_metrisch, menge_bis_metrisch,
@@ -174,7 +193,8 @@ final class RezeptDatenbank {
                 groesse: text(zeile, 10),
                 name: text(zeile, 11) ?? "",
                 zusatz: text(zeile, 12),
-                zutatIDs: zutatenProZeile[position] ?? []
+                zutatIDs: zutatenProZeile[position] ?? [],
+                ohneListe: ohneListeProZeile[position] ?? []
             )
         }
         return details

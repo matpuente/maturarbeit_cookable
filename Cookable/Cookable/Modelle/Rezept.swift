@@ -54,8 +54,10 @@ nonisolated struct RezeptUebersicht: Identifiable, Hashable {
     var zutaten: [Int] = []
     /// Grundzutaten, die das Rezept braucht
     var grundzutaten: [Int] = []
-    /// Zutaten, die nicht in der Zutatenliste stehen (zählen immer als fehlend)
+    /// Zutaten, die nicht in der Zutatenliste stehen (zählen als fehlend, ausser als eigene Zutat im Vorrat)
     let anzahlOhneListe: Int
+    /// Englische Grundnamen dieser Zutaten (für eigene Zutaten im Vorrat)
+    var ohneListe: [String] = []
     /// Foto von Food.com (für das Vorschaubild in der Liste)
     var bildURL: URL? = nil
 

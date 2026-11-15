@@ -289,8 +289,10 @@ private struct ZutatZuordnen: View {
         let name: String
         let menge: String?
         let rezeptName: String?
+        let grundname: String?
 
         init(_ eintrag: EinkaufsEintrag) {
+            grundname = eintrag.grundname
             id = eintrag.persistentModelID
             anzeigename = eintrag.anzeigename
             name = eintrag.name
@@ -308,6 +310,7 @@ private struct ZutatZuordnen: View {
     @State private var suchtext = ""
     @State private var gewaehlt: Zutat?
     @State private var lagerort = Lagerort.kuehlschrank
+    @State private var eigenerLagerort = Lagerort.kuehlschrank
     @State private var erledigt: [PersistentIdentifier] = []
 
     private var eintrag: Angaben { eintraege[min(nummer, eintraege.count - 1)] }
@@ -374,6 +377,24 @@ private struct ZutatZuordnen: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
+
+                    // Zutat aus einem Rezept: steht sicher im Datensatz und kann als eigene Zutat in den Vorrat
+                    if let grundname = eintrag.grundname {
+                        Section {
+                            Picker("Lagerort", selection: $eigenerLagerort) {
+                                ForEach(Lagerort.allCases) { ort in
+                                    Label(ort.name, systemImage: ort.symbol).tag(ort)
+                                }
+                            }
+                            Button("«\(eintrag.anzeigename)» als eigene Zutat in den Vorrat", systemImage: "plus.circle") {
+                                alsEigeneZutat(grundname: grundname)
+                            }
+                        } header: {
+                            Text("Oder als eigene Zutat")
+                        } footer: {
+                            Text("Zählt bei allen Rezepten mit genau dieser Zutat (im Datensatz: «\(grundname)»), aber nie als Ersatz für eine andere.")
+                        }
+                    }
                 }
 
                 Section {
@@ -409,6 +430,15 @@ private struct ZutatZuordnen: View {
         if !vorrat.contains(where: { $0.zutatID == zutat.id && $0.lagerort == lagerort }) {
             kontext.insert(VorratsEintrag(zutatID: zutat.id, name: zutat.name, lagerort: lagerort))
             EigeneLagerorte.merken(lagerort, fuer: zutat)
+        }
+        try? kontext.save()
+        weiter(entfernen: true)
+    }
+
+    private func alsEigeneZutat(grundname: String) {
+        let vorrat = (try? kontext.fetch(FetchDescriptor<VorratsEintrag>())) ?? []
+        if !vorrat.contains(where: { $0.grundname == grundname && $0.lagerort == eigenerLagerort }) {
+            kontext.insert(VorratsEintrag(eigeneZutat: eintrag.anzeigename, grundname: grundname, lagerort: eigenerLagerort))
         }
         try? kontext.save()
         weiter(entfernen: true)

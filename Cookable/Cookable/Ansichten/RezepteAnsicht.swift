@@ -41,6 +41,7 @@ struct RezepteAnsicht: View {
             rezepte: datenbank.rezepte,
             vorrat: Set(vorrat.map(\.zutatID)),
             austauschgruppe: datenbank.austauschgruppe,
+            eigene: Set(vorrat.compactMap(\.grundname)),
             kategorie: kategorie,
             zeit: zeit,
             mussEnthalten: aktiveMussZutaten,

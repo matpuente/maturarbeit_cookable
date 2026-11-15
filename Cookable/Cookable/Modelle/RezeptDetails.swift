@@ -36,6 +36,8 @@ nonisolated struct ZutatenZeile: Identifiable {
     let zusatz: String?
     /// Zutaten der Zutatenliste, die in dieser Zeile vorkommen ("salt and pepper" -> zwei)
     let zutatIDs: [Int]
+    /// Englische Grundnamen dieser Zeile, die nicht in der Zutatenliste stehen
+    var ohneListe: [String] = []
 
     var id: Int { position }
 }

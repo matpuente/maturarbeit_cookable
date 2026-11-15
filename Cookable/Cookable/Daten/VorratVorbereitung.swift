@@ -29,7 +29,7 @@ enum VorratVorbereitung {
         let nachID = Dictionary(uniqueKeysWithValues: datenbank.zutaten.map { ($0.id, $0.name) })
         let nachName = Dictionary(datenbank.zutaten.map { ($0.name, $0.id) }, uniquingKeysWith: { erste, _ in erste })
         var geaendert = false
-        for eintrag in eintraege where nachID[eintrag.zutatID] != eintrag.name {
+        for eintrag in eintraege where !eintrag.istEigeneZutat && nachID[eintrag.zutatID] != eintrag.name {
             if let id = nachName[eintrag.name] {
                 eintrag.zutatID = id
             } else if let id = datenbank.alteNamen[eintrag.name], let neuerName = nachID[id] {
@@ -42,7 +42,8 @@ enum VorratVorbereitung {
         }
         guard geaendert else { return }
         var gesehen = Set<String>()
-        for eintrag in eintraege where !gesehen.insert("\(eintrag.zutatID)-\(eintrag.lagerort.rawValue)").inserted {
+        for eintrag in eintraege
+        where !gesehen.insert("\(eintrag.zutatID)-\(eintrag.grundname ?? "")-\(eintrag.lagerort.rawValue)").inserted {
             kontext.delete(eintrag)
         }
         try? kontext.save()

@@ -42,6 +42,13 @@ final class VorratsEintrag {
     var lagerort: Lagerort
     var ablaufdatum: Date?
     var hinzugefuegtAm: Date
+    /// Nur bei eigenen Zutaten (nicht in der Zutatenliste, aus einem Rezept übernommen):
+    /// englischer Grundname aus dem Datensatz, z. B. "turkey broth". Damit zählt die Zutat bei allen
+    /// Rezepten, die genau diesen Grundnamen enthalten.
+    var grundname: String?
+
+    /// `zutatID` aller eigenen Zutaten (kommt in keinem Rezept vor)
+    static let eigeneZutatID = -1
 
     init(zutatID: Int, name: String, lagerort: Lagerort, ablaufdatum: Date? = nil) {
         self.zutatID = zutatID
@@ -51,6 +58,13 @@ final class VorratsEintrag {
         self.hinzugefuegtAm = .now
     }
 
+    /// Eigene Zutat aus einem Rezept (CLAUDE.md, Funktion 6)
+    convenience init(eigeneZutat name: String, grundname: String, lagerort: Lagerort, ablaufdatum: Date? = nil) {
+        self.init(zutatID: Self.eigeneZutatID, name: name, lagerort: lagerort, ablaufdatum: ablaufdatum)
+        self.grundname = grundname
+    }
+
+    var istEigeneZutat: Bool { grundname != nil }
     var anzeigename: String { name.mitGrossemAnfang }
 }
 

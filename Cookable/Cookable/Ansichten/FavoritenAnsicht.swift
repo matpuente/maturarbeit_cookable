@@ -27,10 +27,11 @@ struct FavoritenAnsicht: View {
     /// Favoriten mit Abgleich gegen den Vorrat, in der gewählten Reihenfolge
     private var vorschlaege: [RezeptVorschlag] {
         let vorratIDs = Set(vorrat.map(\.zutatID))
+        let eigene = Set(vorrat.compactMap(\.grundname))
         let datum = Dictionary(favoriten.map { ($0.rezeptID, $0.hinzugefuegtAm) }, uniquingKeysWith: { erstes, _ in erstes })
         let liste = favoriten.compactMap { favorit in
             datenbank.rezeptNachID[favorit.rezeptID].map {
-                RezeptVorschlaege.einzeln($0, vorrat: vorratIDs, austauschgruppe: datenbank.austauschgruppe)
+                RezeptVorschlaege.einzeln($0, vorrat: vorratIDs, austauschgruppe: datenbank.austauschgruppe, eigene: eigene)
             }
         }
         switch sortierung {

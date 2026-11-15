@@ -133,6 +133,11 @@ struct VorratAnsicht: View {
                 } label: {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(eintrag.anzeigename)
+                        if eintrag.istEigeneZutat {
+                            Text("Eigene Zutat")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                         if let datum = eintrag.ablaufdatum {
                             let datumText = datum.formatted(date: .numeric, time: .omitted)
                             if let status = eintrag.ablaufStatus() {

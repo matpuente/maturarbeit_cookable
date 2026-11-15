@@ -59,7 +59,7 @@ Cookable/                    ← Hauptordner, Claude Code hier starten
 
 1. **Zutaten eingeben** – mit Autovervollständigung und Kategorisierung nach Lagerort (Kühlschrank, Tiefkühler, Vorratsschrank).
    - Pro Zutat: Name, Lagerort, optional Ablaufdatum. Einträge können bearbeitet (Lagerort, Ablaufdatum) und gelöscht werden.
-   - Nur Zutaten aus der Zutatenliste können erfasst werden (keine freie Eingabe).
+   - Nur Zutaten aus der Zutatenliste können erfasst werden (keine freie Eingabe). Ausnahme (beschlossen 15. November 2026): «eigene Zutaten» aus einem Rezept über die Einkaufsliste (siehe Abschnitt 7, Erweiterung 3).
    - Dieselbe Zutat darf nicht zweimal am selben Lagerort stehen; an verschiedenen Lagerorten ist sie erlaubt.
    - **Lagerort-Vorschlag:** Beim Wählen einer Zutat wird ihr Standard-Lagerort vorgeschlagen (z. B. Kartoffel → Vorratsschrank). Legt der Nutzer eine Zutat an einen anderen Ort, merkt sich die App das und schlägt beim nächsten Mal diesen Ort vor. Die Standard-Lagerorte stehen in `Datenaufbereitung/ergebnisse/lagerorte.csv` (von Hand kontrolliert, Spalte `zutat.lagerort`).
    - Keine Mengenangaben.
@@ -282,6 +282,7 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - «Gekaufte in den Vorrat»: Zutaten der Liste an den vorgeschlagenen Lagerort (Grundzutaten → «Immer zuhause»), ohne Ablaufdatum, keine Doppelten; eigene freie Einträge (z. B. Zahnpasta) werden nur entfernt.
       - Nicht erkannte Rezeptzutaten (ausserhalb der Zutatenliste): in der Liste orange «Nicht erkannt – beim Einkauf selbst zuordnen»; nach «Gekaufte in den Vorrat» Fenster «Zutat zuordnen» – passende Zutat der Liste suchen (vorbelegt mit dem Namen), Lagerort wählen, oder «nur von der Liste entfernen»; «Später» lässt sie im Wagen. Im Vorrat stehen weiterhin nur Zutaten der Zutatenliste.
       - Auf der Einkaufsliste steht der übersetzte Name ohne Zusatz (Text vor «(» oder «,»).
+      - **Eigene Zutaten:** Im Fenster «Zutat zuordnen» kann eine Rezeptzutat ausserhalb der Zutatenliste auch «als eigene Zutat» in den Vorrat (nur Lagerort wählen). Nur für Einträge aus einem Rezept, weil ihr englischer Grundname sicher im Datensatz steht (`EinkaufsEintrag.grundname`, `VorratsEintrag.grundname`, `zutatID` = −1). Sie zählt bei allen Rezepten mit genau diesem Grundnamen als vorhanden (`RezeptUebersicht.ohneListe`), nie als Ersatz, nicht bei «Muss enthalten». Im Vorrat mit «Eigene Zutat» gekennzeichnet; Lagerort und Ablaufdatum lassen sich bearbeiten. Im Vorrat selbst gibt es weiterhin keine freie Eingabe.
 6. **Später:** Mitteilungen bei Ablauf (Funktion 7) und Bewertungen (Funktion 9), nur auf ausdrückliche Anfrage.
 
 ---

@@ -35,7 +35,10 @@ struct ZutatFormular: View {
     /// Gibt es diese Zutat am gewählten Lagerort schon (ausser dem bearbeiteten Eintrag)?
     private var doppelt: Bool {
         guard let zutat, !gesichert else { return false }
-        return vorrat.contains { $0.zutatID == zutat.id && $0.lagerort == lagerort && $0 !== bearbeiteterEintrag }
+        return vorrat.contains {
+            $0.zutatID == zutat.id && $0.grundname == bearbeiteterEintrag?.grundname
+                && $0.lagerort == lagerort && $0 !== bearbeiteterEintrag
+        }
     }
 
     var body: some View {
@@ -159,6 +162,8 @@ struct ZutatFormular: View {
             sucheAktiv = true
         case .bearbeiten(let eintrag):
             zutat = datenbank.zutaten.first { $0.id == eintrag.zutatID }
+                // Eigene Zutat (nicht in der Zutatenliste): nur Lagerort und Ablaufdatum lassen sich ändern
+                ?? (eintrag.istEigeneZutat ? Zutat(id: eintrag.zutatID, name: eintrag.name, istGrundzutat: false, haeufigkeit: 0) : nil)
             lagerort = eintrag.lagerort
             if let datum = eintrag.ablaufdatum {
                 mitAblaufdatum = true
