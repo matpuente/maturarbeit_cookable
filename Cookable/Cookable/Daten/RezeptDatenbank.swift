@@ -86,7 +86,7 @@ final class RezeptDatenbank {
 
     private func ladeRezepte(grundzutaten: Set<Int>) throws -> [RezeptUebersicht] {
         var rezepte = try abfragen("""
-            SELECT id, name, gruppe, zeit_min, portionen, beliebtheit, anzahl_ohne_liste FROM rezept
+            SELECT id, name, gruppe, zeit_min, portionen, beliebtheit, anzahl_ohne_liste, bild_url FROM rezept
             """) { zeile in
             RezeptUebersicht(
                 id: Int(sqlite3_column_int64(zeile, 0)),
@@ -95,7 +95,8 @@ final class RezeptDatenbank {
                 zeitMinuten: Int(sqlite3_column_int64(zeile, 3)),
                 portionen: Int(sqlite3_column_int64(zeile, 4)),
                 beliebtheit: Int(sqlite3_column_int64(zeile, 5)),
-                anzahlOhneListe: Int(sqlite3_column_int64(zeile, 6))
+                anzahlOhneListe: Int(sqlite3_column_int64(zeile, 6)),
+                bildURL: sqlite3_column_text(zeile, 7).flatMap { URL(string: String(cString: $0)) }
             )
         }
         for index in rezepte.indices {

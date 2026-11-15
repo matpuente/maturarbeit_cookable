@@ -164,7 +164,7 @@ struct RezeptDetailAnsicht: View {
                     Group {
                         switch status {
                         case .vorhanden:
-                            Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                            Image(systemName: "checkmark.circle.fill").foregroundStyle(.tint)
                         case .ersatz:
                             Image(systemName: "arrow.triangle.2.circlepath.circle.fill").foregroundStyle(.orange)
                         case .keiner:
