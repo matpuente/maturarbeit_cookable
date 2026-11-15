@@ -56,6 +56,8 @@ nonisolated struct RezeptUebersicht: Identifiable, Hashable {
     var grundzutaten: [Int] = []
     /// Zutaten, die nicht in der Zutatenliste stehen (zählen immer als fehlend)
     let anzahlOhneListe: Int
+    /// Foto von Food.com (für das Vorschaubild in der Liste)
+    var bildURL: URL? = nil
 
     /// "45 Min.", "1 Std. 30 Min." oder ab zwei Tagen "10 Tage"
     var zeitText: String {

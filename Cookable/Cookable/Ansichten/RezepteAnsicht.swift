@@ -214,24 +214,30 @@ struct RezeptZeile: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(name)
-                .font(.headline)
-                .lineLimit(2)
-            HStack(spacing: 8) {
-                ProgressView(value: vorschlag.anteil)
-                    .frame(width: 60)
-                    .tint(.accentColor)
-                Text(verfuegbarText)
-                    .font(.subheadline)
+        HStack(alignment: .top, spacing: 12) {
+            RezeptFoto(url: vorschlag.rezept.bildURL, klein: true)
+                .frame(width: 64, height: 64)
+                .clipShape(.rect(cornerRadius: 10))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 6) {
+                Text(name)
+                    .font(.headline)
+                    .lineLimit(2)
+                HStack(spacing: 8) {
+                    ProgressView(value: vorschlag.anteil)
+                        .frame(width: 44)
+                        .tint(.accentColor)
+                    Text(verfuegbarText)
+                        .font(.subheadline)
+                }
+                Label {
+                    Text("\(vorschlag.rezept.zeitText) · \(vorschlag.rezept.kategorie.rawValue)")
+                } icon: {
+                    Image(systemName: "clock")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
-            Label {
-                Text("\(vorschlag.rezept.zeitText) · \(vorschlag.rezept.kategorie.rawValue)")
-            } icon: {
-                Image(systemName: "clock")
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
         }
         .padding(.vertical, 2)
     }
