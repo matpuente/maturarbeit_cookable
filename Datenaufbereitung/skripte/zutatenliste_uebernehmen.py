@@ -7,6 +7,7 @@ Kann beliebig oft ausgeführt werden; die Zutatentabellen werden jedes Mal neu e
 Zusätzlich gelesen (falls vorhanden, beide von Hand kontrolliert):
   varianten_vorschlaege.csv – weitere englische Namen (uebernehmen = ja) für bestehende deutsche Begriffe
   austauschgruppen.csv      – Gruppe austauschbarer Zutaten pro deutschem Begriff (z. B. «Pasta»)
+  lagerorte.csv             – Standard-Lagerort pro deutschem Begriff (Vorschlag beim Hinzufügen)
 
 Neue Tabellen:
   zutat           – ein Eintrag pro deutschem Begriff (Suche und Autovervollständigung), mit Austauschgruppe
@@ -41,6 +42,8 @@ ALTE_NAMEN = {
     "Rinderfilet, zerkleinert": "Rinderhackfleisch",
 }
 GRUPPEN = ERGEBNISSE / "austauschgruppen.csv"
+LAGERORTE = ERGEBNISSE / "lagerorte.csv"
+LAGERORT_WERT = {"kühlschrank": "kuehlschrank", "tiefkühler": "tiefkuehler", "vorratsschrank": "vorratsschrank"}
 
 SCHEMA = """
 DROP TABLE IF EXISTS rezept_zutat;
@@ -52,7 +55,8 @@ CREATE TABLE zutat (
     name        TEXT NOT NULL UNIQUE,      -- deutscher Begriff
     grundzutat  INTEGER NOT NULL,          -- 1 = gilt immer als vorhanden
     haeufigkeit INTEGER NOT NULL,          -- Anzahl Rezepte, für die Reihenfolge der Vorschläge
-    austauschgruppe TEXT                   -- z. B. "Pasta"; Zutaten derselben Gruppe ersetzen sich gegenseitig
+    austauschgruppe TEXT,                  -- z. B. "Pasta"; Zutaten derselben Gruppe ersetzen sich gegenseitig
+    lagerort    TEXT                       -- Standard-Lagerort: kuehlschrank, tiefkuehler, vorratsschrank
 );
 CREATE TABLE zutat_variante (
     grundname   TEXT PRIMARY KEY,          -- englischer Grundname aus zeile_grundname
@@ -112,6 +116,24 @@ def lies_gruppen(liste: pd.DataFrame) -> dict:
     return {d: g for d, g in zip(gruppen.deutsch, gruppen.austauschgruppe) if g}
 
 
+def lies_lagerorte(liste: pd.DataFrame) -> dict:
+    """Deutscher Begriff -> Standard-Lagerort (Rohwert wie in der App)."""
+    if not LAGERORTE.exists():
+        return {}
+    orte = lies_csv(LAGERORTE)
+    werte = orte.lagerort.str.lower().map(LAGERORT_WERT)
+    fehler = []
+    unbekannt = sorted(set(orte.deutsch) - set(liste.deutsch))
+    if unbekannt:
+        fehler.append(f"Nicht in der Zutatenliste: {unbekannt}")
+    ungueltig = orte.deutsch[werte.isna() & (orte.lagerort != "")].tolist()
+    if ungueltig:
+        fehler.append(f"Lagerort nicht Kühlschrank/Tiefkühler/Vorratsschrank: {ungueltig}")
+    if fehler:
+        sys.exit("lagerorte.csv fehlerhaft:\n- " + "\n- ".join(fehler))
+    return {d: w for d, w in zip(orte.deutsch, werte) if isinstance(w, str)}
+
+
 def lies_liste() -> pd.DataFrame:
     liste = lies_csv(LISTE)
     liste["englisch"] = liste.englisch.str.strip()
@@ -136,6 +158,7 @@ def lies_liste() -> pd.DataFrame:
 def main():
     liste = lies_liste()
     gruppen = lies_gruppen(liste)
+    lagerorte = lies_lagerorte(liste)
     varianten = lies_varianten(liste)
     db = sqlite3.connect(DATENBANK)
     db.executescript(SCHEMA)
@@ -148,8 +171,8 @@ def main():
         sys.exit(f"Englische Namen kommen in keinem Rezept vor: {sorted(unbekannt)[:20]}")
 
     for name, gruppe in liste.groupby("deutsch", sort=False):
-        db.execute("INSERT INTO zutat (name, grundzutat, haeufigkeit, austauschgruppe) VALUES (?, ?, 0, ?)",
-                   (name, int(gruppe.grundzutat.iloc[0] == "ja"), gruppen.get(name)))
+        db.execute("INSERT INTO zutat (name, grundzutat, haeufigkeit, austauschgruppe, lagerort) VALUES (?, ?, 0, ?, ?)",
+                   (name, int(gruppe.grundzutat.iloc[0] == "ja"), gruppen.get(name), lagerorte.get(name)))
     ids = dict(db.execute("SELECT name, id FROM zutat"))
     falsch = {alt: neu for alt, neu in ALTE_NAMEN.items() if neu not in ids or alt in ids}
     if falsch:
@@ -186,6 +209,7 @@ def main():
         "davon aus varianten_vorschlaege.csv": len(varianten),
         "zutaten in austauschgruppen": db.execute(
             "SELECT COUNT(*) FROM zutat WHERE austauschgruppe IS NOT NULL").fetchone()[0],
+        "zutaten mit lagerort": db.execute("SELECT COUNT(*) FROM zutat WHERE lagerort IS NOT NULL").fetchone()[0],
         "rezept_zutat": db.execute("SELECT COUNT(*) FROM rezept_zutat").fetchone()[0],
         "median anzahl_ohne_liste": db.execute(
             "SELECT anzahl_ohne_liste FROM rezept ORDER BY anzahl_ohne_liste LIMIT 1 OFFSET 7500").fetchone()[0],

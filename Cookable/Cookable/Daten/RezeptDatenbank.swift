@@ -43,14 +43,15 @@ final class RezeptDatenbank {
         verbindung = zeiger
 
         let zutaten = try abfragen("""
-            SELECT id, name, grundzutat, haeufigkeit, austauschgruppe FROM zutat ORDER BY name
+            SELECT id, name, grundzutat, haeufigkeit, austauschgruppe, lagerort FROM zutat ORDER BY name
             """) { zeile in
             Zutat(
                 id: Int(sqlite3_column_int64(zeile, 0)),
                 name: String(cString: sqlite3_column_text(zeile, 1)),
                 istGrundzutat: sqlite3_column_int(zeile, 2) == 1,
                 haeufigkeit: Int(sqlite3_column_int64(zeile, 3)),
-                austauschgruppe: sqlite3_column_text(zeile, 4).map { String(cString: $0) }
+                austauschgruppe: sqlite3_column_text(zeile, 4).map { String(cString: $0) },
+                standardLagerort: sqlite3_column_text(zeile, 5).flatMap { Lagerort(rawValue: String(cString: $0)) }
             )
         }
         self.zutaten = zutaten

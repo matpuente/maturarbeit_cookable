@@ -14,7 +14,10 @@ struct ZutatFormular: View {
     @Environment(\.modelContext) private var kontext
     @Environment(RezeptDatenbank.self) private var datenbank
     @Query private var vorrat: [VorratsEintrag]
-    @AppStorage("letzterLagerort") private var letzterLagerort = Lagerort.kuehlschrank
+    /// Vorgabe beim Öffnen über «Immer zuhause» – dann wird kein Lagerort vorgeschlagen
+    private var lagerortVorgegeben: Bool {
+        if case .neu(let vorgabe) = modus { vorgabe != nil } else { true }
+    }
 
     @State private var suchtext = ""
     @State private var zutat: Zutat?
@@ -150,7 +153,7 @@ struct ZutatFormular: View {
     private func vorbereiten() {
         switch modus {
         case .neu(let vorgabe):
-            lagerort = vorgabe ?? letzterLagerort
+            lagerort = vorgabe ?? .kuehlschrank
             sucheAktiv = true
         case .bearbeiten(let eintrag):
             zutat = datenbank.zutaten.first { $0.id == eintrag.zutatID }
@@ -164,6 +167,9 @@ struct ZutatFormular: View {
 
     private func waehlen(_ gewaehlt: Zutat) {
         zutat = gewaehlt
+        if !lagerortVorgegeben {
+            lagerort = EigeneLagerorte.vorschlag(fuer: gewaehlt)
+        }
         suchtext = ""
         sucheAktiv = false
     }
@@ -184,11 +190,28 @@ struct ZutatFormular: View {
             eintrag.ablaufdatum = datum
         } else {
             kontext.insert(VorratsEintrag(zutatID: zutat.id, name: zutat.name, lagerort: lagerort, ablaufdatum: datum))
-            if lagerort != .immerZuhause {
-                letzterLagerort = lagerort
-            }
         }
+        EigeneLagerorte.merken(lagerort, fuer: zutat)
         try? kontext.save()
         schliessen()
+    }
+}
+
+/// Merkt sich, wo der Nutzer eine Zutat aufbewahrt, wenn das vom Standard-Lagerort abweicht.
+/// Gespeichert pro deutschem Namen (die IDs der Zutatenliste sind nicht dauerhaft).
+enum EigeneLagerorte {
+    private static let schluessel = "eigeneLagerorte"
+
+    /// Eigene Wahl, sonst Standard-Lagerort der Zutat, sonst Kühlschrank
+    static func vorschlag(fuer zutat: Zutat) -> Lagerort {
+        let eigene = UserDefaults.standard.dictionary(forKey: schluessel) as? [String: String] ?? [:]
+        return eigene[zutat.name].flatMap(Lagerort.init(rawValue:)) ?? zutat.standardLagerort ?? .kuehlschrank
+    }
+
+    static func merken(_ lagerort: Lagerort, fuer zutat: Zutat) {
+        guard lagerort != .immerZuhause else { return }
+        var eigene = UserDefaults.standard.dictionary(forKey: schluessel) as? [String: String] ?? [:]
+        eigene[zutat.name] = lagerort == zutat.standardLagerort ? nil : lagerort.rawValue
+        UserDefaults.standard.set(eigene, forKey: schluessel)
     }
 }

@@ -61,6 +61,7 @@ Cookable/                    ← Hauptordner, Claude Code hier starten
    - Pro Zutat: Name, Lagerort, optional Ablaufdatum. Einträge können bearbeitet (Lagerort, Ablaufdatum) und gelöscht werden.
    - Nur Zutaten aus der Zutatenliste können erfasst werden (keine freie Eingabe).
    - Dieselbe Zutat darf nicht zweimal am selben Lagerort stehen; an verschiedenen Lagerorten ist sie erlaubt.
+   - **Lagerort-Vorschlag:** Beim Wählen einer Zutat wird ihr Standard-Lagerort vorgeschlagen (z. B. Kartoffel → Vorratsschrank). Legt der Nutzer eine Zutat an einen anderen Ort, merkt sich die App das und schlägt beim nächsten Mal diesen Ort vor. Die Standard-Lagerorte stehen in `Datenaufbereitung/ergebnisse/lagerorte.csv` (von Hand kontrolliert, Spalte `zutat.lagerort`).
    - Keine Mengenangaben.
    - Die Autovervollständigung nutzt die Zutatenliste (Abschnitt 6).
 2. **Rezeptvorschläge** – aus den mitgelieferten Rezepten, passend zu den eingegebenen Zutaten.
@@ -214,6 +215,7 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
      2. `zutatenliste.py` erstellt `ergebnisse/zutatenliste_zur_kontrolle.csv` mit DeepL. **Nicht erneut ausführen**, sonst wird die von Hand kontrollierte Liste überschrieben.
      3. `zutatenliste_uebernehmen.py` übernimmt die kontrollierte Liste in die SQLite-Datei (Tabellen `zutat`, `zutat_variante`, `rezept_zutat` inkl. Grundzutaten, Spalte `rezept.anzahl_ohne_liste`).
    - Seltene Varianten (ausserhalb der 1'000 häufigsten Namen, mind. 3 Rezepte): `varianten_vorschlaege.py` erstellt `ergebnisse/varianten_vorschlaege.csv` (Spalte `uebernehmen` von Hand kontrollieren). `zutatenliste_uebernehmen.py` liest die Datei direkt und ordnet die Varianten bestehenden deutschen Begriffen zu.
+   - Lagerorte: `lagerorte_vorschlag.py` erstellt `ergebnisse/lagerorte.csv` (Spalte `lagerort` von Hand kontrollieren); `zutatenliste_uebernehmen.py` speichert sie in `zutat.lagerort`.
    - Austauschgruppen: `austauschgruppen_vorschlag.py` erstellt `ergebnisse/austauschgruppen.csv` (eine Zeile pro deutschem Begriff, Spalte `austauschgruppe` von Hand kontrollieren); `zutatenliste_uebernehmen.py` speichert sie in `zutat.austauschgruppe`. Beide Vorschlags-Skripte überschreiben eine bestehende Datei nur mit `--neu`.
    - Nachbessern der Zutatenliste: `zusammenfassen_vorschlaege.py` schlägt Varianten zum Zusammenfassen vor (`ergebnisse/zusammenfassen_vorschlaege.csv`, Spalte `uebernehmen` von Hand kontrollieren), `zusammenfassen_anwenden.py` übernimmt sie in die Zutatenliste (mit Sicherung). Danach `zutatenliste_uebernehmen.py`.
    - Stand 15. November 2026: 15'000 Rezepte, 697 deutsche Zutaten. Zusammengefasst: Rahm, Vollrahm und Schlagrahm → «Rahm»; Hamburger und «Rinderfilet, zerkleinert» (ground sirloin) → Rinderhackfleisch. Der frühere Begriff «Hackfleisch» heisst jetzt Schweinehackfleisch (ground pork) bzw. Poulethackfleisch (ground chicken).
