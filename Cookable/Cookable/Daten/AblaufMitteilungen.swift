@@ -168,13 +168,23 @@ final class MitteilungsEmpfaenger: NSObject, UNUserNotificationCenterDelegate {
         UNUserNotificationCenter.current().delegate = self
     }
 
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification)
-        async -> UNNotificationPresentationOptions {
-        [.banner, .list, .sound]
+    // Mit Abschlussblock statt `async`: iOS verlangt, dass er auf dem Haupt-Thread aufgerufen wird
+    // (die `async`-Fassung endet auf einem Hintergrund-Thread – auf dem iPhone stürzte die App beim Antippen ab).
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter, willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping @Sendable (UNNotificationPresentationOptions) -> Void
+    ) {
+        DispatchQueue.main.async { completionHandler([.banner, .list, .sound]) }
     }
 
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping @Sendable () -> Void
+    ) {
         Logger(subsystem: "Maturarbeit.cookable", category: "Mitteilungen").info("Mitteilung angetippt")
-        await MainActor.run { startOeffnen += 1 }
+        DispatchQueue.main.async {
+            MainActor.assumeIsolated { self.startOeffnen += 1 }
+            completionHandler()
+        }
     }
 }
