@@ -17,6 +17,10 @@ struct RezeptDetailAnsicht: View {
     @State private var uebersetzungsFehler: DeepLDienst.Fehler?
     @State private var uebersetztGerade = false
     @State private var zeigeOriginal = false
+    @State private var gekochtZeilen: [GekochtAuswahl.Zeile] = []
+    /// Kopien der zuletzt entfernten Einträge (für «Rückgängig»)
+    @State private var entfernt: [EntfernterEintrag] = []
+    @State private var meldungNummer = 0
 
     init(vorschlag: RezeptVorschlag) {
         self.vorschlag = vorschlag
@@ -83,6 +87,14 @@ struct RezeptDetailAnsicht: View {
                         .accessibilityHint(zeigeOriginal ? "Zeigt die deutsche Übersetzung" : "Zeigt den englischen Originaltext")
                 }
             }
+        }
+        .sheet(isPresented: Binding(get: { !gekochtZeilen.isEmpty }, set: { if !$0 { gekochtZeilen = [] } })) {
+            GekochtAuswahl(zeilen: gekochtZeilen) { auswahl in
+                withAnimation { ausDemVorratEntfernen(auswahl) }
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if !entfernt.isEmpty { entferntMeldung }
         }
         .task(id: rezept.id) {
             details = try? datenbank.details(zu: rezept.id)
@@ -212,7 +224,60 @@ struct RezeptDetailAnsicht: View {
                 }
             }
             einkaufsKnopf(zeilen, vorratIDs: vorratIDs)
+            gekochtKnopf(zeilen)
         }
+    }
+
+    // MARK: - Gekocht
+
+    /// Knopf unter den Zutaten: verwendete Zutaten aus dem Vorrat entfernen
+    @ViewBuilder
+    private func gekochtKnopf(_ zeilen: [ZutatenZeile]) -> some View {
+        let verwendet = GekochtAuswahl.zeilen(
+            fuer: zeilen, vorrat: vorrat, austauschgruppe: datenbank.austauschgruppe,
+            zutatName: { id in datenbank.zutaten.first { $0.id == id }?.name }
+        )
+        if !verwendet.isEmpty {
+            Button {
+                gekochtZeilen = verwendet
+            } label: {
+                Label("Gekocht – Vorrat aktualisieren", systemImage: "frying.pan")
+            }
+        }
+    }
+
+    private func ausDemVorratEntfernen(_ eintraege: [VorratsEintrag]) {
+        guard !eintraege.isEmpty else { return }
+        entfernt = eintraege.map(EntfernterEintrag.init)
+        eintraege.forEach(kontext.delete)
+        try? kontext.save()
+        meldungNummer += 1
+        let nummer = meldungNummer
+        Task {
+            try? await Task.sleep(for: .seconds(8))
+            if meldungNummer == nummer { withAnimation { entfernt = [] } }
+        }
+    }
+
+    private func rueckgaengig() {
+        entfernt.forEach { kontext.insert($0.wiederherstellen()) }
+        try? kontext.save()
+        withAnimation { entfernt = [] }
+    }
+
+    private var entferntMeldung: some View {
+        HStack(spacing: 16) {
+            Text(entfernt.count == 1 ? "1 Zutat aus dem Vorrat entfernt" : "\(entfernt.count) Zutaten aus dem Vorrat entfernt")
+                .font(.subheadline.weight(.medium))
+            Button("Rückgängig", action: rueckgaengig)
+                .font(.subheadline.weight(.semibold))
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 12)
+        .background(.thickMaterial, in: Capsule())
+        .shadow(color: .black.opacity(0.15), radius: 10, y: 4)
+        .padding(.bottom, 12)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 
     // MARK: - Einkaufsliste
@@ -365,5 +430,31 @@ struct RezeptDetailAnsicht: View {
 
     private func gramm(_ wert: Double) -> String {
         wert.formatted(.number.precision(.fractionLength(0...1)).locale(Locale(identifier: "de_CH"))) + " g"
+    }
+}
+
+/// Kopie eines entfernten Vorratseintrags, damit «Rückgängig» ihn genau so wiederherstellen kann
+private struct EntfernterEintrag {
+    let zutatID: Int
+    let name: String
+    let lagerort: Lagerort
+    let ablaufdatum: Date?
+    let hinzugefuegtAm: Date
+    let grundname: String?
+
+    init(_ eintrag: VorratsEintrag) {
+        zutatID = eintrag.zutatID
+        name = eintrag.name
+        lagerort = eintrag.lagerort
+        ablaufdatum = eintrag.ablaufdatum
+        hinzugefuegtAm = eintrag.hinzugefuegtAm
+        grundname = eintrag.grundname
+    }
+
+    func wiederherstellen() -> VorratsEintrag {
+        let eintrag = VorratsEintrag(zutatID: zutatID, name: name, lagerort: lagerort, ablaufdatum: ablaufdatum)
+        eintrag.hinzugefuegtAm = hinzugefuegtAm
+        eintrag.grundname = grundname
+        return eintrag
     }
 }

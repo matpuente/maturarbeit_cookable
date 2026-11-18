@@ -83,10 +83,10 @@ Cookable/                    ← Hauptordner, Claude Code hier starten
    - Farbliche Markierung im Vorrat: orange ab 3 Tagen vor Ablauf, rot wenn abgelaufen.
    - Mitteilungen auf dem Gerät (erledigt 18. November 2026, siehe Abschnitt 7, Erweiterung 4).
 8. **Favoriten** – Rezepte speichern.
-9. **Bewertungen** – eigene Bewertung von Rezepten; ganz am Schluss, falls noch Zeit bleibt.
+9. **Bewertungen** – eigene Bewertung von Rezepten. **Nicht umgesetzt** (18. November 2026 entschieden: nicht nötig, Favoriten genügen).
 
 Funktionen aus «Später» erst umsetzen, wenn Version 1 fertig ist und ausdrücklich danach gefragt wird.
-Stand 15. November 2026: Version 1 ist fertig, ebenso Funktion 6 (Einkaufsliste), 7 (Ablaufdatum-Markierung, ohne Mitteilungen) und 8 (Favoriten) sowie die neue Startseite (siehe Abschnitt 4). Am 18. November 2026 kamen die Mitteilungen bei Ablauf dazu. Offen bleibt Funktion 9 (Bewertungen).
+Stand 15. November 2026: Version 1 ist fertig, ebenso Funktion 6 (Einkaufsliste), 7 (Ablaufdatum-Markierung, ohne Mitteilungen) und 8 (Favoriten) sowie die neue Startseite (siehe Abschnitt 4). Am 18. November 2026 kamen die Mitteilungen bei Ablauf und der Knopf «Gekocht» dazu. Funktion 9 (Bewertungen) wird nicht umgesetzt.
 
 ---
 
@@ -274,7 +274,6 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - Herz in der Detailansicht (rot = Favorit), Menü beim langen Drücken auf Zeilen und Karten.
       - Tab «Favoriten»: Sortierung «Passt am besten» (Standard) oder «Zuletzt hinzugefügt»; Wischen entfernt. Favoriten erscheinen auch ohne vorhandene Zutat.
       - Startseite: Reihe «Deine Favoriten» (am besten passende zuerst).
-      - Eigene Bewertungen (Funktion 9) folgen erst ganz am Schluss.
    3. Fehlende Zutaten und Einkaufsliste (Funktion 6, erledigt 15. November 2026).
       - SwiftData-Modell `EinkaufsEintrag` (Name, Menge als Text, deutscher Zutatenname falls aus der Liste, Rezept-ID und -Name, erledigt).
       - Detailansicht: fehlende Zutaten grau mit «fehlt» (auch Zutaten ausserhalb der Liste); Knopf «Fehlende Zutaten auf die Einkaufsliste (n)» mit Mengen für die gewählte Portionenzahl; einzelne Zeilen per langem Drücken. Ersatz zählt als vorhanden und kommt nicht automatisch auf die Liste. Fehlende Grundzutaten kommen mit.
@@ -290,7 +289,11 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - Erlaubnis wird beim ersten gespeicherten Ablaufdatum (oder beim Einschalten) erfragt; abgelehnt → Hinweis mit Knopf zu den iOS-Einstellungen.
       - Neu geplant bei jedem Start, beim Zurückkehren in die App und bei jeder Änderung von Ablaufdaten oder Einstellungen (bis 60 Tage im Voraus).
       - Antippen der Mitteilung öffnet den Tab «Start» (Bald ablaufend, Rezepte zum Aufbrauchen).
-6. **Später:** Bewertungen (Funktion 9), nur auf ausdrückliche Anfrage.
+   5. «Gekocht» (erledigt 18. November 2026): Knopf «Gekocht – Vorrat aktualisieren» unter den Zutaten der Detailansicht.
+      - Fenster «Was hast du aufgebraucht?» mit den verwendeten Vorratseinträgen: genau vorhanden, Ersatz («Ersatz für Nudeln»), eigene Zutaten; mit Lagerort und Ablauf-Markierung. Ohne «Immer zuhause». Liegt eine Zutat an mehreren Orten, erscheinen alle.
+      - Nichts vorausgewählt (oft bleibt ein Rest; die App kennt keine Mengen); «Alle auswählen». Gewählte Einträge werden gelöscht; Meldung mit «Rückgängig» (8 Sekunden).
+      - Kein Verlauf «zuletzt gekocht» (nicht gewünscht, Favoriten genügen).
+6. **Nicht umgesetzt:** Bewertungen (Funktion 9), nicht nötig.
 
 ---
 
