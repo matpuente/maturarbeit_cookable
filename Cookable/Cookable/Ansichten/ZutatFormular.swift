@@ -201,6 +201,10 @@ struct ZutatFormular: View {
         }
         EigeneLagerorte.merken(lagerort, fuer: zutat)
         try? kontext.save()
+        // Beim ersten Ablaufdatum um Erlaubnis für Mitteilungen fragen (nur einmal, iOS merkt sich die Antwort)
+        if datum != nil && UserDefaults.standard.object(forKey: AblaufMitteilungen.schluesselAn) as? Bool ?? true {
+            Task { await AblaufMitteilungen.erlaubnisAnfragen() }
+        }
         schliessen()
     }
 }

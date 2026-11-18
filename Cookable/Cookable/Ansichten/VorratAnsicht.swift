@@ -12,6 +12,8 @@ struct VorratAnsicht: View {
     @State private var immerZuhauseOffen = false
     /// «Bearbeiten»: rote Minus-Knöpfe, die eine Zutat mit einem Tipp löschen (ohne zweite Bestätigung)
     @State private var loeschModus = false
+    @State private var zeigeMitteilungen = false
+    @AppStorage(AblaufMitteilungen.schluesselAn) private var mitteilungenAn = true
 
     private static let lagerorte: [Lagerort] = [.kuehlschrank, .tiefkuehler, .vorratsschrank]
 
@@ -54,9 +56,13 @@ struct VorratAnsicht: View {
                     }
                     .fontWeight(loeschModus ? .semibold : .regular)
                 }
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItemGroup(placement: .primaryAction) {
+                    Button("Mitteilungen", systemImage: mitteilungenAn ? "bell" : "bell.slash") { zeigeMitteilungen = true }
                     Button("Zutat hinzufügen", systemImage: "plus") { neuerEintrag = .neu() }
                 }
+            }
+            .sheet(isPresented: $zeigeMitteilungen) {
+                MitteilungenEinstellungen()
             }
             .sheet(item: $neuerEintrag) { modus in
                 ZutatFormular(modus: modus)

@@ -81,12 +81,12 @@ Cookable/                    ← Hauptordner, Claude Code hier starten
 6. **Fehlende Zutaten & Einkaufsliste** – fehlende Zutaten pro Rezept anzeigen und automatisch eine Einkaufsliste erstellen.
 7. **Ablaufdatum-Tracking**
    - Farbliche Markierung im Vorrat: orange ab 3 Tagen vor Ablauf, rot wenn abgelaufen.
-   - Mitteilungen auf dem Gerät nur, falls am Schluss noch Zeit bleibt.
+   - Mitteilungen auf dem Gerät (erledigt 18. November 2026, siehe Abschnitt 7, Erweiterung 4).
 8. **Favoriten** – Rezepte speichern.
 9. **Bewertungen** – eigene Bewertung von Rezepten; ganz am Schluss, falls noch Zeit bleibt.
 
 Funktionen aus «Später» erst umsetzen, wenn Version 1 fertig ist und ausdrücklich danach gefragt wird.
-Stand 15. November 2026: Version 1 ist fertig, ebenso Funktion 6 (Einkaufsliste), 7 (Ablaufdatum-Markierung, ohne Mitteilungen) und 8 (Favoriten) sowie die neue Startseite (siehe Abschnitt 4). Offen bleiben die Mitteilungen bei Ablauf (Funktion 7) und Funktion 9 (Bewertungen).
+Stand 15. November 2026: Version 1 ist fertig, ebenso Funktion 6 (Einkaufsliste), 7 (Ablaufdatum-Markierung, ohne Mitteilungen) und 8 (Favoriten) sowie die neue Startseite (siehe Abschnitt 4). Am 18. November 2026 kamen die Mitteilungen bei Ablauf dazu. Offen bleibt Funktion 9 (Bewertungen).
 
 ---
 
@@ -283,7 +283,14 @@ Die Nährwerte im Hauptdatensatz gelten pro Portion. Ein Rezept wird nur überno
       - Nicht erkannte Rezeptzutaten (ausserhalb der Zutatenliste): in der Liste orange «Nicht erkannt – beim Einkauf selbst zuordnen»; nach «Gekaufte in den Vorrat» Fenster «Zutat zuordnen» – passende Zutat der Liste suchen (vorbelegt mit dem Namen), Lagerort wählen, oder «nur von der Liste entfernen»; «Später» lässt sie im Wagen. Im Vorrat stehen weiterhin nur Zutaten der Zutatenliste.
       - Auf der Einkaufsliste steht der übersetzte Name ohne Zusatz (Text vor «(» oder «,»).
       - **Eigene Zutaten:** Im Fenster «Zutat zuordnen» kann eine Rezeptzutat ausserhalb der Zutatenliste auch «als eigene Zutat» in den Vorrat (nur Lagerort wählen). Nur für Einträge aus einem Rezept, weil ihr englischer Grundname sicher im Datensatz steht (`EinkaufsEintrag.grundname`, `VorratsEintrag.grundname`, `zutatID` = −1). Sie zählt bei allen Rezepten mit genau diesem Grundnamen als vorhanden (`RezeptUebersicht.ohneListe`), nie als Ersatz, nicht bei «Muss enthalten». Im Vorrat mit «Eigene Zutat» gekennzeichnet; Lagerort und Ablaufdatum lassen sich bearbeiten. Im Vorrat selbst gibt es weiterhin keine freie Eingabe.
-6. **Später:** Mitteilungen bei Ablauf (Funktion 7) und Bewertungen (Funktion 9), nur auf ausdrückliche Anfrage.
+   4. Mitteilungen bei Ablauf (Funktion 7, erledigt 18. November 2026).
+      - Lokale Mitteilungen (`UserNotifications`, kein Server); `Daten/AblaufMitteilungen.swift`.
+      - Höchstens eine Mitteilung pro Tag mit allen betroffenen Zutaten, z. B. «Morgen läuft ab: Pouletbrust, Rahm» (bei mehreren Zeitpunkten «Bald ablaufend» mit «Heute: … / Morgen: … / In 3 Tagen: …»). Bereits abgelaufene Zutaten lösen keine Mitteilung aus; «Immer zuhause» hat kein Ablaufdatum.
+      - Einstellungen über die Glocke im Vorrat: ein/aus, Zeitpunkte (am Ablauftag, 1 Tag vorher, 3 Tage vorher; mehrere möglich, mindestens einer), Uhrzeit; Standard 1 Tag vorher um 17:00. Vorschau «Nächste Mitteilung». Gespeichert mit `@AppStorage` (`mitteilungenAn`, `mitteilungenTage`, `mitteilungenMinuten`).
+      - Erlaubnis wird beim ersten gespeicherten Ablaufdatum (oder beim Einschalten) erfragt; abgelehnt → Hinweis mit Knopf zu den iOS-Einstellungen.
+      - Neu geplant bei jedem Start, beim Zurückkehren in die App und bei jeder Änderung von Ablaufdaten oder Einstellungen (bis 60 Tage im Voraus).
+      - Antippen der Mitteilung öffnet den Tab «Start» (Bald ablaufend, Rezepte zum Aufbrauchen).
+6. **Später:** Bewertungen (Funktion 9), nur auf ausdrückliche Anfrage.
 
 ---
 

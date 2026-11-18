@@ -6,6 +6,8 @@ struct CookableApp: App {
     @State private var datenbank = Result { try RezeptDatenbank() }
     private let speicher: ModelContainer
     @State private var uebersetzer: Uebersetzer
+    /// Muss früh bestehen, damit ein Antippen der Mitteilung auch beim Start der App ankommt
+    @State private var mitteilungen = MitteilungsEmpfaenger()
 
     init() {
         // Fotos von Food.com zwischenspeichern: bis 100 MB auf dem Gerät, älteste werden automatisch gelöscht
@@ -27,6 +29,7 @@ struct CookableApp: App {
                 HauptAnsicht()
                     .environment(datenbank)
                     .environment(uebersetzer)
+                    .environment(mitteilungen)
                     // Die Oberfläche ist komplett Deutsch (Datum, Zahlen) – unabhängig von der Geräteeinstellung
                     .environment(\.locale, Locale(identifier: "de_CH"))
             case .failure(let fehler):
