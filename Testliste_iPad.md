@@ -86,4 +86,6 @@ Hinweis: Auf dem iPad beginnt die App mit einem leeren Vorrat (keine Synchronisi
 
 ## Notizen
 Löschen der Zutaten mit nach rechts wischen funktioniert nicht.
+→ Geklärt: Gelöscht wird mit Wischen von rechts nach links (übliche iOS-Geste) – funktioniert.
 Welches app symbol meinen sie? Es bleibt gleich.
+→ Gemeint ist das Symbol auf dem Home-Bildschirm. Die dunkle Variante erscheint nur, wenn der Home-Bildschirm unter «Bearbeiten → Anpassen» auf «Dunkel» oder «Automatisch» steht (der Dunkelmodus allein ändert die Symbole nicht).
